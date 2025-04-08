@@ -2,7 +2,7 @@
 
 No seu terminal do Linux, clone o repositório:
 ```
-git clone https://github.com/dantasjess/ADOTII.git](https://github.com/enfmarinho/EchoTyper
+git clone https://github.com/enfmarinho/EchoTyper
 cd /EchoTyper/echo-typer
 ```
 
