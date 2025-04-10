@@ -19,6 +19,11 @@ const reunioesSalvas : Reuniao[] = [
   { titulo: "Sprint Review", descricao: "Resumo das tarefas concluídas" },
 ];
 
+const proximosEventos: Reuniao[] = [
+  { titulo: "Daily Standup", descricao: "04/04 - Alinhamento rápido da equipe" },
+  { titulo: "Planejamento da Sprint", descricao: "05/04 - Definir backlog da semana" },
+];
+
 export default function SelecaoReunioes() {
   return (
     <Box>
@@ -61,6 +66,38 @@ export default function SelecaoReunioes() {
               </Button>
             </Paper>
           </Grid>
+        </Grid>
+      </Box>
+
+      {/* Próximos eventos */}
+      <Box sx={{ p: 4, pt: 2 }}>
+        <Typography variant="h5" gutterBottom sx={{ color: "#0D1B2A" }}>
+          Próximos Eventos
+        </Typography>
+
+        <Grid container spacing={2}>
+          {proximosEventos.map((evento, index) => (
+            <Grid size={{ xs: 12, md: 4, sm: 6 }} key={index} component={"div"}>
+              <Paper
+                elevation={2}
+                sx={{
+                  p: 2,
+                  height: 100,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  backgroundColor: "#e3f2fd",
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="bold">
+                  {evento.titulo}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {evento.descricao}
+                </Typography>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       </Box>
     </Box>
