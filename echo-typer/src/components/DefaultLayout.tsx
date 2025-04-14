@@ -21,7 +21,7 @@ const drawerWidth = 240;
 const menuItems = [
   { text: "Home", icon: <HomeIcon />,  url: `/dashboard/home` },
   { text: "Agenda", icon: <EventNoteIcon />,  url: `/dashboard/agenda` },
-  { text: "Resumos", icon: <DescriptionIcon />,  url: `/dashboard/resumos` },
+  { text: "Reuniões", icon: <DescriptionIcon />,  url: `/dashboard/reunioes` },
   { text: "Configurações", icon: <SettingsIcon />,  url: `/dashboard/configuracoes` },
 ];
 
