@@ -7,6 +7,7 @@ import {
   Button,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import Link from "next/link";
 
 type Reuniao = {
   titulo: string;
@@ -38,6 +39,8 @@ export default function SelecaoReunioes() {
               <Paper
                 elevation={3}
                 sx={{ p: 2, height: 140, cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
+                component={Link}
+                href={`/dashboard/reunioes/${reuniao.titulo}`} // Substitua pelo ID real da reunião
               >
                 <Typography variant="h6">{reuniao.titulo}</Typography>
                 <Typography variant="body2" color="text.secondary">

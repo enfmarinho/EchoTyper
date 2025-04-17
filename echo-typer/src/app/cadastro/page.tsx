@@ -25,8 +25,6 @@ export default function CadastroPage() {
           }}
         >
         <Image src="/logo.png" alt="Logo" width={450} height={450} />
-  
-
         <Box
             sx={{
             display: "flex",
@@ -64,7 +62,8 @@ export default function CadastroPage() {
             variant="contained"
             sx={{ backgroundColor: "#c28807", '&:hover': { backgroundColor: "#a37205" } }}
             onClick={() => {
-                // Aqui pode adicionar a lógica de autenticação
+                // Aqui pode adicionar a requisição na api, para criar a conta
+                // Após o cadastro, redirecionar para a página inicial
                 router.push("/dashboard/home");
             } }
             >

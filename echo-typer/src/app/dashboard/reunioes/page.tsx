@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
 import SearchIcon from "@mui/icons-material/Search";
+import Link from "next/link";
 
 type Reuniao = {
   id: string;
@@ -66,6 +67,8 @@ export default function ReunioesPage() {
           <Grid sx={{ xs: 6, sm: 4, md: 2.4 }} key={reuniao.id}>
             <Paper
               onClick={() => abrirReuniao(reuniao.id)}
+              component={Link}
+              href={`/dashboard/reunioes/${reuniao.titulo}`}
               sx={{
                 height: 120,
                 display: "flex",
