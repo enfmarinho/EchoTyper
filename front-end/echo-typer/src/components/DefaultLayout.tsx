@@ -12,15 +12,17 @@ import HomeIcon from "@mui/icons-material/Home";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import DescriptionIcon from "@mui/icons-material/Description";
 import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from '@mui/icons-material/Logout';
 import Image from "next/image";
+import Link from 'next/link'
 
 const drawerWidth = 240;
 
 const menuItems = [
-  { text: "Home", icon: <HomeIcon /> },
-  { text: "Reuniões", icon: <EventNoteIcon /> },
-  { text: "Resumos", icon: <DescriptionIcon /> },
-  { text: "Configurações", icon: <SettingsIcon /> },
+  { text: "Home", icon: <HomeIcon />,  url: `/dashboard/home` },
+  { text: "Agenda", icon: <EventNoteIcon />,  url: `/dashboard/agenda` },
+  { text: "Reuniões", icon: <DescriptionIcon />,  url: `/dashboard/reunioes` },
+  { text: "Configurações", icon: <SettingsIcon />,  url: `/dashboard/configuracoes` },
 ];
 
 type DefaultLayoutProps = {
@@ -48,12 +50,33 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
         </Box>
         <List>
           {menuItems.map((item, index) => (
-            <ListItemButton key={index}>
+            <ListItemButton key={index} component={Link} href={item.url}>
               <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>
           ))}
         </List>
+
+
+        <Box sx={{ mt: "auto", p: 2 }}>
+          <ListItemButton
+            sx={{
+              backgroundColor: "#1e3a5f",
+              color: "white",
+              borderRadius: 1,
+              "&:hover": {
+                backgroundColor: "#2a4d7a",
+              },
+            }}
+            component={Link}
+            href="/login"
+          >
+            <ListItemIcon sx={{ color: "white" }}>
+               <LogoutIcon sx={{ transform: 'scaleX(-1)' }} />
+            </ListItemIcon>
+            <ListItemText primary="Sair" />
+          </ListItemButton>
+        </Box>
       </Drawer>
       <Box
         component="main"
