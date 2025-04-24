@@ -5,24 +5,22 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.ufrn.EchoTyper.user.UserConstraints;
-import jakarta.annotation.Nullable;
+import br.ufrn.EchoTyper.user.service.UserConstraints;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 public record UserRequestDTO(
         @NotNull
-        Long id,
-        @Nullable
         @JsonProperty("username")
         @Length(min = 6, max = 50)
         @Pattern(regexp = UserConstraints.USERNAME_PATTERN) 
         String username,
         @JsonProperty("email") 
-        @Nullable 
+        @NotNull
         @Pattern(regexp = UserConstraints.EMAIL_PATTERN) 
         String email,
-        @Length(min=6, max=50)
+        @JsonProperty("password")
+        @Length(min=8, max=50)
         String password
         )
 

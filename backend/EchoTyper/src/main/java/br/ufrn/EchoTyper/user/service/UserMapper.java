@@ -6,7 +6,7 @@ import br.ufrn.EchoTyper.user.model.User;
 
 public class UserMapper {
     public static User toEntity(UserRequestDTO userRequestDTO) {
-     return new User(null, userRequestDTO.username(),userRequestDTO.email(), userRequestDTO.password());
+     return new User(null, userRequestDTO.password(), userRequestDTO.username(), userRequestDTO.email());
     }
 
     public static UserResponseDTO toResponseDTO(User user) {
