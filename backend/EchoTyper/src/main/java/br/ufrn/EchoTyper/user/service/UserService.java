@@ -11,6 +11,7 @@ import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
 import br.ufrn.EchoTyper.user.model.User;
 import br.ufrn.EchoTyper.user.repository.UserRepository;
 import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
+import br.ufrn.EchoTyper.user.dto.UserMapper;
 
 @Service
 public class UserService {
@@ -39,7 +40,7 @@ public class UserService {
     }
 
     public UserResponseDTO updateUser( Long id, UserRequestDTO userRequestDTO) {
-        User user = userRepository.findById(userRequestDTO.id()).get();
+        User user = userRepository.findById(id).get(); // Changed userRequestDTO.id() to id
         user.setUsername(userRequestDTO.username());
         user.setEmail(userRequestDTO.username());
         user.setPassword(userRequestDTO.username());

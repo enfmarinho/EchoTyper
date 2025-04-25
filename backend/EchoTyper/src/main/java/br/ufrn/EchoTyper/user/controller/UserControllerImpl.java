@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.ufrn.EchoTyper.user.UserService;
+import br.ufrn.EchoTyper.user.service.UserService;
 import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
 import io.micrometer.core.ipc.http.HttpSender.Response;
 import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
