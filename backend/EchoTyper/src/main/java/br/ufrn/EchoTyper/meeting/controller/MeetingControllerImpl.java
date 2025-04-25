@@ -1,0 +1,43 @@
+package br.ufrn.EchoTyper.meeting.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.ufrn.EchoTyper.meeting.service.MeetingService;
+import br.ufrn.EchoTyper.meeting.dto.MeetingResponseDTO;
+import br.ufrn.EchoTyper.meeting.dto.MeetingRequestDTO;
+
+@RestController
+public class MeetingControllerImpl implements MeetingController {
+    @Autowired
+    MeetingService meetingService;
+
+    @Override
+    public ResponseEntity<List<MeetingResponseDTO>> getAllMeetings() {
+        return ResponseEntity.ok().body(meetingService.getAllMeetings());
+    }
+
+    @Override
+    public ResponseEntity<MeetingResponseDTO> getMeetingById(Long id) {
+        return ResponseEntity.ok().body(meetingService.getMeetingById(id));
+    }
+
+    @Override
+    public ResponseEntity<MeetingResponseDTO> createMeeting(MeetingRequestDTO createMeetingDTO) {
+        return ResponseEntity.ok().body(meetingService.createMeeting(createMeetingDTO));
+    }
+
+    @Override
+    public ResponseEntity<MeetingResponseDTO> updateMeeting(Long id, MeetingRequestDTO updateMeetingDTO) {
+        return ResponseEntity.ok().body(meetingService.updateMeeting(id, updateMeetingDTO));
+    }
+
+    @Override
+    public ResponseEntity<MeetingResponseDTO> deleteMeeting(Long id) {
+        meetingService.deleteMeeting(id);
+        return ResponseEntity.ok().build();
+    }
+}
