@@ -15,14 +15,15 @@ import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
 
 @Service
 public class UserService {
-    @Autowired
+    // TODO: Fazer o Exception Handling
     private final UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
-    // Fazer o exception handling
+    // TODO: Fazer o exception handling
     public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
         if (userRepository.findByEmail(userRequestDTO.email()).isPresent()) {
             throw new IllegalArgumentException("Email already in use.");
@@ -36,24 +37,34 @@ public class UserService {
     }
 
     public UserResponseDTO getUserByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if (userOptional.isPresent()) {
+            throw new IllegalArgumentException("The username does not exist");
+        }
         return UserMapper.toResponseDTO(userRepository.findByUsername(username).get());
     }
 
-    public UserResponseDTO updateUser( Long id, UserRequestDTO userRequestDTO) {
-        User user = userRepository.findById(userRequestDTO.id()).get();
-        user.setUsername(userRequestDTO.username());
-        user.setEmail(userRequestDTO.username());
-        user.setPassword(userRequestDTO.username());
-        userRepository.save(user);
-        return UserMapper.toResponseDTO(user);
+    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setUsername(userRequestDTO.username());
+            user.setEmail(userRequestDTO.email());
+            user.setPassword(userRequestDTO.password());
+            userRepository.save(user);
+            return UserMapper.toResponseDTO(user);
+        }
+        // ? : Supondo que o usuario sera validado e seu ID sera injetado, essa excecao nunca seria lancada
+        throw new IllegalArgumentException("The User does not exist.");
     }
 
     public UserResponseDTO getUserById(Long id) {
+        // TODO: deve ser tratado como excecao?
         return userRepository.findById(id).map(UserMapper::toResponseDTO).orElse(null);
     }
 
+    // TODO: Usar paginacao
     public List<UserResponseDTO> getAllUsers() {
-        // TODO: Usar paginacao
         return userRepository.findAll().parallelStream().map(UserMapper::toResponseDTO).toList();
     }
 
@@ -61,7 +72,7 @@ public class UserService {
         if (userRepository.findFriendByUsername(username).isPresent()) {
             return UserMapper.toResponseDTO(userRepository.findFriendByUsername(username).get());
         }
-        return null;
+        throw new IllegalArgumentException("No Friend with the matching username");
     }
 
     public List<UserResponseDTO> getAllFriends(Long id) {
@@ -89,6 +100,7 @@ public class UserService {
             throw new IllegalArgumentException();
         }
     }
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
