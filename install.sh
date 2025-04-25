@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 set -e
 
 # Downloading and installing nvm
@@ -24,6 +24,8 @@ MAVEN_DIR="$INSTALL_DIR/maven"
 
 # Creating destination directories
 mkdir -p "$JAVA_DIR" "$MAVEN_DIR"
+# TODO talvez ? 
+curl -s "https://get.sdkman.io" | bash
 
 # Downloading and installing JDK
 echo "Downloading OpenJDK $JDK_VERSION from Adoptium..."
