@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
 import br.ufrn.EchoTyper.user.model.User;
 import br.ufrn.EchoTyper.user.repository.UserRepository;
+import br.ufrn.EchoTyper.user.dto.UserMapper;
 import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
 
 @Service

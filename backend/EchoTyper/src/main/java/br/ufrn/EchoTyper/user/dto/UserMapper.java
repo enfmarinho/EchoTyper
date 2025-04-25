@@ -1,7 +1,5 @@
-package br.ufrn.EchoTyper.user.service;
+package br.ufrn.EchoTyper.user.dto;
 
-import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
-import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
 import br.ufrn.EchoTyper.user.model.User;
 
 public class UserMapper {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
 import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
@@ -18,6 +17,7 @@ import jakarta.validation.Valid;
 
 @RequestMapping("/user")
 public interface UserController {
+    // TODO: Usar query strings
     @GetMapping("")
     public ResponseEntity<List<UserResponseDTO>> getAllUsers();
 
