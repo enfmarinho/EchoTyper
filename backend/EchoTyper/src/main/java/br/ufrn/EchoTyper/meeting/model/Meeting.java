@@ -5,13 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 @Entity
 @Table(name = "tb_meetings")
 public class Meeting {
@@ -37,6 +30,17 @@ public class Meeting {
     @ManyToOne
     @JoinColumn(name = "user_id") // Coluna que vai armazenar o ID do usuário
     private User user;
+
+	public Meeting() {
+	}
+	
+	public Meeting(Long id, String title, String transcription, String summary, String annotations) {
+		this.id = id;
+		this.title = title;
+		this.transcription = transcription;
+		this.summary = summary;
+		this.annotations = annotations;
+	}
 
     // Getters e setters
     public Long getId() {
