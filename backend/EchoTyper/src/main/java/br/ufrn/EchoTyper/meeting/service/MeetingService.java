@@ -29,6 +29,9 @@ public class MeetingService {
 
     public MeetingResponseDTO updateMeeting( Long id, MeetingRequestDTO meetingRequestDTO) {
         Meeting meeting = meetingRepository.findById(id).get();
+        if (meeting == null) {
+            throw new RuntimeException("Meeting not found");
+        }
         meeting.setTitle(meetingRequestDTO.title());
         meeting.setTranscription(meetingRequestDTO.transcription());
         meeting.setSummary(meetingRequestDTO.summary());
@@ -46,6 +49,9 @@ public class MeetingService {
     }
     
     public void deleteMeeting(Long id) {
+        if (!meetingRepository.existsById(id)) {
+            throw new RuntimeException("Meeting not found");
+        }
         meetingRepository.deleteById(id);
     }
 }
