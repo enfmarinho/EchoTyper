@@ -9,20 +9,20 @@ public class Usage {
         String file_path = args[1], text = "";
         if (args[0].equals("-mp3")) {
             try {
-                text = Whisper.process_mp3_audio(file_path);
+                file_path = Audio.convert_mp3_to_wav(file_path);
             } catch (Exception e) {
-                System.out.println("Failed to process MP3 file");
+                System.out.println("Failed to convert MP3 file to Wav");
             }
-        } else if(args[0].equals("-wav")) {
-            try {
-                text = Whisper.process_wav_audio(file_path);
-            } catch (Exception e) {
-                System.out.println("Failed to process WAV file");
-            }
-        } else {
+        } else if (! args[0].equals("-wav")){
             System.out.println("Formato do arquivo inválido: " + args[0]);
         }
 
+        try {
+            Whisper whisper = new Whisper();
+            text = whisper.transcribe_audio(file_path);
+        } catch (Exception e) {
+            System.out.println("Failed to process WAV file");
+        }
         System.out.println(text);
         // System.out.println(llm.resume(text));
     }

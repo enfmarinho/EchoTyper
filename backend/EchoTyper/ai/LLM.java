@@ -8,7 +8,7 @@ import com.openai.api.chat.ChatCompletionChoice;
 import java.util.List;
 
 // TODO This is incomplete
-public class LLM {
+public class LLM implements LLM_Interface {
     public String resume(String text) {
         OpenAIClient client = OpenAIOkHttpClient.fromEnv();
 
@@ -25,6 +25,10 @@ public class LLM {
             .choices();
 
         return choices.get(0).message().content().orElse("No response.");
+    }
+
+    public String ask(String question) {
+        // TODO ask question to LLM and return its answer
     }
 }
 
