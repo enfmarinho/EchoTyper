@@ -12,6 +12,7 @@ import br.ufrn.EchoTyper.user.model.User;
 import br.ufrn.EchoTyper.user.repository.UserRepository;
 import br.ufrn.EchoTyper.user.dto.UserMapper;
 import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
+import br.ufrn.EchoTyper.user.dto.UserMapper;
 
 @Service
 public class UserService {
@@ -44,18 +45,13 @@ public class UserService {
         return UserMapper.toResponseDTO(userRepository.findByUsername(username).get());
     }
 
-    public UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            user.setUsername(userRequestDTO.username());
-            user.setEmail(userRequestDTO.email());
-            user.setPassword(userRequestDTO.password());
-            userRepository.save(user);
-            return UserMapper.toResponseDTO(user);
-        }
-        // ? : Supondo que o usuario sera validado e seu ID sera injetado, essa excecao nunca seria lancada
-        throw new IllegalArgumentException("The User does not exist.");
+    public UserResponseDTO updateUser( Long id, UserRequestDTO userRequestDTO) {
+        User user = userRepository.findById(id).get(); // Changed userRequestDTO.id() to id
+        user.setUsername(userRequestDTO.username());
+        user.setEmail(userRequestDTO.username());
+        user.setPassword(userRequestDTO.username());
+        userRepository.save(user);
+        return UserMapper.toResponseDTO(user);
     }
 
     public UserResponseDTO getUserById(Long id) {
