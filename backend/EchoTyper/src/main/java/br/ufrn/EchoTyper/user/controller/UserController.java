@@ -3,6 +3,7 @@ package br.ufrn.EchoTyper.user.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import br.ufrn.EchoTyper.user.dto.UserRequestDTO;
 import br.ufrn.EchoTyper.user.dto.UserResponseDTO;
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/user")
 public interface UserController {
     // TODO: Usar query strings
