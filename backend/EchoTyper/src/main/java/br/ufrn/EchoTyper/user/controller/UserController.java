@@ -36,7 +36,7 @@ public interface UserController {
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO createUserDTO);
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(Long id, @Valid @RequestBody UserRequestDTO updateUserDTO);
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserRequestDTO updateUserDTO);
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<UserResponseDTO> deleteUser(@PathVariable("id") Long id);
