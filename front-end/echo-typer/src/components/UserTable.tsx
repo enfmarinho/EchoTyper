@@ -1,93 +1,165 @@
-import React, { useState } from 'react';
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  TextField,
-  Button,
-  Box,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+'use client';
 
-type Usuario = {
+import React, { useEffect, useState } from 'react';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, IconButton, TextField, Button, Box
+} from '@mui/material';
+import { Delete, Edit, Save } from '@mui/icons-material';
+import {
+  fetchUsers, createUser, updateUser, deleteUser
+} from '../lib/api';
+
+type User = {
   id: number;
-  nome: string;
+  username: string;
   email: string;
+  password: string;
+  registrationDate: string;
 };
 
-const UserTable = () => {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([
-    { id: 1, nome: 'Admin', email: 'admin@email.com' },
-    { id: 2, nome: 'Usuário 1', email: 'user1@email.com' },
-  ]);
+export default function UserTable() {
+  const [users, setUsers] = useState<User[]>([]);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [formData, setFormData] = useState<Partial<User>>({});
 
-  const [novoNome, setNovoNome] = useState('');
-  const [novoEmail, setNovoEmail] = useState('');
-
-  const adicionarUsuario = () => {
-    const novo = {
-      id: Date.now(),
-      nome: novoNome,
-      email: novoEmail,
-    };
-    setUsuarios([...usuarios, novo]);
-    setNovoNome('');
-    setNovoEmail('');
+  const loadUsers = async () => {
+    try {
+      const data = await fetchUsers();
+      setUsers(data);
+    } catch (err) {
+      console.error('Erro ao carregar usuários:', err);
+    }
   };
 
-  const excluirUsuario = (id: number) => {
-    setUsuarios(usuarios.filter((u) => u.id !== id));
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const handleChange = (field: keyof User, value: string) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  const handleEdit = (user: User) => {
+    setEditingId(user.id);
+    setFormData({
+      username: user.username,
+      email: user.email,
+      password: user.password
+    });
+  };
+
+  const handleSave = async () => {
+    if (!editingId) return;
+
+    try {
+      console.log('FormData:', formData);
+      console.log('Editing ID:', editingId);
+      await updateUser(editingId, formData);
+      // setEditingId(null);
+      await loadUsers();
+    } catch (err) {
+      console.error('Erro ao atualizar usuário:', err);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteUser(id);
+      await loadUsers();
+    } catch (err) {
+      console.error('Erro ao deletar usuário:', err);
+    }
+  };
+
+  const handleCreate = async () => {
+    try {
+      await createUser(formData);
+      setFormData({});
+      await loadUsers();
+    } catch (err) {
+      console.error('Erro ao criar usuário:', err);
+    }
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-        <TextField
-          label="Nome"
-          value={novoNome}
-          onChange={(e) => setNovoNome(e.target.value)}
-        />
-        <TextField
-          label="Email"
-          value={novoEmail}
-          onChange={(e) => setNovoEmail(e.target.value)}
-        />
-        <Button variant="contained" onClick={adicionarUsuario}>
-          Adicionar
-        </Button>
-      </Box>
-
+    <TableContainer component={Paper}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Nome</TableCell>
+            <TableCell>Nome de Usuário</TableCell>
             <TableCell>Email</TableCell>
+            <TableCell>Data de Registro</TableCell>
             <TableCell>Ações</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {usuarios.map((usuario) => (
-            <TableRow key={usuario.id}>
-              <TableCell>{usuario.nome}</TableCell>
-              <TableCell>{usuario.email}</TableCell>
+          {users.map((user) => (
+            <TableRow key={user.id}>
               <TableCell>
-                <IconButton color="primary">
-                  <EditIcon />
-                </IconButton>
-                <IconButton color="error" onClick={() => excluirUsuario(usuario.id)}>
-                  <DeleteIcon />
-                </IconButton>
+                {editingId === user.id ? (
+                  <TextField
+                    value={formData.username || ''}
+                    onChange={(e) => handleChange('username', e.target.value)}
+                  />
+                ) : (
+                  user.username
+                )}
+              </TableCell>
+              <TableCell>
+                {editingId === user.id ? (
+                  <TextField
+                    value={formData.email || ''}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                  />
+                ) : (
+                  user.email
+                )}
+              </TableCell>
+              <TableCell>
+                {editingId === user.id ? (
+                  <TextField
+                    value={formData.password || ''}
+                    onChange={(e) => handleChange('password', e.target.value)}
+                  />
+                ) : (
+                  user.registrationDate
+                )}
+              </TableCell>
+              <TableCell>
+                {editingId === user.id ? (
+                  <IconButton onClick={handleSave}><Save /></IconButton>
+                ) : (
+                  <>
+                    <IconButton onClick={() => handleEdit(user)}><Edit /></IconButton>
+                    <IconButton onClick={() => handleDelete(user.id)}><Delete /></IconButton>
+                  </>
+                )}
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </Box>
-  );
-};
 
-export default UserTable;
+      <Box sx={{ p: 2, display: 'flex', gap: 2 }}>
+        <TextField
+          label="Username"
+          value={formData.username || ''}
+          onChange={(e) => handleChange('username', e.target.value)}
+        />
+        <TextField
+          label="Email"
+          value={formData.email || ''}
+          onChange={(e) => handleChange('email', e.target.value)}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          value={formData.password || ''}
+          onChange={(e) => handleChange('password', e.target.value)}
+        />
+        <Button variant="contained" onClick={handleCreate}>Adicionar</Button>
+      </Box>
+    </TableContainer>
+  );
+}
