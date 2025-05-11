@@ -47,9 +47,10 @@ public class UserService {
 
     public UserResponseDTO updateUser( Long id, UserRequestDTO userRequestDTO) {
         User user = userRepository.findById(id).get(); // Changed userRequestDTO.id() to id
+        System.out.println(userRequestDTO);
         user.setUsername(userRequestDTO.username());
-        user.setEmail(userRequestDTO.username());
-        user.setPassword(userRequestDTO.username());
+        user.setEmail(userRequestDTO.email());
+        user.setPassword(userRequestDTO.password());
         userRepository.save(user);
         return UserMapper.toResponseDTO(user);
     }
