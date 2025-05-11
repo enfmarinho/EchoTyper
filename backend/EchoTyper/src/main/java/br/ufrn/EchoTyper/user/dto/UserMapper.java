@@ -8,6 +8,6 @@ public class UserMapper {
     }
 
     public static UserResponseDTO toResponseDTO(User user) {
-        return new UserResponseDTO(user.getUsername(), user.getEmail());
+        return new UserResponseDTO(user.getId(), user.getUsername(), user.getEmail());
     }
 }
