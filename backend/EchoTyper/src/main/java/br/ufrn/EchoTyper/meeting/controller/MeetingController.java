@@ -9,19 +9,23 @@ import br.ufrn.EchoTyper.meeting.dto.MeetingRequestDTO;
 import br.ufrn.EchoTyper.meeting.dto.MeetingResponseDTO;
 import jakarta.validation.Valid;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/meetings")
 public interface MeetingController {
     @GetMapping
     public ResponseEntity<List<MeetingResponseDTO>> getAllMeetings();
 
+    // @GetMapping("/{userId}")
+    // public ResponseEntity<MeetingResponseDTO> getMeetingByUserId(@PathVariable Long userId);
+
     @GetMapping("/{id}")
-    public ResponseEntity<MeetingResponseDTO> getMeetingById(@PathVariable Long id);
+    public ResponseEntity<MeetingResponseDTO> getMeetingById(@PathVariable("id") Long id);
 
     @PostMapping("/create")
     public ResponseEntity<MeetingResponseDTO> createMeeting(@Valid @RequestBody MeetingRequestDTO createMeetingDTO);
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<MeetingResponseDTO> updateMeeting(Long id, @Valid @RequestBody MeetingRequestDTO updateMeetingDTO);
+    public ResponseEntity<MeetingResponseDTO> updateMeeting(@PathVariable("id") Long id, @Valid @RequestBody MeetingRequestDTO updateMeetingDTO);
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<MeetingResponseDTO> deleteMeeting(@PathVariable("id") Long id);
