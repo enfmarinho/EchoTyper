@@ -59,3 +59,50 @@ export const addFriend = async (id: number, friendId: number) => {
   if (!res.ok) throw new Error('Erro ao adicionar amigo');
   return res.json();
 };
+
+export const fetchReunioes = async () => {
+  const res = await fetch(`${API_BASE}/meetings`);
+  if (!res.ok) throw new Error('Erro ao buscar reuniões');
+  return res.json();
+}
+
+export const fetchReuniaoByUserId = async (id: number) => {
+  const res = await fetch(`${API_BASE}/meetings/user/${id}`);
+  if (!res.ok) throw new Error('Erro ao buscar reuniões por ID de usuário');
+  return res.json();
+};
+
+export const fetchReuniaoById = async (id: number) => {
+  const res = await fetch(`${API_BASE}/meetings/${id}`);
+  if (!res.ok) throw new Error('Erro ao buscar reunião por ID');
+  return res.json();
+};
+
+export const createReuniao = async (reuniao: any) => {
+  const res = await fetch(`${API_BASE}/meetings/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reuniao),
+  });
+  if (!res.ok) throw new Error('Erro ao criar reunião');
+  return res.json();
+};
+
+export const updateReuniao = async (id: number, reuniao: any) => {
+  console.log('Reunião a ser atualizada:', reuniao);
+  const res = await fetch(`${API_BASE}/meetings/update/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(reuniao),
+  });
+  if (!res.ok) throw new Error('Erro ao atualizar reunião');
+  return res.json();
+};
+
+export const deleteReuniao = async (id: number) => {
+  const res = await fetch(`${API_BASE}/meetings/delete/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Erro ao deletar reunião');
+  return res.ok;
+};
