@@ -100,6 +100,31 @@ export default function ReunioesPage() {
             </Paper>
           </Grid>
         ))}
+        <Paper
+          component={Link}
+          href="/dashboard/reunioes/create"
+          sx={{
+            height: 120,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            border: "1px dashed #c4c4c4",
+            borderRadius: 2,
+            cursor: "pointer",
+            transition: "0.2s",
+            "&:hover": {
+              backgroundColor: "#f0f0f0",
+            },
+          }}
+        >
+          <IconButton>
+            <DescriptionIcon sx={{ fontSize: 36 }} />
+          </IconButton>
+          <Typography variant="body2" textAlign="center">
+            Criar nova reunião
+          </Typography>
+        </Paper>
       </Grid>
 
       {reunioesFiltradas.length === 0 && (
