@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,30 +12,37 @@ import {
 import DescriptionIcon from "@mui/icons-material/Description";
 import SearchIcon from "@mui/icons-material/Search";
 import Link from "next/link";
+import { fetchReunioes } from "@/lib/api";
 
 type Reuniao = {
   id: string;
-  titulo: string;
+  title: string;
 };
 
-const reunioes: Reuniao[] = [
-  { id: "1", titulo: "Reunião - 03" },
-  { id: "2", titulo: "Reunião - 01" },
-  { id: "3", titulo: "Reunião 7" },
-  { id: "4", titulo: "Sprint Review" },
-  { id: "5", titulo: "Planejamento" },
-  { id: "6", titulo: "Reunião Final" },
-];
-
 export default function ReunioesPage() {
+  const [reunioes, setReunioes] = useState<Reuniao[]>([]);
   const [busca, setBusca] = useState("");
 
   const reunioesFiltradas = reunioes.filter((r) =>
-    r.titulo.toLowerCase().includes(busca.toLowerCase())
+    r.title.toLowerCase().includes(busca.toLowerCase())
   );
 
+  const loadReunioes = async () => {
+      try {
+        const data = await fetchReunioes();
+        setReunioes(data);
+      } catch (err) {
+        console.error('Erro ao carregar reuniões:', err);
+      }
+  };
+
+  useEffect(() => {
+      loadReunioes();
+  }, []);
+
   const abrirReuniao = (id: string) => {
-    console.log("Abrir reunião:", id);
+    // Lógica para abrir a reunião
+    console.log(`Abrindo reunião com ID: ${id}`);
   };
 
   return (
@@ -68,7 +75,7 @@ export default function ReunioesPage() {
             <Paper
               onClick={() => abrirReuniao(reuniao.id)}
               component={Link}
-              href={`/dashboard/reunioes/${reuniao.titulo}`}
+              href={`/dashboard/reunioes/${reuniao.id}`}
               sx={{
                 height: 120,
                 display: "flex",
@@ -88,7 +95,7 @@ export default function ReunioesPage() {
                 <DescriptionIcon sx={{ fontSize: 36 }} />
               </IconButton>
               <Typography variant="body2" textAlign="center">
-                {reuniao.titulo}
+                {reuniao.title}
               </Typography>
             </Paper>
           </Grid>
