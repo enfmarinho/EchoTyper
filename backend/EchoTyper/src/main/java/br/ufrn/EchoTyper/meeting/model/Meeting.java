@@ -19,17 +19,20 @@ public class Meeting {
     private String title;
     
     @Column(nullable = false, name = "str_transcription")
+    @Lob
     private String transcription;
     
+    @Lob
     @Column(nullable = false, name = "str_summary")
     private String summary;
     
+    @Lob
     @Column(nullable = false, name = "str_annotations")
     private String annotations;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id") // Coluna que vai armazenar o ID do usuário
-    private User user;
+    // @ManyToOne
+    // @JoinColumn(name = "user_id") // Coluna que vai armazenar o ID do usuário
+    // private Long userId;
 
 	public Meeting() {
 	}
@@ -83,11 +86,11 @@ public class Meeting {
         this.annotations = annotations;
     }
 
-    public User getUser() {
-        return user;
-    }
+    // public User getUser() {
+    //     return user;
+    // }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    // public void setUser(User user) {
+    //     this.user = user;
+    // }
 }
