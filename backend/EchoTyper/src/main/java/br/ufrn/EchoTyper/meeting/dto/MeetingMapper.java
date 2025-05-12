@@ -8,6 +8,6 @@ public class MeetingMapper {
     }
 
     public static MeetingResponseDTO toResponseDTO(Meeting meeting) {
-        return new MeetingResponseDTO(meeting.getTitle(), meeting.getTranscription(), meeting.getSummary(), meeting.getAnnotations());
+        return new MeetingResponseDTO(meeting.getId(), meeting.getTitle(), meeting.getTranscription(), meeting.getSummary(), meeting.getAnnotations());
     }
 }
