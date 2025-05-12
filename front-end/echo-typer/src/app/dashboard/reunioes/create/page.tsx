@@ -1,0 +1,177 @@
+'use client'
+import { useState, useEffect, use } from 'react';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import { Card, CardContent, Button, TextField } from '@mui/material';
+import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById } from '@/lib/api';
+import UploadIcon from '@mui/icons-material/Upload';
+import { useRouter } from 'next/navigation';
+
+type Reuniao = {
+    id: string;
+    title: string;
+    transcription: string;
+    summary: string;
+    annotations: string;
+};
+
+export default function ReuniaoPage({ params }: { params: { id?: number } }) {
+    const router = useRouter();
+    const [audioFile, setAudioFile] = useState<File | null>(null);
+    const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
+    const [status, setStatus] = useState<'idle' | 'transcribing' | 'summarizing' | 'done'>('idle');
+
+    const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setAudioFile(file)
+            startTranscription(file)
+        }
+    }
+
+    const handleCreate = async () => {
+        try {
+            console.log('FormData:', formData);
+            await createReuniao(formData);
+            setFormData({});
+            router.push('/dashboard/reunioes');
+        } catch (err) {
+            console.error('Erro ao criar usuário:', err);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteReuniao(params.id!);
+            router.push('/dashboard/reunioes');
+        } catch (err) {
+            console.error('Erro ao excluir reunião:', err);
+        }
+    };
+
+    const handleChange = (field: keyof Reuniao, value: string) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
+    // Precisa implementar a lódica real
+    const startTranscription = async (file: File) => {
+        setStatus('transcribing')
+        // Simula transcrição
+        setTimeout(() => {
+            const fakeTranscription = `
+        00:05:12 Precisamos começar a desenvolver a interface até segunda feira. Temos uma semana de prazo.
+        00:05:27 Mas funcionalidades de integração com o banco de dados já foram lançadas no repositório?
+        00:05:43 Ainda não, precisamos criar uma chave de API para fazer os testes finais de conexão.
+      `
+            formData.transcription = fakeTranscription
+            startSummarization(fakeTranscription)
+        }, 2000)
+    }
+
+    // Precisa implementar a lódica real
+    const startSummarization = async (text: string) => {
+        setStatus('summarizing')
+        // Simula resumo
+        setTimeout(() => {
+            const fakeSummary = `
+        Discussão sobre o desenvolvimento da interface com prazo de uma semana;
+        Integração com banco de dados já iniciada;
+        Falta criar chave de API para testes.
+      `
+            formData.summary = fakeSummary
+            setStatus('done')
+        }, 2000)
+    }
+
+    const renderContent = () => {
+        switch (status) {
+            case 'idle':
+                return (
+                    <div className="flex flex-col items-center justify-center gap-6">
+                        <h2 className="text-xl font-semibold">Envie o áudio da reunião</h2>
+
+                        {/* Label estilizado que ativa o input de upload */}
+                        <label
+                            htmlFor="audio-upload"
+                            className="cursor-pointer bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-md transition"
+                        >
+                            Selecionar arquivo de áudio
+                        </label>
+
+                        {/* Input escondido que abre o seletor de arquivos */}
+                        <input
+                            type="file"
+                            id="audio-upload"
+                            accept="audio/*"
+                            className="hidden"
+                            onChange={handleAudioUpload}
+                        />
+                    </div>
+                );
+            case 'transcribing':
+                return <p className="text-lg font-medium">Transcrevendo áudio...</p>;
+            case 'summarizing':
+                return <p className="text-lg font-medium">Resumindo transcrição...</p>;
+            case 'done':
+                return (
+                    <div className="flex flex-col gap-6 w-full max-w-4xl">
+                        <TextField
+                            label="Título da Reunião"
+                            variant="outlined"
+                            style={{ backgroundColor: 'white' }}
+                            fullWidth
+                            value={formData.title}
+                            onChange={(e) => handleChange('title', e.target.value)}
+                        />
+                        <div>
+                            <h2 className="text-2xl font-semibold">Transcrição</h2>
+                            <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
+                                {formData.transcription}
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card>
+                                <CardContent className="p-4">
+                                    <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
+                                    <ul className="list-disc pl-4 text-gray-700">
+                                        {(formData.summary ?? '').split('\n').map((item, i) => (
+                                            <li key={i}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </CardContent>
+                            </Card>
+                            <Card>
+                                <CardContent className="p-4">
+                                    <h3 className="font-semibold text-lg mb-2">Anotações</h3>
+                                    <TextareaAutosize
+                                        minRows={4}
+                                        maxRows={6}
+                                        className="w-full p-2 border rounded shadow-sm mt-2"
+                                        style={{ resize: 'none' }}
+                                        value={formData.annotations || ''}
+                                        onChange={(e) => handleChange('annotations', e.target.value)}
+                                        placeholder="Escreva suas anotações aqui..."
+                                    />
+                                    <Button
+                                        variant="contained"
+                                        className="mt-4"
+                                        onClick={() => handleCreate()}
+                                    >
+                                        Salvar
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+                        <div className="flex justify-end">
+                            <Button onClick={() => setStatus('idle')}>Nova Transcrição</Button>
+                        </div>
+                    </div>
+                );
+        }
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-start p-8 min-h-screen bg-gray-100 text-gray-900">
+            {renderContent()}
+        </div>
+    );
+}
