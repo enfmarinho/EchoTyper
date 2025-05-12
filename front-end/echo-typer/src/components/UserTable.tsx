@@ -53,10 +53,8 @@ export default function UserTable() {
     if (!editingId) return;
 
     try {
-      console.log('FormData:', formData);
-      console.log('Editing ID:', editingId);
       await updateUser(editingId, formData);
-      // setEditingId(null);
+      setEditingId(null);
       await loadUsers();
     } catch (err) {
       console.error('Erro ao atualizar usuário:', err);
