@@ -1,19 +1,17 @@
 package br.ufrn.EchoTyper.calendar.service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import br.ufrn.EchoTyper.calendar.dto.CalendarMapper;
+import br.ufrn.EchoTyper.calendar.dto.CalendarRequestDTO;
 import br.ufrn.EchoTyper.calendar.dto.CalendarResponseDTO;
 import br.ufrn.EchoTyper.calendar.model.Calendar;
 import br.ufrn.EchoTyper.calendar.repository.CalendarRepository;
-import br.ufrn.EchoTyper.calendar.dto.CalendarMapper;
-import br.ufrn.EchoTyper.calendar.dto.CalendarRequestDTO;
-import br.ufrn.EchoTyper.calendar.dto.CalendarMapper;
 
 @Service
 public class CalendarService {
