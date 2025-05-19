@@ -24,7 +24,7 @@ public class TranscriberController {
   public ResponseEntity<String> transcribeAudio(@RequestParam("audioFile") MultipartFile audioFile) {
     try {
       // Save the uploaded file temporarily
-      Path tempFile = Files.createTempFile("uploaded_audio_", ".wav"); // Adjust extension as needed
+      Path tempFile = Files.createTempFile("uploaded_audio_", ".mp3");
       audioFile.transferTo(tempFile);
       String audioFilePath = tempFile.toString();
 
