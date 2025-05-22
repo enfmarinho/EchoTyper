@@ -22,23 +22,23 @@ import jakarta.validation.Valid;
 public interface CalendarController {
     // TODO: Usar query strings
     @GetMapping("")
-    public ResponseEntity<List<CalendarResponseDTO>> getAllMeetings();
+    public ResponseEntity<List<CalendarResponseDTO>> getAllEvents();
 
     @GetMapping("/{id}")
-    public ResponseEntity<CalendarResponseDTO> getMeetingById(@PathVariable("id") Long id);
+    public ResponseEntity<CalendarResponseDTO> getEventById(@PathVariable("id") Long id);
 
     @GetMapping("/name/{title}")
-    public ResponseEntity<CalendarResponseDTO> getMeetingByTitle(@PathVariable("title") String title);
+    public ResponseEntity<CalendarResponseDTO> getEventByTitle(@PathVariable("title") String title);
 
     @GetMapping("/name/{date}")
-    public ResponseEntity<CalendarResponseDTO> getMeetingByDate(@PathVariable("date") LocalDate date);
+    public ResponseEntity<CalendarResponseDTO> getEventByDate(@PathVariable("date") LocalDate date);
 
     @PostMapping("/create")
-    public ResponseEntity<CalendarResponseDTO> createMeeting(@Valid @RequestBody CalendarRequestDTO createMeetingDTO);
+    public ResponseEntity<CalendarResponseDTO> createEvent(@Valid @RequestBody CalendarRequestDTO createEventDTO);
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<CalendarResponseDTO> updateMeeting(@PathVariable("id") Long id, @Valid @RequestBody CalendarRequestDTO updateMeetingDTO);
+    public ResponseEntity<CalendarResponseDTO> updateEvent(@PathVariable("id") Long id, @Valid @RequestBody CalendarRequestDTO updateEventDTO);
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<CalendarResponseDTO> deleteMeeting(@PathVariable("id") Long id);
+    public ResponseEntity<CalendarResponseDTO> deleteEvent(@PathVariable("id") Long id);
 }

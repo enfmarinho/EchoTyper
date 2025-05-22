@@ -17,38 +17,38 @@ public class CalendarControllerImpl implements CalendarController {
     CalendarService calendarService;
 
     @Override
-    public ResponseEntity<CalendarResponseDTO> createMeeting(CalendarRequestDTO createMeetingDTO) {
-        return ResponseEntity.ok().body(calendarService.createMeeting(createMeetingDTO));
+    public ResponseEntity<CalendarResponseDTO> createEvent(CalendarRequestDTO createEventDTO) {
+        return ResponseEntity.ok().body(calendarService.createEvent(createEventDTO));
     }
 
     @Override
-    public ResponseEntity<CalendarResponseDTO> updateMeeting(Long id, CalendarRequestDTO updateMeetingDTO) {
-        return ResponseEntity.ok().body(calendarService.updateMeeting(id, updateMeetingDTO));
+    public ResponseEntity<CalendarResponseDTO> updateEvent(Long id, CalendarRequestDTO updateEventDTO) {
+        return ResponseEntity.ok().body(calendarService.updateEvent(id, updateEventDTO));
     }
 
     @Override
-    public ResponseEntity deleteMeeting(Long id) {
-        calendarService.deleteMeeting(id);
+    public ResponseEntity deleteEvent(Long id) {
+        calendarService.deleteEvent(id);
         return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<List<CalendarResponseDTO>> getAllMeetings() {
-        return ResponseEntity.ok().body(calendarService.getAllMeetings());
+    public ResponseEntity<List<CalendarResponseDTO>> getAllEvents() {
+        return ResponseEntity.ok().body(calendarService.getAllEvents());
     }
 
     @Override
-    public ResponseEntity<CalendarResponseDTO> getMeetingById(Long id) {
-        return ResponseEntity.ok().body(calendarService.getMeetingById(id));
+    public ResponseEntity<CalendarResponseDTO> getEventById(Long id) {
+        return ResponseEntity.ok().body(calendarService.getEventById(id));
     }
 
     @Override
-    public ResponseEntity<CalendarResponseDTO> getMeetingByTitle(String title) {
-        return ResponseEntity.ok().body(calendarService.getMeetingByTitle(title));
+    public ResponseEntity<CalendarResponseDTO> getEventByTitle(String title) {
+        return ResponseEntity.ok().body(calendarService.getEventByTitle(title));
     }
 
     @Override
-    public ResponseEntity<CalendarResponseDTO> getMeetingByDate(LocalDate date) {
-        return ResponseEntity.ok().body(calendarService.getMeetingByDate(date));
+    public ResponseEntity<CalendarResponseDTO> getEventByDate(LocalDate date) {
+        return ResponseEntity.ok().body(calendarService.getEventByDate(date));
     }
 }

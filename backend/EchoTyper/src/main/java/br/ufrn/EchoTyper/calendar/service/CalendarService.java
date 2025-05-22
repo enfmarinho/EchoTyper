@@ -24,13 +24,13 @@ public class CalendarService {
     }
 
     // TODO: Fazer o exception handling
-    public CalendarResponseDTO createMeeting(CalendarRequestDTO calendarRequestDTO) {
-        Calendar newMeeting = CalendarMapper.toEntity(calendarRequestDTO);
-        calendarRepository.save(newMeeting);
-        return CalendarMapper.toResponseDTO(newMeeting);
+    public CalendarResponseDTO createEvent(CalendarRequestDTO calendarRequestDTO) {
+        Calendar newEvent = CalendarMapper.toEntity(calendarRequestDTO);
+        calendarRepository.save(newEvent);
+        return CalendarMapper.toResponseDTO(newEvent);
     }
 
-    public CalendarResponseDTO getMeetingByTitle(String title) {
+    public CalendarResponseDTO getEventByTitle(String title) {
         Optional<Calendar> meetingOptional = calendarRepository.findByTitle(title);
         if (!meetingOptional.isPresent()) { // TODO check 
             throw new IllegalArgumentException("No meeting with this title exists.");
@@ -38,7 +38,7 @@ public class CalendarService {
         return CalendarMapper.toResponseDTO(calendarRepository.findByTitle(title).get());
     }
 
-    public CalendarResponseDTO getMeetingByDate(LocalDate date) {
+    public CalendarResponseDTO getEventByDate(LocalDate date) {
         Optional<Calendar> calendarOptional = calendarRepository.findByDate(date);
         if (!calendarOptional.isPresent()) {
             throw new IllegalArgumentException("No meeting on this date.");
@@ -46,9 +46,8 @@ public class CalendarService {
         return CalendarMapper.toResponseDTO(calendarRepository.findByDate(date).get());
     }
 
-    public CalendarResponseDTO updateMeeting(Long id, CalendarRequestDTO calendarRequestDTO) {
+    public CalendarResponseDTO updateEvent(Long id, CalendarRequestDTO calendarRequestDTO) {
         Calendar meeting = calendarRepository.findById(id).get();
-        // System.out.println(calendarRequestDTO);
         meeting.setTitle(calendarRequestDTO.title());
         meeting.setDescription(calendarRequestDTO.description());
         meeting.setDate(calendarRequestDTO.date());
@@ -56,17 +55,16 @@ public class CalendarService {
         return CalendarMapper.toResponseDTO(meeting);
     }
 
-    public CalendarResponseDTO getMeetingById(Long id) {
-        // TODO: deve ser tratado como excecao?
+    public CalendarResponseDTO getEventById(Long id) {
         return calendarRepository.findById(id).map(CalendarMapper::toResponseDTO).orElse(null);
     }
 
     // TODO: Usar paginacao
-    public List<CalendarResponseDTO> getAllMeetings() {
+    public List<CalendarResponseDTO> getAllEvents() {
         return calendarRepository.findAll().parallelStream().map(CalendarMapper::toResponseDTO).toList();
     }
 
-    public void deleteMeeting(Long id) {
+    public void deleteEvent(Long id) {
         calendarRepository.deleteById(id);
     }
 }
