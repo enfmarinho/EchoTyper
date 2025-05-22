@@ -3,12 +3,10 @@ package br.ufrn.EchoTyper.calendar.dto;
 import java.time.LocalDate;
 
 import org.hibernate.validator.constraints.Length;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.ufrn.EchoTyper.calendar.service.CalendarConstraints;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 public record CalendarRequestDTO(
         @NotNull
@@ -20,8 +18,7 @@ public record CalendarRequestDTO(
         @NotNull
         String description,
         @JsonProperty("date")
-        @Pattern(regexp = CalendarConstraints.DATE_PATTERN) 
-        @Length(min=8, max=10)
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
         LocalDate date
         )
 {

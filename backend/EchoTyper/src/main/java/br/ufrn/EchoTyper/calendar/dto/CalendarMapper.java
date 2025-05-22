@@ -8,6 +8,7 @@ public class CalendarMapper {
     }
 
     public static CalendarResponseDTO toResponseDTO(Calendar calendar) {
-        return new CalendarResponseDTO(calendar.getId(), calendar.getTitle(), calendar.getDescription(), calendar.getDate());
+        return new CalendarResponseDTO(calendar.getId(), calendar.getTitle(), calendar.getDescription(),
+                calendar.getDate());
     }
 }
