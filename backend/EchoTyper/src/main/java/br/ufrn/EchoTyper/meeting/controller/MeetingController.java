@@ -15,9 +15,6 @@ public interface MeetingController {
     @GetMapping
     public ResponseEntity<List<MeetingResponseDTO>> getAllMeetings();
 
-    // @GetMapping("/{userId}")
-    // public ResponseEntity<MeetingResponseDTO> getMeetingByUserId(@PathVariable Long userId);
-
     @GetMapping("/{id}")
     public ResponseEntity<MeetingResponseDTO> getMeetingById(@PathVariable("id") Long id);
 
