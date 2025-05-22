@@ -13,6 +13,7 @@ import {
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import ConflictChecker from "@/components/ConflictChecker";
 import ptBR from "date-fns/locale/pt-BR";
 
 type Evento = {
@@ -125,7 +126,12 @@ export default function AgendaPage() {
               Adicionar evento
             </Button>
           </Grid>
+
+          <Grid sx={{ xs: 12, md: 6 }} component={"div"}>
+            <Typography variant="h6" sx={{ color: "#0D1B2A" }}>Checar conflitos</Typography>
+            <ConflictChecker/>
         </Grid>
+      </Grid>
       </Box>
     </LocalizationProvider>
   );
