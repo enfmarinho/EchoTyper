@@ -1,5 +1,6 @@
 package br.ufrn.EchoTyper.calendar.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public interface CalendarController {
     public ResponseEntity<CalendarResponseDTO> getMeetingByTitle(@PathVariable("title") String title);
 
     @GetMapping("/name/{date}")
-    public ResponseEntity<CalendarResponseDTO> getMeetingByDate(@PathVariable("date") String date);
+    public ResponseEntity<CalendarResponseDTO> getMeetingByDate(@PathVariable("date") LocalDate date);
 
     @PostMapping("/create")
     public ResponseEntity<CalendarResponseDTO> createMeeting(@Valid @RequestBody CalendarRequestDTO createMeetingDTO);

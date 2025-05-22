@@ -29,6 +29,13 @@
 	<properties>
 		<java.version>21</java.version>
 	</properties>
+	<repositories>
+    <repository>
+        <id>spring-milestone</id>
+        <name>Spring Milestone Repository</name>
+        <url>https://repo.spring.io/milesdependenciestone</url>
+    </repository>
+</repositories>
 	<dependencies>
 		<dependency>
 				<groupId>com.google.cloud</groupId>
@@ -62,16 +69,31 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+			<version>0.8.1</version>
+			<exclusions>
+				<exclusion> <!-- The transitive dependency seems to cause an error -->
+					<groupId>org.springframework.cloud</groupId>
+					<artifactId>spring-cloud-function-context</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>
 			<artifactId>dotenv-java</artifactId>

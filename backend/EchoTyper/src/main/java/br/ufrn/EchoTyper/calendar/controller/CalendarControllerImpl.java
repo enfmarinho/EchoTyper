@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.ufrn.EchoTyper.calendar.dto.CalendarRequestDTO;
 import br.ufrn.EchoTyper.calendar.dto.CalendarResponseDTO;
 import br.ufrn.EchoTyper.calendar.service.CalendarService;
-import io.micrometer.core.ipc.http.HttpSender.Response;
-import br.ufrn.EchoTyper.calendar.dto.CalendarRequestDTO;
 
 @RestController
 public class CalendarControllerImpl implements CalendarController {
