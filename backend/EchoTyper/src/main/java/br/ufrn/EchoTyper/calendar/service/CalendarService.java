@@ -2,6 +2,7 @@ package br.ufrn.EchoTyper.calendar.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class CalendarService {
 
     public CalendarResponseDTO getEventByTitle(String title) {
         Optional<Calendar> meetingOptional = calendarRepository.findByTitle(title);
-        if (!meetingOptional.isPresent()) { // TODO check 
+        if (!meetingOptional.isPresent()) { // TODO check
             throw new IllegalArgumentException("No meeting with this title exists.");
         }
         return CalendarMapper.toResponseDTO(calendarRepository.findByTitle(title).get());
@@ -47,7 +48,11 @@ public class CalendarService {
     }
 
     public CalendarResponseDTO updateEvent(Long id, CalendarRequestDTO calendarRequestDTO) {
-        Calendar meeting = calendarRepository.findById(id).get();
+        Optional<Calendar> meetingOpt = calendarRepository.findById(id);
+        if (meetingOpt.isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        Calendar meeting = meetingOpt.get();
         meeting.setTitle(calendarRequestDTO.title());
         meeting.setDescription(calendarRequestDTO.description());
         meeting.setDate(calendarRequestDTO.date());

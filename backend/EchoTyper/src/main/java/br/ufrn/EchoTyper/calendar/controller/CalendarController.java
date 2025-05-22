@@ -27,10 +27,10 @@ public interface CalendarController {
     @GetMapping("/{id}")
     public ResponseEntity<CalendarResponseDTO> getEventById(@PathVariable("id") Long id);
 
-    @GetMapping("/name/{title}")
+    @GetMapping("/title/{title}")
     public ResponseEntity<CalendarResponseDTO> getEventByTitle(@PathVariable("title") String title);
-
-    @GetMapping("/name/{date}")
+            
+    @GetMapping("/date/{date}")
     public ResponseEntity<CalendarResponseDTO> getEventByDate(@PathVariable("date") LocalDate date);
 
     @PostMapping("/create")
