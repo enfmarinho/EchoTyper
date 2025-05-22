@@ -4,7 +4,8 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { Card, CardContent, Button, TextField } from '@mui/material';
 import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById } from '@/lib/api';
 import UploadIcon from '@mui/icons-material/Upload';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
+
 
 type Reuniao = {
     id: string;
@@ -14,17 +15,18 @@ type Reuniao = {
     annotations: string;
 };
 
-export default function ReuniaoPage({ params }: { params: { id: number } }) {
+export default function ReuniaoPage() {
     const router = useRouter();
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
+    const params = useParams();
     const isEditing = !!params.id;
 
     const loadReuniao = async () => {
         if (isEditing && params.id) {
-            fetchReuniaoById(params.id).then(data => {
+            fetchReuniaoById(Number(params.id)).then(data => {
                 setFormData({
-                    id: params.id.toString(),
+                    id: Number(params.id).toString(),
                     title: data.title,
                     transcription: data.transcription,
                     summary: data.summary,
@@ -42,7 +44,7 @@ export default function ReuniaoPage({ params }: { params: { id: number } }) {
 
     const handleDelete = async () => {
         try {
-            await deleteReuniao(params.id!);
+            await deleteReuniao(Number(params.id)!);
             router.push('/dashboard/reunioes');
         } catch (err) {
             console.error('Erro ao excluir reunião:', err);
@@ -51,7 +53,7 @@ export default function ReuniaoPage({ params }: { params: { id: number } }) {
 
     const handleUpdate = async () => {
         try {
-            await updateReuniao(params.id!, formData);
+            await updateReuniao(Number(params.id)!, formData);
             router.push('/dashboard/reunioes');
         } catch (err) {
             console.error('Erro ao atualizar reunião:', err);
@@ -73,7 +75,7 @@ export default function ReuniaoPage({ params }: { params: { id: number } }) {
                             variant="outlined"
                             style={{ backgroundColor: 'white' }}
                             fullWidth
-                            value={formData.title}
+                            value={formData.title || ''}
                             onChange={(e) => handleChange('title', e.target.value)}
                         />
                         <div>
