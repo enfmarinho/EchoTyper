@@ -1,6 +1,7 @@
 package br.ufrn.EchoTyper.calendar.dto;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,7 +20,13 @@ public record CalendarRequestDTO(
         String description,
         @JsonProperty("date")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-        LocalDate date
+        LocalDate date,
+        @JsonProperty("startTime")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        LocalTime startTime,
+        @JsonProperty("endTime")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
+        LocalTime endTime
         )
 {
 

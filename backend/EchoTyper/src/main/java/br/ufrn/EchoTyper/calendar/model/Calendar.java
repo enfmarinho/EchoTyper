@@ -1,6 +1,7 @@
 package br.ufrn.EchoTyper.calendar.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -32,14 +33,22 @@ public class Calendar {
 	@Column(nullable = false, unique = false, name = "str_date")
 	private LocalDate date;
 
+	@NotNull(message = "The event's start time is required")
+	private LocalTime startTime;
+
+	@NotNull(message = "The event's end time is required")
+	private LocalTime endTime;
+
 	public Calendar() {
 	}
 
-	public Calendar(Long id, String title, String description, LocalDate date) {
+	public Calendar(Long id, String title, String description, LocalDate date, LocalTime startTime, LocalTime endTime) {
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.date = date;
+		this.endTime = endTime;
+		this.startTime = startTime;
 	}
 
 	public Long getId() {
@@ -72,6 +81,22 @@ public class Calendar {
 
 	public void setDate(LocalDate date) {
 		this.date = date;
+	}
+
+	public LocalTime getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(LocalTime endTime) {
+		this.endTime = endTime;
+	}
+
+	public LocalTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalTime startTime) {
+		this.startTime = startTime;
 	}
 
 	@Override

@@ -16,7 +16,6 @@ import br.ufrn.EchoTyper.calendar.repository.CalendarRepository;
 
 @Service
 public class CalendarService {
-    // TODO: Fazer o Exception Handling
     private final CalendarRepository calendarRepository;
 
     @Autowired
@@ -24,7 +23,6 @@ public class CalendarService {
         this.calendarRepository = calendarRepository;
     }
 
-    // TODO: Fazer o exception handling
     public CalendarResponseDTO createEvent(CalendarRequestDTO calendarRequestDTO) {
         Calendar newEvent = CalendarMapper.toEntity(calendarRequestDTO);
         calendarRepository.save(newEvent);
@@ -33,7 +31,7 @@ public class CalendarService {
 
     public CalendarResponseDTO getEventByTitle(String title) {
         Optional<Calendar> meetingOptional = calendarRepository.findByTitle(title);
-        if (!meetingOptional.isPresent()) { // TODO check
+        if (!meetingOptional.isPresent()) { 
             throw new IllegalArgumentException("No meeting with this title exists.");
         }
         return CalendarMapper.toResponseDTO(calendarRepository.findByTitle(title).get());
@@ -56,6 +54,8 @@ public class CalendarService {
         meeting.setTitle(calendarRequestDTO.title());
         meeting.setDescription(calendarRequestDTO.description());
         meeting.setDate(calendarRequestDTO.date());
+        meeting.setStartTime(calendarRequestDTO.startTime());
+        meeting.setEndTime(calendarRequestDTO.endTime());
         calendarRepository.save(meeting);
         return CalendarMapper.toResponseDTO(meeting);
     }
