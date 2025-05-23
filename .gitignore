@@ -1,76 +1,15 @@
-# dependencies
-/front-end/echo-typer/node_modules
-/front-end/echo-typer/.pnp
-/front-end/echo-typer/.pnp.*
-/front-end/echo-typer/.yarn/*
-/front-end/echo-typer/!.yarn/patches
-/front-end/echo-typer/!.yarn/plugins
-/front-end/echo-typer/!.yarn/releases
-/front-end/echo-typer/!.yarn/versions
-
-# testing
-/front-end/echo-typer/coverage
-
-# next.js
-/front-end/echo-typer/.next/
-/front-end/echo-typer/out/
-
-# production
-/front-end/echo-typer/build
-
-# misc
-/front-end/echo-typer/.DS_Store
-/front-end/echo-typer/*.pem
-
-# debug
-/front-end/echo-typer/npm-debug.log*
-/front-end/echo-typer/yarn-debug.log*
-/front-end/echo-typer/yarn-error.log*
-/front-end/echo-typer/.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-/front-end/echo-typer/.env*
-
-# vercel
-/front-end/echo-typer/.vercel
-
-# typescript
-/front-end/echo-typer/*.tsbuildinfo
-/front-end/echo-typer/next-env.d.ts
-
-
-/backend/EchoTyper/HELP.md
-/backend/EchoTyper/target/
-/backend/EchoTyper/!.mvn/wrapper/maven-wrapper.jar
-/backend/EchoTyper/!**/src/main/**/target/
-/backend/EchoTyper/!**/src/test/**/target/
-
-### STS ###
-/backend/EchoTyper/.apt_generated
-/backend/EchoTyper/.classpath
-/backend/EchoTyper/.factorypath
-/backend/EchoTyper/.project
-/backend/EchoTyper/.settings
-/backend/EchoTyper/.springBeans
-/backend/EchoTyper/.sts4-cache
+### VS Code ###
+.vscode/
 
 ### IntelliJ IDEA ###
-/backend/EchoTyper/.idea
-/backend/EchoTyper/*.iws
-/backend/EchoTyper/*.iml
-/backend/EchoTyper/*.ipr
+.idea
+*.iws
+*.iml
+*.ipr
 
-### NetBeans ###
-/backend/EchoTyper/nbproject/private/
-/backend/EchoTyper/nbbuild/
-/backend/EchoTyper/dist/
-/backend/EchoTyper/nbdist/
-/backend/EchoTyper/.nb-gradle/
-/backend/EchoTyper/build/
-/backend/EchoTyper/!**/src/main/**/build/
-/backend/EchoTyper/!**/src/test/**/build/
+# misc
+.DS_Store
+*.pem
 
-### VS Code ###
-/backend/EchoTyper/.vscode/
-
-/backend/EchoTyper/.env
+# env files (can opt-in for committing if needed)
+.env*
