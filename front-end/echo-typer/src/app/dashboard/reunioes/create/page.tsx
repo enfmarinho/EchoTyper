@@ -52,19 +52,29 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         setFormData({ ...formData, [field]: value });
     };
 
-    // Precisa implementar a lódica real
     const startTranscription = async (file: File) => {
         setStatus('transcribing')
-        // Simula transcrição
-        setTimeout(() => {
-            const fakeTranscription = `
-        00:05:12 Precisamos começar a desenvolver a interface até segunda feira. Temos uma semana de prazo.
-        00:05:27 Mas funcionalidades de integração com o banco de dados já foram lançadas no repositório?
-        00:05:43 Ainda não, precisamos criar uma chave de API para fazer os testes finais de conexão.
-      `
-            formData.transcription = fakeTranscription
-            startSummarization(fakeTranscription)
-        }, 2000)
+
+        const formDataToSend = new FormData()
+        formDataToSend.append('audioFile', file)
+
+        try {
+            const response = await fetch('http://localhost:8081/transcribe', {
+                method: 'POST',
+                body: formDataToSend
+            })
+
+            if (!response.ok) {
+                throw new Error('Erro ao transcrever o áudio')
+            }
+
+            const transcription = await response.text()
+            formData.transcription = transcription
+            startSummarization(transcription)
+        } catch (error) {
+            console.error('Erro ao fazer upload/transcrição do áudio:', error)
+            // setStatus('error')
+        }
     }
 
     // Precisa implementar a lódica real
