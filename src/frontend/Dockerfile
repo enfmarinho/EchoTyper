@@ -10,7 +10,5 @@ RUN pnpm install
 
 COPY . .
 
-RUN pnpm run dev  # TODO maybe change this for build
-
 EXPOSE 3000
 CMD ["pnpm", "run", "dev"]

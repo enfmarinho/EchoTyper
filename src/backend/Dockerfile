@@ -1,11 +1,17 @@
-FROM maven:3.9-eclipse-temurin-17
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 WORKDIR /app
 
 COPY pom.xml .
 COPY src ./src
 
-EXPOSE 8080
+RUN mvn clean package -DskipTests
 
-RUN mvn clean install -DskipTests
-CMD ["mvn", "spring-boot:run"]
+# Runtime stage
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8080
+CMD ["java", "-jar", "app.jar"]
