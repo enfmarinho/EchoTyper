@@ -1,4 +1,5 @@
-import React from "react";
+'use client'
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,44 +9,55 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Link from "next/link";
+import { fetchReunioes } from "@/lib/api";
 
-type Reuniao = {
+type Evento = {
   titulo: string;
   descricao: string;
 };
 
-const reunioesSalvas : Reuniao[] = [
-  { titulo: "Reunião - 03/04", descricao: "Discussão sobre API e interface" },
-  { titulo: "Reunião - 01/04", descricao: "Revisão do progresso semanal" },
-  { titulo: "Sprint Review", descricao: "Resumo das tarefas concluídas" },
-];
+type Reuniao = {
+  id: string;
+  title: string;
+};
 
-const proximosEventos: Reuniao[] = [
+
+const proximosEventos: Evento[] = [
   { titulo: "Daily Standup", descricao: "04/04 - Alinhamento rápido da equipe" },
   { titulo: "Planejamento da Sprint", descricao: "05/04 - Definir backlog da semana" },
 ];
 
 export default function SelecaoReunioes() {
+  const [reunioes, setReunioes] = useState<Reuniao[]>([]);
+  const loadReunioes = async () => {
+    try {
+      const data = await fetchReunioes();
+      setReunioes(data);
+    } catch (err) {
+      console.error('Erro ao carregar reuniões:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadReunioes();
+  }, []);
   return (
     <Box>
       <Box sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom sx={{color:"#0D1B2A"}}>
+        <Typography variant="h4" gutterBottom sx={{ color: "#0D1B2A" }}>
           Reuniões Recentes
         </Typography>
 
         <Grid container spacing={2}>
-          {reunioesSalvas.map((reuniao, index) => (
+          {reunioes.map((reuniao, index) => (
             <Grid size={{ xs: 12, md: 4, sm: 6 }} key={index} component={"div"}>
               <Paper
+                component={Link}
+                href={`/dashboard/reunioes/${reuniao.id}`}
                 elevation={3}
                 sx={{ p: 2, height: 140, cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}
-                component={Link}
-                href={`/dashboard/reunioes/${reuniao.titulo}`} // Substitua pelo ID real da reunião
               >
-                <Typography variant="h6">{reuniao.titulo}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {reuniao.descricao}
-                </Typography>
+                <Typography variant="h6">{reuniao.title}</Typography>
               </Paper>
             </Grid>
           ))}
@@ -53,6 +65,8 @@ export default function SelecaoReunioes() {
           {/* Nova reunião */}
           <Grid size={{ xs: 12, md: 4, sm: 6 }} component={"div"}>
             <Paper
+              component={Link}
+              href="/dashboard/reunioes/create"
               elevation={3}
               sx={{
                 p: 2,

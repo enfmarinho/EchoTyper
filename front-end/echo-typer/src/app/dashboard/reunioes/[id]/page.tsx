@@ -89,8 +89,10 @@ export default function ReuniaoPage() {
                                 <CardContent className="p-4">
                                     <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
                                     <ul className="list-disc pl-4 text-gray-700">
-                                        {(formData.summary ?? '').split('\n').map((item, i) => (
-                                            <li key={i}>{item}</li>
+                                        {formData.summary?.split('\n').map((line, index) => (
+                                            <div key={index} className="mb-1">
+                                                {line.trim()}
+                                            </div>
                                         ))}
                                     </ul>
                                 </CardContent>

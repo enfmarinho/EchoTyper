@@ -25,7 +25,7 @@ export default function ConflictChecker() {
   const [showMeetings, setShowMeetings] = useState(false);
 
   const fetchEvents = async () => {
-    const response = await fetch("http://localhost:8081/events");
+    const response = await fetch("http://localhost:8081/calendar");
     const data = await response.json();
     setEvents(data);
   };
