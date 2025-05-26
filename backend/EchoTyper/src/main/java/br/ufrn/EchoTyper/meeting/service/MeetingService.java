@@ -161,6 +161,10 @@ public class MeetingService {
         meetingGroupRepository.delete(group);
     }
 
+    public MeetingGroupResponseDTO getGroupById(Long id) {
+        return meetingGroupRepository.findById(id).map(MeetingGroupMapper::toResponseDTO).orElse(null);
+    }
+
     protected MeetingGroup getGroupObjById(Long id) {
         return meetingGroupRepository.findById(id).orElseGet(() -> null);
     }

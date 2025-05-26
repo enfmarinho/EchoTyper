@@ -73,4 +73,9 @@ public class MeetingControllerImpl implements MeetingController {
     public ResponseEntity<MeetingGroupResponseDTO> createGroup(@Valid MeetingGroupRequestDTO createGroupDTO) {
         return ResponseEntity.ok().body(meetingService.createGroup(createGroupDTO));
     }
+
+    @Override
+    public ResponseEntity<MeetingGroupResponseDTO> getGroupById(Long id) {
+        return ResponseEntity.ok().body(meetingService.getGroupById(id));
+    }
 }

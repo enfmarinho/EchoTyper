@@ -14,38 +14,43 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/meetings")
 public interface MeetingController {
-    @GetMapping("")
-    public ResponseEntity<List<MeetingResponseDTO>> getAllMeetings();
+        @GetMapping("")
+        public ResponseEntity<List<MeetingResponseDTO>> getAllMeetings();
 
-    @GetMapping("/groupless")
-    public ResponseEntity<List<MeetingResponseDTO>> getGrouplessMeetings();
+        @GetMapping("/groupless")
+        public ResponseEntity<List<MeetingResponseDTO>> getGrouplessMeetings();
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MeetingResponseDTO> getMeetingById(@PathVariable("id") Long id);
+        @GetMapping("/{id}")
+        public ResponseEntity<MeetingResponseDTO> getMeetingById(@PathVariable("id") Long id);
 
-    @PostMapping("/create")
-    public ResponseEntity<MeetingResponseDTO> createMeeting(@Valid @RequestBody MeetingRequestDTO createMeetingDTO);
+        @PostMapping("/create")
+        public ResponseEntity<MeetingResponseDTO> createMeeting(@Valid @RequestBody MeetingRequestDTO createMeetingDTO);
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<MeetingResponseDTO> updateMeeting(@PathVariable("id") Long id, @Valid @RequestBody MeetingRequestDTO updateMeetingDTO);
+        @PutMapping("/update/{id}")
+        public ResponseEntity<MeetingResponseDTO> updateMeeting(@PathVariable("id") Long id,
+                        @Valid @RequestBody MeetingRequestDTO updateMeetingDTO);
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<MeetingResponseDTO> deleteMeeting(@PathVariable("id") Long id);
+        @DeleteMapping("/delete/{id}")
+        public ResponseEntity<MeetingResponseDTO> deleteMeeting(@PathVariable("id") Long id);
 
-    @GetMapping("/groups")
-    public ResponseEntity<List<MeetingGroupResponseDTO>> getAllGroups();
+        @GetMapping("/groups")
+        public ResponseEntity<List<MeetingGroupResponseDTO>> getAllGroups();
 
-    @PostMapping("/groups/create")
-    public ResponseEntity<MeetingGroupResponseDTO> createGroup(@Valid @RequestBody MeetingGroupRequestDTO createGroupDTO);
+        @GetMapping("/groups/{id}")
+        public ResponseEntity<MeetingGroupResponseDTO> getGroupById(@PathVariable("id") Long id);
 
-    @PutMapping("/groups/add/{meetingId}/{groupId}")
-    public ResponseEntity<MeetingGroupResponseDTO> addMeeting(@PathVariable("meetingId") Long meetingId,
-            @PathVariable("groupId") Long groupId);
+        @PostMapping("/groups/create")
+        public ResponseEntity<MeetingGroupResponseDTO> createGroup(
+                        @Valid @RequestBody MeetingGroupRequestDTO createGroupDTO);
 
-    @PutMapping("/groups/remove/{meetingId}/{groupId}")
-    public ResponseEntity<MeetingGroupResponseDTO> removeMeeting(@PathVariable("meetingId") Long meetingId,
-            @PathVariable("groupId") Long groupId);
+        @PutMapping("/groups/add/{meetingId}/{groupId}")
+        public ResponseEntity<MeetingGroupResponseDTO> addMeeting(@PathVariable("meetingId") Long meetingId,
+                        @PathVariable("groupId") Long groupId);
 
-    @DeleteMapping("/groups/delete/{groupId}")
-    public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId);
+        @PutMapping("/groups/remove/{meetingId}/{groupId}")
+        public ResponseEntity<MeetingGroupResponseDTO> removeMeeting(@PathVariable("meetingId") Long meetingId,
+                        @PathVariable("groupId") Long groupId);
+
+        @DeleteMapping("/groups/delete/{groupId}")
+        public ResponseEntity deleteGroup(@PathVariable("groupId") Long groupId);
 }
