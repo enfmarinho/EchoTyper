@@ -7,5 +7,6 @@ public record MeetingResponseDTO(
         @JsonProperty("title") String title,
         @JsonProperty("transcription") String transcription,
         @JsonProperty("summary") String summary,
-        @JsonProperty("annotations") String annotations) {
+        @JsonProperty("annotations") String annotations,
+        @JsonProperty("groupName") String groupName) {
 }
