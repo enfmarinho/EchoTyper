@@ -76,7 +76,7 @@ public class GeminiApiService implements LLM_Interface {
                 A seguir está a transcrição de uma reunião:
                 %s
 
-                Crie um resumo detalhado da reunião, organizando em tópicos e detalhando os pontos mais relevantes.
+                Crie um breve resumo da reunião, organizando em tópicos e detalhando apenas os pontos mais relevantes.
                 """.formatted(transcription);
     }
 

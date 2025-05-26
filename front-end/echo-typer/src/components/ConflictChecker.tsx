@@ -41,7 +41,7 @@ export default function ConflictChecker() {
 
   const checkConflicts = async () => {
     try {
-      const response = await fetch("http://localhost:8081/gemini/check-conflicts", {
+      const response = await fetch("http://localhost:8081/llm/check-conflicts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
