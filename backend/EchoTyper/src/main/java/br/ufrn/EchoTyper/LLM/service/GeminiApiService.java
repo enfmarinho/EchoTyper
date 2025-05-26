@@ -8,37 +8,79 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class GeminiApiService {
+public class GeminiApiService implements LLM_Interface {
 
     @Value("${google.api.key}")
     private String apiKey;
 
+    private final RestTemplate restTemplate = new RestTemplate();
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private String baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=";
+
     public JsonNode checkConflicts(JsonNode payload) throws Exception {
-        String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey;
+        String prompt = buildConflictPrompt(payload);
+        return callGeminiApi(prompt);
+    }
 
-        String transcription = payload.path("transcription").asText();
-        JsonNode events = payload.path("events");
+    public JsonNode summarize(JsonNode payload) throws Exception {
+        String prompt = buildSummaryPrompt(payload);
+        return callGeminiApi(prompt);
+    }
 
-        // Estruturando o prompt com contexto
-        StringBuilder structuredPrompt = new StringBuilder();
-        structuredPrompt.append("A seguir está a transcrição de uma reunião:\n")
-                        .append(transcription)
-                        .append("\n\nE abaixo está a lista de eventos já agendados (JSON):\n")
-                        .append(events.toString())
-                        .append("\n\nVerifique se há conflitos de data entre o que foi dito na reunião e os eventos agendados. ")
-                        .append("Se houver conflitos, retorne os IDs dos eventos em conflito e com qual evento na transcrição eles conflitam. ")
-                        .append("Se não houver conflitos, diga que não há conflitos.");
-
-        String requestBody = "{ \"contents\": [ { \"role\": \"user\", \"parts\": [ { \"text\": \"" + structuredPrompt.toString().replace("\"", "\\\"") + "\" } ] } ] }";
+    private JsonNode callGeminiApi(String prompt) throws Exception {
+        String requestBody = String.format("""
+                {
+                  "contents": [
+                    {
+                      "role": "user",
+                      "parts": [
+                        { "text": "%s" }
+                      ]
+                    }
+                  ]
+                }
+                """, escapeJson(prompt));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        String url = baseUrl + apiKey;
 
-        RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+        return objectMapper.readTree(response.getBody());
+    }
 
-        return new ObjectMapper().readTree(response.getBody());
+    private String buildConflictPrompt(JsonNode payload) {
+        String transcription = payload.path("transcription").asText();
+        String events = payload.path("events").toString();
+
+        return """
+                A seguir está a transcrição de uma reunião:
+                %s
+
+                E abaixo está a lista de eventos já agendados (JSON):
+                %s
+
+                Verifique se há conflitos de data entre o que foi dito na reunião e os eventos agendados.
+                Se houver conflitos, retorne os IDs dos eventos em conflito e com qual evento na transcrição eles conflitam.
+                Se não houver conflitos, diga que não há conflitos.
+                """
+                .formatted(transcription, events);
+    }
+
+    private String buildSummaryPrompt(JsonNode payload) {
+        String transcription = payload.path("transcription").asText();
+
+        return """
+                A seguir está a transcrição de uma reunião:
+                %s
+
+                Crie um resumo detalhado da reunião, organizando em tópicos e detalhando os pontos mais relevantes.
+                """.formatted(transcription);
+    }
+
+    private String escapeJson(String input) {
+        return input.replace("\"", "\\\"").replace("\n", "\\n");
     }
 }
