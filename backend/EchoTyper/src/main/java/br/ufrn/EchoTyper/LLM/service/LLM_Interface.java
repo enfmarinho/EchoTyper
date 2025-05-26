@@ -1,7 +1,8 @@
 package br.ufrn.EchoTyper.LLM.service;
 
-public interface LLM_Interface {
-  public String resume_transcription(String transcription);
+import com.fasterxml.jackson.databind.JsonNode;
 
-  public String ask(String question);
+public interface LLM_Interface {
+  public JsonNode checkConflicts(JsonNode payload) throws Exception;
+  public JsonNode summarize(JsonNode payload) throws Exception;
 }
