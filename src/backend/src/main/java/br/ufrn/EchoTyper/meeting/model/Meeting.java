@@ -1,6 +1,7 @@
 package br.ufrn.EchoTyper.meeting.model;
 
-import br.ufrn.EchoTyper.user.model.User;
+
+import br.ufrn.EchoTyper.meetingGroup.model.MeetingGroup;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -17,33 +18,43 @@ public class Meeting {
     @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters")
     @Column(nullable = false, name = "str_title")
     private String title;
-    
+
     @Column(nullable = false, name = "str_transcription")
     @Lob
     private String transcription;
-    
+
     @Lob
     @Column(nullable = false, name = "str_summary")
     private String summary;
-    
+
     @Lob
     @Column(nullable = false, name = "str_annotations")
     private String annotations;
 
-    // @ManyToOne
-    // @JoinColumn(name = "user_id") // Coluna que vai armazenar o ID do usuário
-    // private Long userId;
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "group_id", nullable = true) // Not every meeting has to be part of a group
+    private MeetingGroup group;
 
-	public Meeting() {
-	}
-	
-	public Meeting(Long id, String title, String transcription, String summary, String annotations) {
-		this.id = id;
-		this.title = title;
-		this.transcription = transcription;
-		this.summary = summary;
-		this.annotations = annotations;
-	}
+    public Meeting() {
+    }
+
+    public Meeting(Long id, String title, String transcription, String summary, String annotations) {
+        this.id = id;
+        this.title = title;
+        this.transcription = transcription;
+        this.summary = summary;
+        this.annotations = annotations;
+    }
+
+    public Meeting(Long id, String title, String transcription, String summary, String annotations,
+            MeetingGroup group) {
+        this.id = id;
+        this.title = title;
+        this.transcription = transcription;
+        this.summary = summary;
+        this.annotations = annotations;
+        this.group = group;
+    }
 
     // Getters e setters
     public Long getId() {
@@ -86,11 +97,19 @@ public class Meeting {
         this.annotations = annotations;
     }
 
+    public MeetingGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(MeetingGroup group) {
+        this.group = group;
+    }
+
     // public User getUser() {
-    //     return user;
+    // return user;
     // }
 
     // public void setUser(User user) {
-    //     this.user = user;
+    // this.user = user;
     // }
 }

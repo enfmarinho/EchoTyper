@@ -11,10 +11,10 @@ import java.util.logging.Logger;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping("/gemini")
-public class GeminiApiController {
+@RequestMapping("/llm")
+public class LLM_Controller {
 
-    private static final Logger LOG = Logger.getLogger(GeminiApiController.class.getName());
+    private static final Logger LOG = Logger.getLogger(LLM_Controller.class.getName());
 
     @Autowired
     private GeminiApiService geminiApiService;
@@ -36,6 +36,27 @@ public class GeminiApiController {
 
         } catch (Exception e) {
             LOG.severe("Error in checkConflicts(): " + e.getMessage());
+            return getResponseFormat(HttpStatus.INTERNAL_SERVER_ERROR, "Critical Error: " + e.getLocalizedMessage(), null);
+        }
+    }
+
+    @PostMapping("/summarize")
+    public ResponseEntity<HashMap<String, Object>> summarize(@RequestBody JsonNode payload) {
+        LOG.info("\nINSIDE CLASS == GeminiApiController, METHOD == summarize(); ");
+
+        try {
+            JsonNode result = geminiApiService.summarize(payload);
+
+            if (result != null) {
+                LOG.info("Conflict analysis completed.");
+                return getResponseFormat(HttpStatus.OK, "Analysis successful", result);
+            } else {
+                LOG.warning("Conflict analysis returned null.");
+                return getResponseFormat(HttpStatus.INTERNAL_SERVER_ERROR, "Analysis failed", null);
+            }
+
+        } catch (Exception e) {
+            LOG.severe("Error in summarize(): " + e.getMessage());
             return getResponseFormat(HttpStatus.INTERNAL_SERVER_ERROR, "Critical Error: " + e.getLocalizedMessage(), null);
         }
     }

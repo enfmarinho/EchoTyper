@@ -81,18 +81,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.ai</groupId>
-			<artifactId>spring-ai-openai-spring-boot-starter</artifactId>
-			<version>0.8.1</version>
-			<exclusions>
-				<exclusion> <!-- The transitive dependency seems to cause an error -->
-					<groupId>org.springframework.cloud</groupId>
-					<artifactId>spring-cloud-function-context</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 		
 		<dependency>
 			<groupId>io.github.cdimascio</groupId>

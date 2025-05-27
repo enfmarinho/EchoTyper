@@ -52,34 +52,58 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         setFormData({ ...formData, [field]: value });
     };
 
-    // Precisa implementar a lódica real
     const startTranscription = async (file: File) => {
         setStatus('transcribing')
-        // Simula transcrição
-        setTimeout(() => {
-            const fakeTranscription = `
-        00:05:12 Precisamos começar a desenvolver a interface até segunda feira. Temos uma semana de prazo.
-        00:05:27 Mas funcionalidades de integração com o banco de dados já foram lançadas no repositório?
-        00:05:43 Ainda não, precisamos criar uma chave de API para fazer os testes finais de conexão.
-      `
-            formData.transcription = fakeTranscription
-            startSummarization(fakeTranscription)
-        }, 2000)
+
+        const formDataToSend = new FormData()
+        formDataToSend.append('audioFile', file)
+
+        try {
+            const response = await fetch('http://localhost:8081/transcribe', {
+                method: 'POST',
+                body: formDataToSend
+            })
+
+            if (!response.ok) {
+                throw new Error('Erro ao transcrever o áudio')
+            }
+
+            const transcription = await response.text()
+            formData.transcription = transcription
+            startSummarization(transcription)
+        } catch (error) {
+            console.error('Erro ao fazer upload/transcrição do áudio:', error)
+            // setStatus('error')
+        }
     }
 
     // Precisa implementar a lódica real
     const startSummarization = async (text: string) => {
         setStatus('summarizing')
-        // Simula resumo
-        setTimeout(() => {
-            const fakeSummary = `
-        Discussão sobre o desenvolvimento da interface com prazo de uma semana;
-        Integração com banco de dados já iniciada;
-        Falta criar chave de API para testes.
-      `
-            formData.summary = fakeSummary
+
+        const formDataToSend = new FormData()
+        formDataToSend.append('transcription', text)
+
+        try {
+            const response = await fetch("http://localhost:8081/llm/summarize", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ transcription: text })
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao resumir o áudio')
+            }
+
+            const json = await response.json();
+            formData.summary = json.data?.candidates?.[0]?.content?.parts?.[0]?.text;
             setStatus('done')
-        }, 2000)
+        } catch (error) {
+            console.error('Erro ao fazer resumo do áudio:', error)
+            // setStatus('error')
+        }
     }
 
     const renderContent = () => {
@@ -133,8 +157,10 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                                 <CardContent className="p-4">
                                     <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
                                     <ul className="list-disc pl-4 text-gray-700">
-                                        {(formData.summary ?? '').split('\n').map((item, i) => (
-                                            <li key={i}>{item}</li>
+                                        {formData.summary?.split('\n').map((line, index) => (
+                                            <div key={index} className="mb-1">
+                                                {line.trim()}
+                                            </div>
                                         ))}
                                     </ul>
                                 </CardContent>

@@ -25,7 +25,7 @@ export default function ConflictChecker() {
   const [showMeetings, setShowMeetings] = useState(false);
 
   const fetchEvents = async () => {
-    const response = await fetch("http://localhost:8081/events");
+    const response = await fetch("http://localhost:8081/calendar");
     const data = await response.json();
     setEvents(data);
   };
@@ -41,7 +41,7 @@ export default function ConflictChecker() {
 
   const checkConflicts = async () => {
     try {
-      const response = await fetch("http://localhost:8081/gemini/check-conflicts", {
+      const response = await fetch("http://localhost:8081/llm/check-conflicts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
