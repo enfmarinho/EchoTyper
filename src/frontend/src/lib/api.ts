@@ -106,3 +106,44 @@ export const deleteReuniao = async (id: number) => {
   if (!res.ok) throw new Error('Erro ao deletar reunião');
   return res.ok;
 };
+
+export const fetchEvent = async () => {
+  const res = await fetch(`${API_BASE}/calendar`);
+  if (!res.ok) throw new Error('Erro ao buscar evento no calendário');
+  return res.json();
+}
+
+export const fetchEventById = async (id: number) => {
+  const res = await fetch(`${API_BASE}/calendar/${id}`);
+  if (!res.ok) throw new Error('Erro ao buscar evento no calendário por ID');
+  return res.json();
+};
+
+export const createEvent = async (event: any) => {
+  const res = await fetch(`${API_BASE}/calendar/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(event),
+  });
+  if (!res.ok) throw new Error('Erro ao criar evento de calendário');
+  return res.json();
+};
+
+export const updateEvent = async (id: number, event: any) => {
+  console.log('Evento a ser atualizada:', event);
+  const res = await fetch(`${API_BASE}/calendar/update/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(event),
+  });
+  if (!res.ok) throw new Error('Erro ao atualizar evento de calendário');
+  return res.json();
+};
+
+export const deleteEvent = async (id: number) => {
+  const res = await fetch(`${API_BASE}/calendar/delete/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Erro ao deletar evento de calendário');
+  return res.ok;
+};
