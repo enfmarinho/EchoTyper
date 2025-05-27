@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 @Service
 public class GoogleCloudTranscriber implements TranscriberInterface {
 
-  private final String credentialsPath = "arboreal-parser-460306-q7-52e795ee28d5.json";
+  private final String credentialsPath = "./assets/arboreal-parser-460306-q7-52e795ee28d5.json";
 
   @Override
   public String transcribe_audio(String audio_file_path) throws IOException, InterruptedException {
@@ -50,9 +50,9 @@ public class GoogleCloudTranscriber implements TranscriberInterface {
         RecognitionConfig config = RecognitionConfig.newBuilder()
             .setEncoding(AudioEncoding.MP3) // Set encoding to MP3
             .setSampleRateHertz(44100) // TODO check if this hz works
-            .setLanguageCode("pt-BR")
+            .setLanguageCode("en-US")
             .setDiarizationConfig(speakerDiarizationConfig)
-            .setModel("latest")
+            .setModel("latest_short")
             .build();
 
         RecognitionAudio audio = RecognitionAudio.newBuilder()
