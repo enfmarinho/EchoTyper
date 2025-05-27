@@ -1,5 +1,7 @@
 package br.ufrn.EchoTyper.meeting.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,13 +38,12 @@ public class MeetingService {
     // Fazer o exception handling
     public MeetingResponseDTO createMeeting(MeetingRequestDTO meetingRequestDTO) {
         Meeting newMeeting;
-        // ! : I don't really know how JPA handles buildinf these objects with null
-        // parameters
         if (meetingRequestDTO.groupId() == null) {
             newMeeting = MeetingMapper.toEntity(meetingRequestDTO);
         } else {
             // The frontend flow that i have in mind guarantees that the meeting group will
-            // exist by the time the meeting is created
+            // exist by the time the meeting is created. The user will either search for a
+            // certain group, create a new group for the meeting or select no group
             MeetingGroup group = meetingGroupRepository.findById(meetingRequestDTO.groupId()).orElseGet(() -> null);
             newMeeting = MeetingMapper.toEntity(meetingRequestDTO, group);
         }
@@ -65,7 +66,7 @@ public class MeetingService {
         return MeetingMapper.toResponseDTO(meeting);
     }
 
-    // Gambiarra
+    // Meant to be used only on the resource's service layers
     public Meeting updateMeeting(Meeting newMeeting) {
         meetingRepository.save(newMeeting);
         return newMeeting;
@@ -163,6 +164,20 @@ public class MeetingService {
 
     public MeetingGroupResponseDTO getGroupById(Long id) {
         return meetingGroupRepository.findById(id).map(MeetingGroupMapper::toResponseDTO).orElse(null);
+    }
+
+    @Transactional
+    public List<String> getSummariesByGroup(Long groupId) {
+        MeetingGroup group = getGroupObjById(groupId);
+        if (group == null) {
+            return new ArrayList<>();
+        }
+        Collection<Meeting> meetings = group.getMeetings();
+        List<String> summaries = new ArrayList<>();
+        for (Meeting meeting : meetings) {
+            summaries.add(meeting.getSummary());
+        }
+        return summaries;
     }
 
     protected MeetingGroup getGroupObjById(Long id) {
