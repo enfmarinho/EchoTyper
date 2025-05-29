@@ -106,3 +106,51 @@ export const deleteReuniao = async (id: number) => {
   if (!res.ok) throw new Error('Erro ao deletar reunião');
   return res.ok;
 };
+
+export const fetchGroups = async () => {
+  const res = await fetch(`${API_BASE}/groups`);
+  if (!res.ok) throw new Error('Erro ao buscar grupos');
+  return res.json();
+};
+
+export const fetchGroupById = async (id: number) => {
+  const res = await fetch(`${API_BASE}/groups/${id}`);
+  if (!res.ok) throw new Error('Erro ao buscar grupo por ID');
+  return res.json();
+};
+
+export const createGroup = async (group: any) => {
+  const res = await fetch(`${API_BASE}/groups/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(group),
+  });
+  if (!res.ok) throw new Error('Erro ao criar grupo');
+  return res.json();
+};
+
+export const removeMeetingFromGroup = async (meetingId: number, groupId: number) => {
+  const res = await fetch(`${API_BASE}/groups/remove/${meetingId}/${groupId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Erro ao remover reuniao do grupo');
+  return res.json();
+};
+
+export const addMeetingFromGroup = async (meetingId: number, groupId: number) => {
+  const res = await fetch(`${API_BASE}/groups/add/${meetingId}/${groupId}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) throw new Error('Erro ao adicionar reuniao do grupo');
+  return res.json();
+};
+
+export const deleteGroup = async (id: number) => {
+  const res = await fetch(`${API_BASE}/groups/delete/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Erro ao deletar grupo');
+  return res.ok;
+};
