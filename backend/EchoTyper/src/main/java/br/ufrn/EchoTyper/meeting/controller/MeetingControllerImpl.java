@@ -78,4 +78,10 @@ public class MeetingControllerImpl implements MeetingController {
     public ResponseEntity<MeetingGroupResponseDTO> getGroupById(Long id) {
         return ResponseEntity.ok().body(meetingService.getGroupById(id));
     }
+
+    @Override
+    public ResponseEntity<MeetingGroupResponseDTO> updateGroup(Long id,
+            @Valid MeetingGroupRequestDTO meetingDTO) {
+        return ResponseEntity.ok().body(meetingService.updateMeetingGroup(id, meetingDTO));
+    }
 }
