@@ -15,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ConflictChecker from "@/components/ConflictChecker";
 import ptBR from "date-fns/locale/pt-BR";
+import { createEvento } from "@/lib/api";
 
 type Evento = {
   titulo: string;
@@ -40,6 +41,7 @@ export default function AgendaPage() {
     setEventos((prev) => [...prev, novoEvento]);
     setTitulo("");
     setDescricao("");
+    createEvento(novoEvento);
   };
 
   const eventosDoDia = eventos.filter(
