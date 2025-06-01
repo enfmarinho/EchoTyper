@@ -19,7 +19,7 @@ public record CalendarRequestDTO(
         @NotNull
         String description,
         @JsonProperty("date")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate date,
         @JsonProperty("startTime")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")

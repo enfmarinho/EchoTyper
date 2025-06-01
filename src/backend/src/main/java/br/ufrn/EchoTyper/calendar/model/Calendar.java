@@ -33,10 +33,8 @@ public class Calendar {
 	@Column(nullable = false, unique = false, name = "str_date")
 	private LocalDate date;
 
-	@NotNull(message = "The event's start time is required")
 	private LocalTime startTime;
 
-	@NotNull(message = "The event's end time is required")
 	private LocalTime endTime;
 
 	public Calendar() {
@@ -49,6 +47,15 @@ public class Calendar {
 		this.date = date;
 		this.endTime = endTime;
 		this.startTime = startTime;
+	}
+
+	public Calendar(Long id, String title, String description, LocalDate date) {
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.date = date;
+		this.endTime = LocalTime.MIDNIGHT;
+		this.startTime = LocalTime.MIDNIGHT;
 	}
 
 	public Long getId() {
