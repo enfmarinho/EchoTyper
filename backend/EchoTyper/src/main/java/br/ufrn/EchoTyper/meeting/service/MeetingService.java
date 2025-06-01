@@ -157,6 +157,7 @@ public class MeetingService {
         return MeetingGroupMapper.toResponseDTO(meetingGroup);
     }
 
+    @Transactional
     public void deleteMeetingGroup(Long groupId) {
         MeetingGroup group = meetingGroupRepository.findById(groupId).get();
         for (Meeting meeting : group.getMeetings()) {
@@ -164,7 +165,7 @@ public class MeetingService {
         }
         meetingGroupRepository.delete(group);
     }
-
+    @Transactional
     public MeetingGroupResponseDTO getGroupById(Long id) {
         return meetingGroupRepository.findById(id).map(MeetingGroupMapper::toResponseDTO).orElse(null);
     }
