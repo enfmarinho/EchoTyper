@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 @Service
 public class GoogleCloudTranscriber implements TranscriberInterface {
 
-  private final String credentialsPath = "./assets/arboreal.json";
+  private final String credentialsPath = "../../../../../../../../assets/google_api_key.json";
 
   @Override
   public String transcribe_audio(String audio_file_path) throws IOException, InterruptedException {
