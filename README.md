@@ -2,9 +2,9 @@
 ### Pré-requisitos
 O projeto depende do docker e do docker compose, portanto é necessário tê-los instalados
 ### Env
-O projeto depende de dois arquivos .env para rodar, um na pasta src/.env e o segundo na pasta src/backend/.env,
-nesses caminhos existem .env de exemplo para facilitar o uso, é possível utilizá-los da maneira que estão, alterando apenas a
-variável GOOGLE_API_KEY para a sua chave de API do google. 
+O projeto depende de dois arquivos .env para rodar, um na pasta [src/.env](src/.env) e o segundo na pasta 
+[src/backend/.env](src/backend/.env), nesses caminhos existem .env de exemplo para facilitar o uso, é possível
+utilizá-los da maneira que estão, alterando apenas a variável GOOGLE_API_KEY para a sua chave de API do google. 
 
 Abaixo está um exemplo de .env para o projeto: 
    ```env
@@ -17,7 +17,7 @@ Abaixo está um exemplo de .env para o projeto:
    ```
 
 Ademais, é necessário um arquivo json com uma chave de API do google para acesso ao modelo voice-to-text, que deve ficar no caminho
-src/backend/assets/google_api_key.json substituindo o arquivo de exemplo.
+[src/backend/assets/google_api_key.json](src/backend/assets/google_api_key.json) substituindo o arquivo de exemplo.
 ### Docker
 Para rodar o projeto utilize:
 ```
