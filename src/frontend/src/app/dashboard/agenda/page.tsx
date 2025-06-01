@@ -18,9 +18,9 @@ import ptBR from "date-fns/locale/pt-BR";
 import { createEvento } from "@/lib/api";
 
 type Evento = {
-  titulo: string;
-  descricao: string;
-  data: string; // ISO format (yyyy-mm-dd)
+  title: string;
+  description: string;
+  date: string; // ISO format (yyyy-mm-dd)
 };
 
 export default function AgendaPage() {
@@ -33,9 +33,9 @@ export default function AgendaPage() {
     if (!dataSelecionada || !titulo) return;
 
     const novoEvento: Evento = {
-      titulo,
-      descricao,
-      data: dataSelecionada.toISOString().split("T")[0],
+      title: titulo,
+      description: descricao,
+      date: dataSelecionada.toISOString().split("T")[0],
     };
 
     setEventos((prev) => [...prev, novoEvento]);
@@ -45,7 +45,7 @@ export default function AgendaPage() {
   };
 
   const eventosDoDia = eventos.filter(
-    (evento) => evento.data === dataSelecionada?.toISOString().split("T")[0]
+    (evento) => evento.date === dataSelecionada?.toISOString().split("T")[0]
   );
 
   return (
@@ -87,7 +87,7 @@ export default function AgendaPage() {
                     <ListItem key={idx}>
                       <ListItemText
                         primary={evento.titulo}
-                        secondary={evento.descricao}
+                        secondary={evento.description}
                         slotProps={{
                           primary: {
                             sx: { color: "#0D1B2A", fontWeight: "bold" },
