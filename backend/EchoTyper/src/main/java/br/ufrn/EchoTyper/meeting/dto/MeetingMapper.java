@@ -20,10 +20,10 @@ public class MeetingMapper {
     public static MeetingResponseDTO toResponseDTO(Meeting meeting) {
         if (meeting.getGroup() != null) {
             return new MeetingResponseDTO(meeting.getId(), meeting.getTitle(), meeting.getTranscription(),
-                    meeting.getSummary(), meeting.getAnnotations(), meeting.getGroup().getGroupName());
+                    meeting.getSummary(), meeting.getAnnotations(), meeting.getGroup().getGroupName(), meeting.getGroup().getId());
         }
         return new MeetingResponseDTO(meeting.getId(), meeting.getTitle(), meeting.getTranscription(),
-                meeting.getSummary(), meeting.getAnnotations(), null);
+                meeting.getSummary(), meeting.getAnnotations(), null, null);
     }
 
     public static Collection<MeetingResponseDTO> toResponseDTO(Collection<Meeting> meetings) {
