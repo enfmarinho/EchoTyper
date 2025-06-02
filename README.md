@@ -31,6 +31,8 @@ Dependendo da sua máquina, pode ser necessário utilizar sudo para executar os 
 O primeiro comando irá instalar o repositório, o terceiro irá resolver as dependências do projeto no container,
 o quarto irá rodar o container. 
 
+Caso enfrente problemas ao rodar, tente criar o banco de dados manualmente no postgres.
+
 Em seguida, acesse o site no link http://localhost:3000/
 
 Note que o backend ficará disponível por padrão em `http://localhost:8081`.
