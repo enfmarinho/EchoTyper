@@ -129,6 +129,16 @@ export const createEvento = async (evento: any) => {
   return res.json();
 };
 
+export const fetchEventoByDate = async (date: any) => {
+  const res = await fetch(`${API_BASE}/calendar/date`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(date),
+  });
+  if (!res.ok) throw new Error('Erro ao buscar evento no calendário por data');
+  return res.json();
+};
+
 export const updateEvento = async (id: number, evento: any) => {
   console.log('Evento a ser atualizada:', evento);
   const res = await fetch(`${API_BASE}/calendar/update/${id}`, {
