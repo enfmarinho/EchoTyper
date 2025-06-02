@@ -2,9 +2,11 @@
 import { useState, useEffect, use } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { Card, CardContent, Button, TextField } from '@mui/material';
-import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById } from '@/lib/api';
+import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroups } from '@/lib/api';
 import UploadIcon from '@mui/icons-material/Upload';
 import { useRouter } from 'next/navigation';
+import { Item } from '@/lib/types';
+import ItemGrid from '@/components/ItemGrid';
 
 type Reuniao = {
     id: string;
@@ -12,6 +14,7 @@ type Reuniao = {
     transcription: string;
     summary: string;
     annotations: string;
+    groupId: number;
 };
 
 export default function ReuniaoPage({ params }: { params: { id?: number } }) {
@@ -19,6 +22,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
     const [status, setStatus] = useState<'idle' | 'transcribing' | 'summarizing' | 'done'>('idle');
+    const [groups, setGroups] = useState<Item[]>([]);
 
     const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -90,7 +94,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ transcription: text })
+                body: JSON.stringify({ transcription: text, groupId: formData.groupId })
             });
 
             if (!response.ok) {
@@ -106,29 +110,54 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         }
     }
 
+    const loadGroups = async () => {
+        try {
+            await fetchGroups().then((data) => {
+                setGroups(data.map(group => ({ id: group.id, title: group.groupName })));
+            });
+        } catch (err) {
+            console.error('Erro ao buscar grupos:', err);
+        }
+    }
+
+    useEffect(() => {
+        loadGroups();
+    }, []);
+
     const renderContent = () => {
         switch (status) {
             case 'idle':
                 return (
-                    <div className="flex flex-col items-center justify-center gap-6">
-                        <h2 className="text-xl font-semibold">Envie o áudio da reunião</h2>
+                    <div>
+                        <div className="flex flex-col items-center justify-center gap-3">
+                            <h2 className="text-xl font-semibold">Esta reuniao pertence a um grupo?</h2>
+                            <ItemGrid
+                                items={groups}
+                                onItemClick={(id) => {
+                                    setFormData({ ...formData, groupId: Number(id) });
+                                }} />
+                            <strong>Grupo Selecionado: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</strong>
+                        </div>
+                        <div className="flex flex-col items-center justify-center gap-6">
+                            <h2 className="text-xl font-semibold">Envie o áudio da reunião</h2>
 
-                        {/* Label estilizado que ativa o input de upload */}
-                        <label
-                            htmlFor="audio-upload"
-                            className="cursor-pointer bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-md transition"
-                        >
-                            Selecionar arquivo de áudio
-                        </label>
+                            {/* Label estilizado que ativa o input de upload */}
+                            <label
+                                htmlFor="audio-upload"
+                                className="cursor-pointer bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-md transition"
+                            >
+                                Selecionar arquivo de áudio
+                            </label>
 
-                        {/* Input escondido que abre o seletor de arquivos */}
-                        <input
-                            type="file"
-                            id="audio-upload"
-                            accept="audio/*"
-                            className="hidden"
-                            onChange={handleAudioUpload}
-                        />
+                            {/* Input escondido que abre o seletor de arquivos */}
+                            <input
+                                type="file"
+                                id="audio-upload"
+                                accept="audio/*"
+                                className="hidden"
+                                onChange={handleAudioUpload}
+                            />
+                        </div>
                     </div>
                 );
             case 'transcribing':
@@ -146,6 +175,12 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                             value={formData.title}
                             onChange={(e) => handleChange('title', e.target.value)}
                         />
+                        <div>
+                            <h2 className="text-2xl font-semibold">Grupo: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</h2>
+                            {/* <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
+                                { }
+                            </div> */}
+                        </div>
                         <div>
                             <h2 className="text-2xl font-semibold">Transcrição</h2>
                             <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
