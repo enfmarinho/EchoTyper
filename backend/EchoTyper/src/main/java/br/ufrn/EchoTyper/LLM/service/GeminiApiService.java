@@ -2,6 +2,7 @@ package br.ufrn.EchoTyper.LLM.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.json.Json;
 
 import br.ufrn.EchoTyper.meeting.service.MeetingService;
 
@@ -78,9 +79,17 @@ public class GeminiApiService implements LLM_Interface {
 
   private String buildSummaryPrompt(JsonNode payload) {
     String transcription = payload.path("transcription").asText();
+    JsonNode groupIdNode = payload.path("groupId");
+    if (groupIdNode.isMissingNode()) {
 
-    Long groupId = payload.path("groupId").asLong();
+      return """
+          A seguir está a transcrição de uma reunião:
+          %s
 
+          Crie um breve resumo da reunião, organizando em tópicos e detalhando apenas os pontos mais relevantes.
+          """
+          .formatted(transcription);
+    }
     return """
         A seguir está a transcrição de uma reunião:
         %s
@@ -90,7 +99,8 @@ public class GeminiApiService implements LLM_Interface {
         o resumo gerado para a reuniao atual, quando possivel ou adequado.
         %s
         """
-        .formatted(transcription, getSummaryContext(groupId));
+        .formatted(transcription, getSummaryContext(groupIdNode.asLong()));
+
   }
 
   private String escapeJson(String input) {
