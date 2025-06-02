@@ -2,7 +2,7 @@
 import { useState, useEffect, use } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { Card, CardContent, Button, TextField } from '@mui/material';
-import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroups } from '@/lib/api';
+import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroups, addMeetingFromGroup } from '@/lib/api';
 import UploadIcon from '@mui/icons-material/Upload';
 import { useRouter } from 'next/navigation';
 import { Item } from '@/lib/types';
@@ -35,7 +35,9 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     const handleCreate = async () => {
         try {
             console.log('FormData:', formData);
-            await createReuniao(formData);
+            const meetingId = await createReuniao(formData);
+            console.log('meetingId', meetingId);
+            await addMeetingFromGroup(meetingId, formData.groupId);
             setFormData({});
             router.push('/dashboard/reunioes');
         } catch (err) {
@@ -87,7 +89,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
 
         const formDataToSend = new FormData()
         formDataToSend.append('transcription', text)
-
+        console.log("fomrData", formData.groupId);
         try {
             const response = await fetch("http://localhost:8081/llm/summarize", {
                 method: "POST",

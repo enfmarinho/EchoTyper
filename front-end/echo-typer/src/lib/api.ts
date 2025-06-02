@@ -84,14 +84,17 @@ export const fetchReuniaoByGroup = async (groupId: number) => {
   return res.json();
 };
 
-export const createReuniao = async (reuniao: any) => {
+export const createReuniao = async (reuniao: any): Promise<number> => {
   const res = await fetch(`${API_BASE}/meetings/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reuniao),
   });
+
   if (!res.ok) throw new Error('Erro ao criar reunião');
-  return res.json();
+
+  const data = await res.json();
+  return data.id; // aqui você retorna apenas o id
 };
 
 export const updateReuniao = async (id: number, reuniao: any) => {
