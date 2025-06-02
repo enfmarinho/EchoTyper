@@ -8,5 +8,6 @@ public record MeetingResponseDTO(
         @JsonProperty("transcription") String transcription,
         @JsonProperty("summary") String summary,
         @JsonProperty("annotations") String annotations,
-        @JsonProperty("groupName") String groupName) {
+        @JsonProperty("groupName") String groupName,
+        @JsonProperty("groupId") Long groupId) {
 }

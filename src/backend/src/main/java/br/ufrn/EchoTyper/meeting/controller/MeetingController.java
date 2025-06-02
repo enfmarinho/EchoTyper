@@ -43,6 +43,9 @@ public interface MeetingController {
         @GetMapping("/groups/{id}")
         public ResponseEntity<MeetingGroupResponseDTO> getGroupById(@PathVariable("id") Long id);
 
+        @GetMapping("/groups/{id}/meetings")
+        public ResponseEntity<List<MeetingResponseDTO>> getMeetingsByGroup(@PathVariable("id") Long id);
+
         @PostMapping("/groups/create")
         public ResponseEntity<MeetingGroupResponseDTO> createGroup(
                         @Valid @RequestBody MeetingGroupRequestDTO createGroupDTO);
