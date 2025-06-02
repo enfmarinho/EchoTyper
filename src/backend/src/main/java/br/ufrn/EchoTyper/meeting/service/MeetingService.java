@@ -117,6 +117,9 @@ public class MeetingService {
         }
         MeetingGroup meetingGroup = MeetingGroupMapper.toEntity(meetingDTO, meetings);
         meetingGroupRepository.save(meetingGroup);
+        for (Long meetingIds : meetingDTO.meetingIds()) {
+            addMeetingToGroup(meetingIds, meetingGroup.getId());
+        }
         return MeetingGroupMapper.toResponseDTO(meetingGroup);
     }
 

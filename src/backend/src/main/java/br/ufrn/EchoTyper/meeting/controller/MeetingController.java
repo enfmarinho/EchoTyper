@@ -36,6 +36,10 @@ public interface MeetingController {
         @GetMapping("/groups")
         public ResponseEntity<List<MeetingGroupResponseDTO>> getAllGroups();
 
+        @PutMapping("/groups/update/{id}")
+        public ResponseEntity<MeetingGroupResponseDTO> updateGroup(@PathVariable("id") Long id,
+                        @Valid @RequestBody MeetingGroupRequestDTO meetingDTO);
+
         @GetMapping("/groups/{id}")
         public ResponseEntity<MeetingGroupResponseDTO> getGroupById(@PathVariable("id") Long id);
 
