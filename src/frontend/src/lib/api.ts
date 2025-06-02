@@ -78,6 +78,12 @@ export const fetchReuniaoById = async (id: number) => {
   return res.json();
 };
 
+export const fetchReuniaoByGroup = async (groupId: number) => {
+  const res = await fetch(`${API_BASE}/meetings/groups/${groupId}/meetings`);
+  if (!res.ok) throw new Error(`Erro ao buscar reunioes do grupo ${groupId}`);
+  return res.json();
+};
+
 export const createReuniao = async (reuniao: any) => {
   const res = await fetch(`${API_BASE}/meetings/create`, {
     method: 'POST',
@@ -159,19 +165,20 @@ export const deleteEvento = async (id: number) => {
 };
 
 export const fetchGroups = async () => {
-  const res = await fetch(`${API_BASE}/groups`);
+  const res = await fetch(`${API_BASE}/meetings/groups`);
   if (!res.ok) throw new Error('Erro ao buscar grupos');
   return res.json();
 };
 
 export const fetchGroupById = async (id: number) => {
-  const res = await fetch(`${API_BASE}/groups/${id}`);
+  const res = await fetch(`${API_BASE}/meetings/groups/${id}`);
   if (!res.ok) throw new Error('Erro ao buscar grupo por ID');
   return res.json();
 };
 
 export const createGroup = async (group: any) => {
-  const res = await fetch(`${API_BASE}/groups/create`, {
+  console.log('Grupo a ser criada:', group);
+  const res = await fetch(`${API_BASE}/meetings/groups/create`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(group),
@@ -180,8 +187,19 @@ export const createGroup = async (group: any) => {
   return res.json();
 };
 
+export const updateGroup = async (id: number, group: any) => {
+  console.log('Reunião a ser atualizada:', group);
+  const res = await fetch(`${API_BASE}/meetings/groups/update/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(group),
+  });
+  if (!res.ok) throw new Error('Erro ao atualizar grupo');
+  return res.json();
+};
+
 export const removeMeetingFromGroup = async (meetingId: number, groupId: number) => {
-  const res = await fetch(`${API_BASE}/groups/remove/${meetingId}/${groupId}`, {
+  const res = await fetch(`${API_BASE}/meetings/groups/remove/${meetingId}/${groupId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -190,7 +208,7 @@ export const removeMeetingFromGroup = async (meetingId: number, groupId: number)
 };
 
 export const addMeetingFromGroup = async (meetingId: number, groupId: number) => {
-  const res = await fetch(`${API_BASE}/groups/add/${meetingId}/${groupId}`, {
+  const res = await fetch(`${API_BASE}/meetings/groups/add/${meetingId}/${groupId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
   });
@@ -199,7 +217,7 @@ export const addMeetingFromGroup = async (meetingId: number, groupId: number) =>
 };
 
 export const deleteGroup = async (id: number) => {
-  const res = await fetch(`${API_BASE}/groups/delete/${id}`, {
+  const res = await fetch(`${API_BASE}/meetings/groups/delete/${id}`, {
     method: 'DELETE',
   });
   if (!res.ok) throw new Error('Erro ao deletar grupo');
