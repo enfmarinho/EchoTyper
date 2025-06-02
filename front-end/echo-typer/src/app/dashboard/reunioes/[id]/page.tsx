@@ -2,7 +2,7 @@
 import { useState, useEffect, use } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { Card, CardContent, Button, TextField } from '@mui/material';
-import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById } from '@/lib/api';
+import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroupById } from '@/lib/api';
 import UploadIcon from '@mui/icons-material/Upload';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -13,34 +13,56 @@ type Reuniao = {
     transcription: string;
     summary: string;
     annotations: string;
+    groupId: string;
 };
 
 export default function ReuniaoPage() {
     const router = useRouter();
     const [audioFile, setAudioFile] = useState<File | null>(null);
     const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
+    const [groupName, setGroupName] = useState<string>("");
     const params = useParams();
     const isEditing = !!params.id;
 
-    const loadReuniao = async () => {
+    const loadReuniao = async (): Promise<string | undefined> => {
         if (isEditing && params.id) {
-            fetchReuniaoById(Number(params.id)).then(data => {
+            try {
+                const data = await fetchReuniaoById(Number(params.id));
                 setFormData({
                     id: Number(params.id).toString(),
                     title: data.title,
                     transcription: data.transcription,
                     summary: data.summary,
-                    annotations: data.annotations
+                    annotations: data.annotations,
+                    groupId: data.groupId
                 });
-            }).catch(err => {
+                return data.groupId;
+            } catch (err) {
                 console.error('Erro ao carregar reunião:', err);
-            });
+            }
+        }
+    };
+
+    const loadGroupName = async (groupId?: string) => {
+        if (groupId) {
+            try {
+                const data = await fetchGroupById(Number(groupId));
+                setGroupName(data.groupName);
+            } catch (err) {
+                console.error('Erro ao carregar grupo:// ', err);
+            }
         }
     };
 
     useEffect(() => {
-        loadReuniao();
+        const fetchData = async () => {
+            const groupId = await loadReuniao();
+            await loadGroupName(groupId);
+        };
+
+        fetchData();
     }, []);
+
 
     const handleDelete = async () => {
         try {
@@ -64,7 +86,6 @@ export default function ReuniaoPage() {
         setFormData({ ...formData, [field]: value });
     };
 
-
     const renderContent = () => {
         if (isEditing) {
             return (
@@ -78,6 +99,9 @@ export default function ReuniaoPage() {
                             value={formData.title || ''}
                             onChange={(e) => handleChange('title', e.target.value)}
                         />
+                        <div>
+                            <h2 className="text-2xl font-semibold">Grupo: {groupName} </h2>
+                        </div>
                         <div>
                             <h2 className="text-2xl font-semibold">Transcrição</h2>
                             <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
