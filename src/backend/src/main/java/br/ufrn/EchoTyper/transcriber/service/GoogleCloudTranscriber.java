@@ -1,5 +1,13 @@
 package br.ufrn.EchoTyper.transcriber.service;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import org.springframework.stereotype.Service;
+
 import com.google.api.gax.core.FixedCredentialsProvider;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.speech.v1.RecognitionAudio;
@@ -12,16 +20,9 @@ import com.google.cloud.speech.v1.SpeechRecognitionAlternative;
 import com.google.cloud.speech.v1.SpeechSettings;
 import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.io.FileNotFoundException;
 
 @Service
-public class GoogleCloudTranscriber implements TranscriberInterface {
+public class GoogleCloudTranscriber implements AudioTranscriberInterface {
 
   private final String credentialsPath = "./assets/arboreal-parser-460306-q7-52e795ee28d5.json";
 
@@ -49,7 +50,7 @@ public class GoogleCloudTranscriber implements TranscriberInterface {
         // Configure the recognition request
         RecognitionConfig config = RecognitionConfig.newBuilder()
             .setEncoding(AudioEncoding.MP3) // Set encoding to MP3
-            .setSampleRateHertz(44100) // TODO check if this hz works
+            .setSampleRateHertz(44100)
             .setLanguageCode("en-US")
             .setDiarizationConfig(speakerDiarizationConfig)
             .setModel("latest_short")
