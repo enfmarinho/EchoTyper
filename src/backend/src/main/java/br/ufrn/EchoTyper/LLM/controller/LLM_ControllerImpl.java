@@ -42,7 +42,7 @@ public class LLM_ControllerImpl implements LLM_Controller{
 
     @PostMapping("/summarize")
     public ResponseEntity<HashMap<String, Object>> summarize(@RequestBody JsonNode payload) {
-        LOG.info("\nINSIDE CLASSEu sai com thayanna, demos uma volta no parque. Ela disse que ia sair de casa na sexta -feira == GeminiApiController, METHOD == summarize(); ");
+        LOG.info("\nINSIDE CLASS == GeminiApiController, METHOD == summarize(); ");
 
         try {
             JsonNode result = llm.summarize(payload);
