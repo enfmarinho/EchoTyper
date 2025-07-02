@@ -3,12 +3,11 @@ package br.ufrn.EchoTyper.LLM.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.ufrn.EchoTyper.LLM.service.CheckConflictStrategy.CheckConflictDefaultStrategy;
-import br.ufrn.EchoTyper.LLM.service.CheckConflictStrategy.CheckConflictStrategy;
-import br.ufrn.EchoTyper.LLM.service.SummaryStrategy.SummaryDefaultStrategy;
-import br.ufrn.EchoTyper.LLM.service.SummaryStrategy.SummaryStrategy;
+import br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies.CheckConflictStrategy;
+import br.ufrn.EchoTyper.LLM.service.SummaryStrategies.SummaryStrategy;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,10 +20,12 @@ public class GeminiApiService implements LLM_Interface {
   private String apiKey;
 
   @Autowired
-  private SummaryStrategy summaryStrategy = new SummaryDefaultStrategy();
+  @Qualifier("summaryDefaultStrategy")
+  private SummaryStrategy summaryStrategy;
 
   @Autowired
-  private CheckConflictStrategy checkConflictStrategy = new CheckConflictDefaultStrategy();
+  @Qualifier("checkConflictDefaultStrategy")
+  private CheckConflictStrategy checkConflictStrategy;
 
   private final RestTemplate restTemplate = new RestTemplate();
   private final ObjectMapper objectMapper = new ObjectMapper();

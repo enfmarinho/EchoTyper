@@ -1,4 +1,4 @@
-package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategy;
+package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

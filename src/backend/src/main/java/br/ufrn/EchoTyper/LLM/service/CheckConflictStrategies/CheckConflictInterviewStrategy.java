@@ -1,11 +1,13 @@
-package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategy;
+package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import br.ufrn.EchoTyper.meeting.service.MeetingService;
 
+@Service
 public class CheckConflictInterviewStrategy implements CheckConflictStrategy {
 
     @Autowired

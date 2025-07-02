@@ -1,14 +1,12 @@
-package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategy;
-import java.util.Calendar;
+package br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.api.client.json.Json;
-
 import br.ufrn.EchoTyper.calendar.service.CalendarService;
 
+@Service
 public class CheckConflictDefaultStrategy implements CheckConflictStrategy {
     @Autowired
     private CalendarService calendarService;

@@ -1,4 +1,4 @@
-package br.ufrn.EchoTyper.LLM.service.SummaryStrategy;
+package br.ufrn.EchoTyper.LLM.service.SummaryStrategies;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
