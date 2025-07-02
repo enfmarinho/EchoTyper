@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { fetchReunioes } from "@/lib/api";
+import { Button } from "@mui/material";
 
 interface Event {
   id: string;
@@ -18,17 +19,10 @@ interface Meeting {
 
 export default function ConflictChecker() {
   const [transcription, setTranscription] = useState("");
-  const [events, setEvents] = useState<Event[]>([]);
-  const [newEvent, setNewEvent] = useState<Event>({ id: "", date: "" });
   const [result, setResult] = useState<string | null>(null);
   const [meetings, setMeetings] = useState<Meeting[]>([]);
   const [showMeetings, setShowMeetings] = useState(false);
 
-  const fetchEvents = async () => {
-    const response = await fetch("http://localhost:8081/calendar");
-    const data = await response.json();
-    setEvents(data);
-  };
 
   const loadReunioes = async () => {
         try {
@@ -46,7 +40,7 @@ export default function ConflictChecker() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ transcription, events }),
+        body: JSON.stringify({ transcription }),
       });
 
       if (!response.ok) {
@@ -63,7 +57,6 @@ export default function ConflictChecker() {
 
   useEffect(() => {
     loadReunioes();
-    fetchEvents();
   }, []);
 
   const handleMeetingSelection = (meeting: Meeting) => {
@@ -75,14 +68,16 @@ export default function ConflictChecker() {
     <main className="p-6 max-w-3xl mx-auto bg-white rounded shadow-md text-black border border-black">
       <h1 className="text-2xl font-bold mb-4">Verificador de Conflitos de Eventos</h1>
 
-      <button
+      <Button
+        variant="contained"
+        size="medium"
+        sx={{ mt: 2 }}
         onClick={() => {
           setShowMeetings(!showMeetings);
         }}
-        className="bg-purple-600 text-white px-4 py-2 rounded mb-4"
       >
         Escolher Reunião
-      </button>
+      </Button>
 
       {showMeetings && (
         <div className="mb-4 border p-4 rounded">
@@ -109,45 +104,14 @@ export default function ConflictChecker() {
         rows={5}
       />
 
-      <div className="mb-4">
-        <h2 className="font-semibold mb-2">Adicionar Evento</h2>
-        <input
-          type="text"
-          placeholder="ID do evento"
-          value={newEvent.id}
-          onChange={(e) => setNewEvent({ ...newEvent, id: e.target.value })}
-          className="border border-black rounded p-2 mr-2 text-black"
-        />
-        <input
-          type="datetime-local"
-          value={newEvent.date}
-          onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-          className="border border-black rounded p-2 mr-2 text-black"
-        />
-        <button onClick={() => {
-          if (newEvent.id && newEvent.date) {
-            setEvents([...events, newEvent]);
-            setNewEvent({ id: "", date: "" });
-          }
-        }} className="bg-blue-500 text-white px-4 py-2 rounded">
-          Adicionar
-        </button>
-      </div>
-
-      <ul className="mb-4">
-        {events.map((event, idx) => (
-          <li key={idx} className="text-sm">
-            {event.id} - {event.date}
-          </li>
-        ))}
-      </ul>
-
-      <button
+      <Button
+        variant="contained"
+        sx={{ mt: 2 }}
         onClick={checkConflicts}
-        className="bg-green-600 text-white px-6 py-2 rounded mb-4"
       >
         Verificar Conflitos
-      </button>
+      </Button>
+      
 
       {result && (
         <pre className="bg-gray-100 p-4 rounded text-sm whitespace-pre-wrap text-black border border-black">
