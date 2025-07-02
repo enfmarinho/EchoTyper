@@ -60,7 +60,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         setStatus('transcribing')
 
         const formDataToSend = new FormData()
-        formDataToSend.append('audioFile', file)
+        formDataToSend.append('inputFile', file)
 
         try {
             const response = await fetch('http://localhost:8081/transcribe', {

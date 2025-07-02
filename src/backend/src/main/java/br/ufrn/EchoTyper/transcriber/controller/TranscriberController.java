@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,24 +20,14 @@ import br.ufrn.EchoTyper.transcriber.service.TranscriberAdapter;
 @RestController
 public class TranscriberController {
 
+  @Autowired
+  @Qualifier("mp3Transcriber")
   private TranscriberAdapter transcriberAdapter;
-
-  public void setTranscriberAdapter(TranscriberAdapter transcriberAdapter) {
-      this.transcriberAdapter = transcriberAdapter;
-  }
 
   @PostMapping("/transcribe")
   public ResponseEntity<String> transcribeAudio(@RequestParam("inputFile") MultipartFile inputFile) {
     try {
-      // Save the uploaded file temporarily
-      Path tempFile = Files.createTempFile("uploaded_file", null);
-      inputFile.transferTo(tempFile);
-      String inputFilePath = tempFile.toString();
-
-      String transcriptionResult = transcriberAdapter.get_input_transcription(inputFilePath);
-
-      // Clean up the temporary file
-      Files.delete(tempFile);
+      String transcriptionResult = transcriberAdapter.get_input_transcription(inputFile);
 
       return ResponseEntity.ok(transcriptionResult);
 

@@ -24,7 +24,7 @@ import com.google.protobuf.ByteString;
 @Service
 public class GoogleCloudTranscriber implements AudioTranscriberInterface {
 
-  private final String credentialsPath = "./assets/arboreal-parser-460306-q7-52e795ee28d5.json";
+  private final String credentialsPath = "/assets/arboreal-parser-460306-q7-52e795ee28d5.json";
 
   @Override
   public String transcribe_audio(String audio_file_path) throws IOException, InterruptedException {
