@@ -1,115 +1,63 @@
 package br.ufrn.EchoTyper.meeting.model;
 
+import br.ufrn.EchoTyper.register.model.Register;
+import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
-import br.ufrn.EchoTyper.meetingGroup.model.MeetingGroup;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import java.security.Timestamp;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.stereotype.Component;
+
+@Component
 @Entity
-@Table(name = "tb_meetings")
-public class Meeting {
+@Table(name = "tb_meeting")
+public class Meeting extends Register {
+    @Column(nullable = false, name = "str_participants")
+    Set<String> participants ;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Column(nullable = false, name = "dt_date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
+	private Date date = Date.from(Instant.now());
 
-    @NotNull(message = "Title is required")
-    @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters")
-    @Column(nullable = false, name = "str_title")
-    private String title;
-
-    @Column(nullable = false, name = "str_transcription")
-    @Lob
-    private String transcription;
-
-    @Lob
-    @Column(nullable = false, name = "str_summary")
-    private String summary;
-
-    @Lob
-    @Column(nullable = false, name = "str_annotations")
-    private String annotations;
-
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "group_id", nullable = true) // Not every meeting has to be part of a group
-    private MeetingGroup group;
-
-    public Meeting() {
+    public void setParticipants(Set<String> participants) {
+        this.participants = participants;
     }
 
-    public Meeting(Long id, String title, String transcription, String summary, String annotations) {
-        this.id = id;
-        this.title = title;
-        this.transcription = transcription;
-        this.summary = summary;
-        this.annotations = annotations;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    // Nao sei se a deserializacao da string nos respectivos objetos deve ser feita
+    // na subclasse ou na classe abstrata 
+    public void computeParticipants(Set<String> participants) {
+        this.participants = participants;
+    }
+
+    public Meeting() {
+        super();
     }
 
     public Meeting(Long id, String title, String transcription, String summary, String annotations,
-            MeetingGroup group) {
-        this.id = id;
-        this.title = title;
-        this.transcription = transcription;
-        this.summary = summary;
-        this.annotations = annotations;
-        this.group = group;
+            JsonNode content) {
+        super(id, title, transcription, summary, annotations,
+            content);
     }
 
-    // Getters e setters
-    public Long getId() {
-        return id;
+    // ! : O uso do RegisterGroup como parametro pode causar erro
+    public Meeting(Long id, String title, String transcription, String summary, String annotations,
+            RegisterGroup group, JsonNode content) {
+        super(id,title,transcription, summary,annotations,
+            group, content);
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTranscription() {
-        return transcription;
-    }
-
-    public void setTranscription(String transcription) {
-        this.transcription = transcription;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getAnnotations() {
-        return annotations;
-    }
-
-    public void setAnnotations(String annotations) {
-        this.annotations = annotations;
-    }
-
-    public MeetingGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(MeetingGroup group) {
-        this.group = group;
-    }
-
-    // public User getUser() {
-    // return user;
-    // }
-
-    // public void setUser(User user) {
-    // this.user = user;
-    // }
 }
