@@ -23,12 +23,10 @@ import org.springframework.stereotype.Component;
 @Entity
 @Table(name = "tb_meeting")
 public class Meeting extends Register {
+
+
     @Column(nullable = false, name = "str_participants")
     Set<String> participants ;
-
-	@Column(nullable = false, name = "dt_date")
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date date = Date.from(Instant.now());
 
     public void setParticipants(Set<String> participants) {
         this.participants = participants;
