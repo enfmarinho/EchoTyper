@@ -14,6 +14,8 @@ import br.ufrn.EchoTyper.register.model.Register;
 import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 @Component
 public class RegisterGroupMapper {
 
@@ -25,7 +27,7 @@ public class RegisterGroupMapper {
         this.registerMapper = registerMapper;
         try {
             this.constructor = registerGroup.getClass().getConstructor(Long.class, String.class, Set.class,
-                    Map.class);
+                    JsonNode.class);
         } catch (Exception e) {
             System.err.println("An exception has occurred" + e.getMessage());
         }

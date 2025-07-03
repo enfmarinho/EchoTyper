@@ -12,11 +12,13 @@ import java.lang.reflect.Constructor;
 import br.ufrn.EchoTyper.register.model.Register;
 import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.logging.Logger;
 
 @Component
 public class RegisterMapper {
     private Constructor<? extends Register> fullConstructor;
     private Constructor<? extends Register> grouplessConstructor;
+    private static final Logger LOG = Logger.getLogger(RegisterMapper.class.getName());
 
     @Autowired
     public RegisterMapper(Register register) {
@@ -24,11 +26,11 @@ public class RegisterMapper {
         try {
             Class<? extends Register> registerClass = register.getClass();
             this.grouplessConstructor = registerClass.getConstructor(Long.class, String.class, String.class,
-                    String.class, String.class, Map.class);
+                    String.class, String.class, JsonNode.class);
             this.fullConstructor = registerClass.getConstructor(Long.class, String.class, String.class,
-                    String.class, String.class, RegisterGroup.class, Map.class);
+                    String.class, String.class, RegisterGroup.class,JsonNode.class);
         } catch (Exception e) {
-            System.err.println("An exception has occurred" + e.getMessage());
+            LOG.severe("An exception has occurred" + e.getMessage());
         }
     }
 
@@ -40,7 +42,7 @@ public class RegisterMapper {
                     registerRequestDTO.summary(), registerRequestDTO.annotations(),
                     registerRequestDTO.content());
         } catch (Exception e) {
-            System.err.println("An exception has occurred" + e.getMessage());
+            LOG.severe("An exception has occurred" + e.getMessage());
         }
         return register;
     }
@@ -52,7 +54,7 @@ public class RegisterMapper {
                     registerRequestDTO.summary(), registerRequestDTO.annotations(), group,
                     registerRequestDTO.content());
         } catch (Exception e) {
-            System.err.println("An exception has occurred" + e.getMessage());
+            LOG.severe("An exception has occurred" + e.getMessage());
         }
         return register;
     }
