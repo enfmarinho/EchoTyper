@@ -32,10 +32,6 @@ public class Meeting extends Register {
         this.participants = participants;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     // Nao sei se a deserializacao da string nos respectivos objetos deve ser feita
     // na subclasse ou na classe abstrata 
     public void computeParticipants(Set<String> participants) {
