@@ -9,28 +9,28 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import br.ufrn.EchoTyper.register.dto.RegisterGroupMapper;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupRequestDTO;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupResponseDTO;
 import br.ufrn.EchoTyper.register.dto.RegisterMapper;
 import br.ufrn.EchoTyper.register.dto.RegisterRequestDTO;
 import br.ufrn.EchoTyper.register.dto.RegisterResponseDTO;
 import br.ufrn.EchoTyper.register.model.Register;
+import br.ufrn.EchoTyper.register.model.RegisterGroup;
+import br.ufrn.EchoTyper.register.repository.RegisterGroupRepository;
 import br.ufrn.EchoTyper.register.repository.RegisterRepository;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupMapper;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupRequestDTO;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupResponseDTO;
-import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
-import br.ufrn.EchoTyper.registerGroup.repository.RegisterGroupRepository;
 import jakarta.transaction.Transactional;
 
-public abstract class RegisterService {
-    private RegisterRepository registerRepository;
-    private RegisterGroupRepository registerGroupRepository;
-    private RegisterMapper registerMapper;
-    private RegisterGroupMapper registerGroupMapper;
+public abstract class RegisterService<RegisterImpl extends Register, RegisterGroupImpl extends RegisterGroup> {
+    private RegisterRepository<RegisterImpl> registerRepository;
+    private RegisterGroupRepository<RegisterGroupImpl> registerGroupRepository;
+    private RegisterMapper<RegisterImpl> registerMapper;
+    private RegisterGroupMapper<RegisterGroupImpl, RegisterImpl> registerGroupMapper;
 
-    public RegisterService(RegisterRepository registerRepository,
-            RegisterGroupRepository registerGroupRepository,
-            RegisterMapper registerMapper,
-            RegisterGroupMapper registerGroupMapper) {
+    public RegisterService(RegisterRepository<RegisterImpl> registerRepository,
+            RegisterGroupRepository<RegisterGroupImpl> registerGroupRepository,
+            RegisterMapper<RegisterImpl> registerMapper,
+            RegisterGroupMapper<RegisterGroupImpl, RegisterImpl> registerGroupMapper) {
         this.registerRepository = registerRepository;
         this.registerGroupRepository = registerGroupRepository;
         this.registerMapper = registerMapper;
@@ -38,7 +38,7 @@ public abstract class RegisterService {
     }
 
     public RegisterResponseDTO createRegister(RegisterRequestDTO registerRequestDTO) {
-        Register newRegister;
+        RegisterImpl newRegister;
         if (registerRequestDTO.groupId() == null) {
             newRegister = registerMapper.toEntity(registerRequestDTO);
         } else {
@@ -49,8 +49,9 @@ public abstract class RegisterService {
         return registerMapper.toResponseDTO(newRegister);
     }
 
+    @Transactional
     public RegisterResponseDTO updateRegister(Long id, RegisterRequestDTO registerRequestDTO) {
-        Register register = registerRepository.findById(id).get();
+        RegisterImpl register = registerRepository.findById(id).get();
         if (register == null) {
             throw new RuntimeException("Register not found");
         }
@@ -58,16 +59,16 @@ public abstract class RegisterService {
         register.setTranscription(registerRequestDTO.transcription());
         register.setSummary(registerRequestDTO.summary());
         register.setAnnotations(registerRequestDTO.annotations());
-        register.setSubclassesAttributes(registerRequestDTO.content());
-        Optional<RegisterGroup> groupOpt = getGroupObjById(id);
+        register.setContent(registerRequestDTO.content());
+        Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
         RegisterGroup group = groupOpt.orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
         register.setGroup(group);
-        registerRepository.save(register);
         return registerMapper.toResponseDTO(register);
     }
 
-    // Meant to be used only on the resource's service layer
-    public Register updateRegister(Register newRegister) {
+    // ! : This doesnt guarantee ACID, since it is self-invocational. See the 'potential pitfalls' section:
+    // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
+    public RegisterImpl updateRegister(RegisterImpl newRegister) {
         registerRepository.save(newRegister);
         return newRegister;
     }
@@ -83,6 +84,7 @@ public abstract class RegisterService {
 
     // Writing a JPQL query is better than handlng these entity objects, but
     // performing queries envolving LOBs is really annoying
+    @Transactional
     public void deleteRegister(Long id) {
         if (!registerRepository.existsById(id)) {
             throw new RuntimeException("Register not found");
@@ -107,12 +109,11 @@ public abstract class RegisterService {
 
     @Transactional
     public RegisterGroupResponseDTO createGroup(RegisterGroupRequestDTO registerDTO) {
-        Set<Register> registers = new HashSet<>();
+        Set<RegisterImpl> registers = new HashSet<>();
         for (Long registerId : registerDTO.registerIds()) {
             registers.add(getRegisterObjById(registerId));
         }
-        
-        RegisterGroup registerGroup = registerGroupMapper.toEntity(registerDTO, registers);
+        RegisterGroupImpl registerGroup = registerGroupMapper.toEntity(registerDTO, registers);
         registerGroupRepository.save(registerGroup);
         for (Long registerIds : registerDTO.registerIds()) {
             addRegisterToGroup(registerIds, registerGroup.getId());
@@ -121,14 +122,14 @@ public abstract class RegisterService {
     }
 
     // Hook that'll perform custom logic when adding a register subclass to a group
-    protected abstract void addRegisterToGroupHook(RegisterGroup group, Register register);
+    protected abstract void addRegisterToGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
     public RegisterGroupResponseDTO addRegisterToGroup(Long registerId, Long registerGroupId) {
         // TODO : exception handling
-        RegisterGroup registerGroup = getGroupObjById(registerGroupId)
+        RegisterGroupImpl registerGroup = getGroupObjById(registerGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
-        Register register = registerRepository.findById(registerId)
+        RegisterImpl register = registerRepository.findById(registerId)
                 .orElseThrow(() -> new IllegalArgumentException("Register does not exist"));
         registerGroup.getRegisters().add(register);
         register.setGroup(registerGroup);
@@ -140,12 +141,12 @@ public abstract class RegisterService {
 
     // Hook that'll perform custom logic when removing a register subclass to a
     // group
-    protected abstract void removeRegisterFromGroupHook(RegisterGroup group, Register register);
+    protected abstract void removeRegisterFromGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
     public RegisterGroupResponseDTO removeRegisterFromGroup(Long registerId, Long registerGroupId) {
-        RegisterGroup group = registerGroupRepository.findById(registerGroupId).get();
-        Register register = getRegisterObjById(registerGroupId);
+        RegisterGroupImpl group = registerGroupRepository.findById(registerGroupId).get();
+        RegisterImpl register = getRegisterObjById(registerGroupId);
         group.getRegisters().remove(register);
         register.setGroup(null);
         updateRegister(register);
@@ -160,8 +161,8 @@ public abstract class RegisterService {
 
     @Transactional
     public void deleteRegisterGroup(Long groupId) {
-        RegisterGroup group = registerGroupRepository.findById(groupId).get();
-        for (Register register : group.getRegisters()) {
+        RegisterGroupImpl group = registerGroupRepository.findById(groupId).get();
+        for (RegisterImpl register : group.getRegisters()) {
             removeRegisterFromGroup(register.getId(), group.getId());
             // ** Delete group template method
             deleteRegisterGroupHook(group, register);
@@ -177,7 +178,7 @@ public abstract class RegisterService {
 
     @Transactional
     public List<String> getSummariesByGroup(Long groupId) {
-        Collection<Register> registers = getGroupsRegistersObjs(groupId);
+        Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
         List<String> summaries = new ArrayList<>();
         for (Register register : registers) {
             summaries.add(register.getSummary());
@@ -187,7 +188,7 @@ public abstract class RegisterService {
 
     @Transactional
     public List<JsonNode> getRegisterContentByGroup(Long groupId) {
-        Collection<Register> registers = getGroupsRegistersObjs(groupId);
+        Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
         List<JsonNode> contentList = new ArrayList<>();
         for (Register register : registers) {
             contentList.add(register.getContent());
@@ -197,7 +198,7 @@ public abstract class RegisterService {
 
     @Transactional
     public List<RegisterResponseDTO> getRegistersByGroup(Long groupId) {
-        Collection<Register> registers = getGroupsRegistersObjs(groupId);
+        Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
         List<RegisterResponseDTO> registerResponses = new ArrayList<>();
         for (Register register : registers) {
             registerResponses.add(registerMapper.toResponseDTO(register));
@@ -205,20 +206,20 @@ public abstract class RegisterService {
         return registerResponses;
     }
 
-    protected Collection<Register> getGroupsRegistersObjs(Long groupId) {
-        Optional<RegisterGroup> groupOpt = getGroupObjById(groupId);
+    protected Collection<RegisterImpl> getGroupsRegistersObjs(Long groupId) {
+        Optional<RegisterGroupImpl> groupOpt = getGroupObjById(groupId);
         if (groupOpt.isEmpty()) {
             return new ArrayList<>();
         }
         // ! : Protecting the reference might cause bugs
-        return new ArrayList<Register>(groupOpt.get().getRegisters());
+        return new ArrayList<RegisterImpl>(groupOpt.get().getRegisters());
     }
 
-    protected Optional<RegisterGroup> getGroupObjById(Long id) {
+    protected Optional<RegisterGroupImpl> getGroupObjById(Long id) {
         return registerGroupRepository.findById(id);
     }
 
-    protected Register getRegisterObjById(Long id) {
+    protected RegisterImpl getRegisterObjById(Long id) {
         return registerRepository.findById(id).orElseGet(() -> null);
     }
 }
