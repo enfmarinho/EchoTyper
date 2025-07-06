@@ -157,7 +157,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     }
 
     // Hoook to override the logic performed to a register when its group is deleted
-    protected abstract void deleteRegisterGroupHook(RegisterGroup group, Register register);
+    protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
     public void deleteRegisterGroup(Long groupId) {
