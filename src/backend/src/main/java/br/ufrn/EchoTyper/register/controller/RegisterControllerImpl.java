@@ -7,10 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.ufrn.EchoTyper.register.service.RegisterService;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupRequestDTO;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupResponseDTO;
 import jakarta.validation.Valid;
 import br.ufrn.EchoTyper.register.dto.RegisterResponseDTO;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupRequestDTO;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupResponseDTO;
 import br.ufrn.EchoTyper.register.dto.RegisterRequestDTO;
 
 @RestController

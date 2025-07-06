@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import br.ufrn.EchoTyper.register.dto.RegisterGroupRequestDTO;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupResponseDTO;
 import br.ufrn.EchoTyper.register.dto.RegisterRequestDTO;
 import br.ufrn.EchoTyper.register.dto.RegisterResponseDTO;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupRequestDTO;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupResponseDTO;
 import jakarta.validation.Valid;
 
 
