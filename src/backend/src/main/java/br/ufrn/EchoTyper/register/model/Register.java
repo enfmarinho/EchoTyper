@@ -1,13 +1,7 @@
 package br.ufrn.EchoTyper.register.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
-import br.ufrn.EchoTyper.utils.JsonDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -45,20 +39,7 @@ public abstract class Register {
     @JoinColumn(name = "group_id", nullable = true)
     private RegisterGroup group;
 
-    @Transient
-    private JsonNode content;
-
     public Register() {
-    }
-
-    public Register(Long id, String title, String transcription, String summary, String annotations,
-            RegisterGroup group) {
-        this.id = id;
-        this.title = title;
-        this.transcription = transcription;
-        this.summary = summary;
-        this.annotations = annotations;
-        this.group = group;
     }
 
     public Register(Long id, String title, String transcription, String summary, String annotations,
@@ -68,7 +49,7 @@ public abstract class Register {
         this.transcription = transcription;
         this.summary = summary;
         this.annotations = annotations;
-        setSubclassesAttributes(content);
+        setContent(content);
     }
 
     public Register(Long id, String title, String transcription, String summary, String annotations,
@@ -101,10 +82,6 @@ public abstract class Register {
         return group;
     }
 
-    public JsonNode getContent() {
-        return content;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -129,25 +106,10 @@ public abstract class Register {
         this.group = group;
     }
 
-    public void setSubclassesAttributes(JsonNode content) {
-        Class<?> subclass = this.getClass();
-        for (Field attribute : subclass.getDeclaredFields()) {
-            String attributeName = attribute.getName();
-            if (content.hasNonNull(attributeName)) {
-                try {
-                    String capitalizedAttributeName = attributeName.substring(0, 1).toUpperCase()
-                            + attributeName.substring(1);
-                    String methodName = String.format(SUBCLASS_ATTR_NAME_FORMAT, capitalizedAttributeName);
-                    Method method = subclass.getMethod(methodName);
-                    Class<?> attributeClass = method.getParameterTypes()[0];
-                    method.invoke(JsonDeserializer.deserialize(attributeName, attributeClass));
-                } catch (Exception e) {
-                    System.err.println("An exception has occurred: " + e.getMessage());
-                }
-            } else {
-                throw new IllegalArgumentException("Missing attribute in content: " + attributeName);
-            }
-        }
-        this.content = content;
-    }
+    /*
+     * This method will set the subclass' specific attributes
+     */
+    public abstract void setContent(JsonNode json);
+
+    public abstract JsonNode getContent();
 }
