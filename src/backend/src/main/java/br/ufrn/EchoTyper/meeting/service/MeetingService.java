@@ -1,7 +1,5 @@
 package br.ufrn.EchoTyper.meeting.service;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,34 +7,34 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.ufrn.EchoTyper.meeting.model.Meeting;
+import br.ufrn.EchoTyper.meeting.model.MeetingGroup;
+import br.ufrn.EchoTyper.register.dto.RegisterGroupMapper;
 import br.ufrn.EchoTyper.register.dto.RegisterMapper;
-import br.ufrn.EchoTyper.register.model.Register;
+import br.ufrn.EchoTyper.register.repository.RegisterGroupRepository;
 import br.ufrn.EchoTyper.register.repository.RegisterRepository;
 import br.ufrn.EchoTyper.register.service.RegisterService;
-import br.ufrn.EchoTyper.registerGroup.dto.RegisterGroupMapper;
-import br.ufrn.EchoTyper.registerGroup.model.RegisterGroup;
-import br.ufrn.EchoTyper.registerGroup.repository.RegisterGroupRepository;
-import br.ufrn.EchoTyper.utils.JsonDeserializer;
+import br.ufrn.EchoTyper.utils.JsonUtil;
 
 @Service
-public class MeetingService extends RegisterService {
+public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
+
     @Autowired
-    public MeetingService(RegisterRepository registerRepository,
-            RegisterGroupRepository registerGroupRepository,
-            RegisterMapper registerMapper,
-            RegisterGroupMapper registerGroupMapper) {
+    public MeetingService(RegisterRepository<Meeting> registerRepository,
+            RegisterGroupRepository<MeetingGroup> registerGroupRepository,
+            RegisterMapper<Meeting> registerMapper,
+            RegisterGroupMapper<MeetingGroup, Meeting> registerGroupMapper) {
         super(registerRepository, registerGroupRepository, registerMapper, registerGroupMapper);
     }
 
     @Override
-    protected void addRegisterToGroupHook(RegisterGroup group, Register register) {
+    protected void addRegisterToGroupHook(MeetingGroup group, Meeting register) {
         JsonNode groupParticpantsJson = group.getContent().get("participants");
-        Set<String> groupParticipants = JsonDeserializer.deserialize(groupParticpantsJson.asText(), new TypeReference<Set<String>>() {
+        Set<String> groupParticipants = JsonUtil.deserialize(groupParticpantsJson, new TypeReference<Set<String>>() {
         });
         JsonNode meetingParticipantsJson = register.getContent().get("participants");
-        Set<String> meetingParticipants = JsonDeserializer.deserialize(meetingParticipantsJson.asText(),
+        Set<String> meetingParticipants = JsonUtil.deserialize(meetingParticipantsJson,
                 new TypeReference<Set<String>>() {
                 });
         for (String meetingParticipant : meetingParticipants) {
@@ -45,12 +43,12 @@ public class MeetingService extends RegisterService {
     }
 
     @Override
-    protected void removeRegisterFromGroupHook(RegisterGroup group, Register register) {
+    protected void removeRegisterFromGroupHook(MeetingGroup group, Meeting register) {
 
     }
 
     @Override
-    protected void deleteRegisterGroupHook(RegisterGroup group, Register register) {
+    protected void deleteRegisterGroupHook(MeetingGroup group, Meeting register) {
 
     }
 }

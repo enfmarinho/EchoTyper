@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @Component
 @Entity
 @Table(name = "tb_meeting_group")
-public class MeetingGroup extends RegisterGroup {
+public class MeetingGroup extends RegisterGroup<Meeting> {
     @Column(name = "str_participants")
     Set<String> participants;
 
@@ -52,7 +52,7 @@ public class MeetingGroup extends RegisterGroup {
     public MeetingGroup() {
     }
 
-    public MeetingGroup(Long id, String groupName, Set<Register> registers, JsonNode content) {
+    public MeetingGroup(Long id, String groupName, Set<Meeting> registers, JsonNode content) {
         this.groupName = groupName;
         this.registers = registers;
         this.id = id;
