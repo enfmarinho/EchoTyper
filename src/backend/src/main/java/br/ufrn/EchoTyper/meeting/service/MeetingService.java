@@ -2,7 +2,6 @@ package br.ufrn.EchoTyper.meeting.service;
 
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -20,9 +19,8 @@ import br.ufrn.EchoTyper.utils.JsonUtil;
 @Service
 public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
 
-    @Autowired
     public MeetingService(RegisterRepository<Meeting> registerRepository,
-            RegisterGroupRepository<MeetingGroup> registerGroupRepository,
+            RegisterGroupRepository<MeetingGroup, Meeting> registerGroupRepository,
             RegisterMapper<Meeting> registerMapper,
             RegisterGroupMapper<MeetingGroup, Meeting> registerGroupMapper) {
         super(registerRepository, registerGroupRepository, registerMapper, registerGroupMapper);

@@ -3,7 +3,6 @@ package br.ufrn.EchoTyper.meeting.model;
 import br.ufrn.EchoTyper.register.model.Register;
 import br.ufrn.EchoTyper.register.model.RegisterGroup;
 import br.ufrn.EchoTyper.utils.JsonUtil;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -84,7 +83,7 @@ public class Meeting extends Register {
 
     // ! : O uso do RegisterGroup como parametro pode causar erro
     public Meeting(Long id, String title, String transcription, String summary, String annotations,
-            RegisterGroup<Meeting> group, JsonNode content) {
+            RegisterGroup<Register> group, JsonNode content) {
         super(id, title, transcription, summary, annotations,
                 group, content);
     }
