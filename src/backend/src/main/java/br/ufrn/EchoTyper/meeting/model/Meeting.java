@@ -84,7 +84,7 @@ public class Meeting extends Register {
 
     // ! : O uso do RegisterGroup como parametro pode causar erro
     public Meeting(Long id, String title, String transcription, String summary, String annotations,
-            RegisterGroup group, JsonNode content) {
+            RegisterGroup<Meeting> group, JsonNode content) {
         super(id, title, transcription, summary, annotations,
                 group, content);
     }
