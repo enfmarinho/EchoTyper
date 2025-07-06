@@ -21,7 +21,7 @@ import br.ufrn.EchoTyper.register.repository.RegisterGroupRepository;
 import br.ufrn.EchoTyper.register.repository.RegisterRepository;
 import jakarta.transaction.Transactional;
 
-public abstract class RegisterService<RegisterImpl extends Register, RegisterGroupImpl extends RegisterGroup> {
+public abstract class RegisterService<RegisterImpl extends Register, RegisterGroupImpl extends RegisterGroup<RegisterImpl>> {
     private RegisterRepository<RegisterImpl> registerRepository;
     private RegisterGroupRepository<RegisterGroupImpl> registerGroupRepository;
     private RegisterMapper<RegisterImpl> registerMapper;
@@ -42,7 +42,8 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         if (registerRequestDTO.groupId() == null) {
             newRegister = registerMapper.toEntity(registerRequestDTO);
         } else {
-            RegisterGroup group = registerGroupRepository.findById(registerRequestDTO.groupId()).orElseGet(() -> null);
+            RegisterGroup<RegisterImpl> group = registerGroupRepository.findById(registerRequestDTO.groupId())
+                    .orElseGet(() -> null);
             newRegister = registerMapper.toEntity(registerRequestDTO, group);
         }
         registerRepository.save(newRegister);
@@ -61,12 +62,14 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         register.setAnnotations(registerRequestDTO.annotations());
         register.setContent(registerRequestDTO.content());
         Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
-        RegisterGroup group = groupOpt.orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
+        RegisterGroup<RegisterImpl> group = groupOpt
+                .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
         register.setGroup(group);
         return registerMapper.toResponseDTO(register);
     }
 
-    // ! : This doesnt guarantee ACID, since it is self-invocational. See the 'potential pitfalls' section:
+    // ! : This doesnt guarantee ACID, since it is self-invocational. See the
+    // 'potential pitfalls' section:
     // https://www.baeldung.com/transaction-configuration-with-jpa-and-spring
     public RegisterImpl updateRegister(RegisterImpl newRegister) {
         registerRepository.save(newRegister);
