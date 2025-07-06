@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import br.ufrn.EchoTyper.register.model.Register;
 
-public interface RegisterRepository extends JpaRepository<Register, Long>{
-   public Optional<Register> findById(Long id);
+public interface RegisterRepository<RegisterImpl extends Register> extends JpaRepository<RegisterImpl, Long>{
+   public Optional<RegisterImpl> findById(Long id);
 }
