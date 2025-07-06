@@ -2,7 +2,6 @@ package br.ufrn.EchoTyper.register.dto;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.ufrn.EchoTyper.register.dto.factories.RegisterFactory;
@@ -15,7 +14,6 @@ public class RegisterMapper<RegisterImpl extends Register> {
 
     private final RegisterFactory<RegisterImpl> registerFactory;
 
-    @Autowired
     public RegisterMapper(RegisterFactory<RegisterImpl> registerFactory) {
         this.registerFactory = registerFactory;
     }
@@ -26,14 +24,14 @@ public class RegisterMapper<RegisterImpl extends Register> {
                 registerRequestDTO.content());
     }
 
-    public RegisterImpl toEntity(RegisterRequestDTO registerRequestDTO, RegisterGroup group) {
+    public RegisterImpl toEntity(RegisterRequestDTO registerRequestDTO, RegisterGroup<RegisterImpl> group) {
         return registerFactory.createGroupedRegister(null, registerRequestDTO.title(),
                 registerRequestDTO.transcription(),
                 registerRequestDTO.summary(), registerRequestDTO.annotations(), group,
                 registerRequestDTO.content());
     }
 
-    public RegisterResponseDTO toResponseDTO(Register register) {
+    public RegisterResponseDTO toResponseDTO(RegisterImpl register) {
         if (register.getGroup() != null) {
             return new RegisterResponseDTO(register.getId(), register.getTitle(), register.getTranscription(),
                     register.getSummary(), register.getAnnotations(), register.getGroup().getGroupName(),
@@ -43,7 +41,7 @@ public class RegisterMapper<RegisterImpl extends Register> {
                 register.getSummary(), register.getAnnotations(), null, null, register.getContent());
     }
 
-    public Collection<RegisterResponseDTO> toResponseDTO(Collection<Register> registers) {
+    public Collection<RegisterResponseDTO> toResponseDTO(Collection<RegisterImpl> registers) {
         return registers.stream().map((register) -> this.toResponseDTO(register)).toList();
     }
 }

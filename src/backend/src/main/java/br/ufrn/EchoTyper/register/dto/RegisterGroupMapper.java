@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Component
-public class RegisterGroupMapper<RegisterGroupImpl extends RegisterGroup, RegisterImpl extends Register> {
+public class RegisterGroupMapper<RegisterGroupImpl extends RegisterGroup<RegisterImpl>, RegisterImpl extends Register> {
 
     private RegisterMapper<RegisterImpl> registerMapper;
 

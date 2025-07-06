@@ -10,5 +10,5 @@ public interface RegisterFactory<RegisterImpl extends Register> {
             JsonNode content);
 
     RegisterImpl createGroupedRegister(Long id, String title, String transcription, String summary, String annotations,
-            RegisterGroup group, JsonNode content);
+            RegisterGroup<RegisterImpl> group, JsonNode content);
 }

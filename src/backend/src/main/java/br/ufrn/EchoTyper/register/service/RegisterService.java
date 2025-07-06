@@ -23,12 +23,12 @@ import jakarta.transaction.Transactional;
 
 public abstract class RegisterService<RegisterImpl extends Register, RegisterGroupImpl extends RegisterGroup<RegisterImpl>> {
     private RegisterRepository<RegisterImpl> registerRepository;
-    private RegisterGroupRepository<RegisterGroupImpl> registerGroupRepository;
+    private RegisterGroupRepository<RegisterGroupImpl, RegisterImpl> registerGroupRepository;
     private RegisterMapper<RegisterImpl> registerMapper;
     private RegisterGroupMapper<RegisterGroupImpl, RegisterImpl> registerGroupMapper;
 
     public RegisterService(RegisterRepository<RegisterImpl> registerRepository,
-            RegisterGroupRepository<RegisterGroupImpl> registerGroupRepository,
+            RegisterGroupRepository<RegisterGroupImpl, RegisterImpl> registerGroupRepository,
             RegisterMapper<RegisterImpl> registerMapper,
             RegisterGroupMapper<RegisterGroupImpl, RegisterImpl> registerGroupMapper) {
         this.registerRepository = registerRepository;
@@ -56,6 +56,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         if (register == null) {
             throw new RuntimeException("Register not found");
         }
+        
         register.setTitle(registerRequestDTO.title());
         register.setTranscription(registerRequestDTO.transcription());
         register.setSummary(registerRequestDTO.summary());
@@ -64,6 +65,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
         RegisterGroup<RegisterImpl> group = groupOpt
                 .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
+        // Gamabiaraa
         register.setGroup(group);
         return registerMapper.toResponseDTO(register);
     }
@@ -203,7 +205,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     public List<RegisterResponseDTO> getRegistersByGroup(Long groupId) {
         Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
         List<RegisterResponseDTO> registerResponses = new ArrayList<>();
-        for (Register register : registers) {
+        for (RegisterImpl register : registers) {
             registerResponses.add(registerMapper.toResponseDTO(register));
         }
         return registerResponses;

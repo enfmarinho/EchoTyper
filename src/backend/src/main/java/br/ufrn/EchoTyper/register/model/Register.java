@@ -37,7 +37,7 @@ public abstract class Register {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true)
-    private RegisterGroup group;
+    private RegisterGroup<Register> group;
 
     public Register() {
     }
@@ -53,7 +53,7 @@ public abstract class Register {
     }
 
     public Register(Long id, String title, String transcription, String summary, String annotations,
-            RegisterGroup group, JsonNode content) {
+            RegisterGroup<Register> group, JsonNode content) {
         this(id, title, transcription, summary, annotations, content);
         this.group = group;
     }
@@ -78,7 +78,7 @@ public abstract class Register {
         return annotations;
     }
 
-    public RegisterGroup getGroup() {
+    public RegisterGroup<Register> getGroup() {
         return group;
     }
 
@@ -102,7 +102,7 @@ public abstract class Register {
         this.annotations = annotations;
     }
 
-    public void setGroup(RegisterGroup group) {
+    public void setGroup(RegisterGroup  group) {
         this.group = group;
     }
 
