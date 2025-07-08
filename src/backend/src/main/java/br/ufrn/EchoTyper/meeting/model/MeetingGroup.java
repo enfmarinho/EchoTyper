@@ -37,8 +37,8 @@ public class MeetingGroup extends RegisterGroup<Meeting> {
         Set<String> participants = new HashSet<>();
         if (this.content.has("participants")) {
              participants = JsonUtil.deserialize(this.content.get("participants"),
-                new TypeReference<Set<String>>() {
-                });
+                    new TypeReference<Set<String>>() {
+                    });
         }
         this.setParticipants(participants);
     }
@@ -57,9 +57,6 @@ public class MeetingGroup extends RegisterGroup<Meeting> {
     }
 
     public MeetingGroup(Long id, String groupName, Set<Meeting> registers, JsonNode content) {
-        this.groupName = groupName;
-        this.registers = registers;
-        this.id = id;
-        setContent(content);
+        super(id, groupName, registers, content);
     }
 }
