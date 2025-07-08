@@ -65,7 +65,6 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
         RegisterGroup<RegisterImpl> group = groupOpt
                 .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
-        // Gamabiaraa
         register.setGroup(group);
         return registerMapper.toResponseDTO(register);
     }
@@ -87,8 +86,6 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
                 .toList();
     }
 
-    // Writing a JPQL query is better than handlng these entity objects, but
-    // performing queries envolving LOBs is really annoying
     @Transactional
     public void deleteRegister(Long id) {
         if (!registerRepository.existsById(id)) {
@@ -107,6 +104,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
                 .map((register) -> registerMapper.toResponseDTO(register)).toList();
     }
 
+    @Transactional
     public List<RegisterGroupResponseDTO> getAllGroups() {
         return registerGroupRepository.findAll().stream()
                 .map((registerGroup) -> registerGroupMapper.toResponseDTO(registerGroup)).toList();
@@ -131,7 +129,6 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
 
     @Transactional
     public RegisterGroupResponseDTO addRegisterToGroup(Long registerId, Long registerGroupId) {
-        // TODO : exception handling
         RegisterGroupImpl registerGroup = getGroupObjById(registerGroupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
         RegisterImpl register = registerRepository.findById(registerId)
@@ -161,7 +158,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         return registerGroupMapper.toResponseDTO(group);
     }
 
-    // Hoook to override the logic performed to a register when its group is deleted
+    // Hook to override the logic performed to a register when its group is deleted
     protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
@@ -216,7 +213,6 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         if (groupOpt.isEmpty()) {
             return new ArrayList<>();
         }
-        // ! : Protecting the reference might cause bugs
         return new ArrayList<RegisterImpl>(groupOpt.get().getRegisters());
     }
 
