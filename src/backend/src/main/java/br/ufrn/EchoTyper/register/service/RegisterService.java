@@ -150,7 +150,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         RegisterGroupImpl group = registerGroupRepository.findById(registerGroupId).get();
         RegisterImpl register = getRegisterObjById(registerGroupId);
         group.getRegisters().remove(register);
-        register.setGroup(null);
+        register.setGroup(group);
         updateRegister(register);
         registerGroupRepository.save(group);
         // ** Update register group template method

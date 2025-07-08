@@ -63,7 +63,7 @@ public class Meeting extends Register {
             Date date = JsonUtil.deserialize(this.content.get("date"),
                     new TypeReference<Date>() {
                     });
-            this.setDate(date); // the data has a default value
+            this.setDate(date); // the date has a default value
         }
     }
 
