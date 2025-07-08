@@ -16,28 +16,31 @@ public abstract class Register {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @NotNull(message = "Title is required")
     @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters")
     @Column(nullable = false, name = "str_title")
-    private String title;
+    protected String title;
 
     @Column(nullable = false, name = "str_transcription")
     @Lob
-    private String transcription;
+    protected String transcription;
 
     @Lob
     @Column(nullable = false, name = "str_summary")
-    private String summary;
+    protected String summary;
 
     @Lob
     @Column(nullable = false, name = "str_annotations")
-    private String annotations;
+    protected String annotations;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true)
-    private RegisterGroup<Register> group;
+    protected RegisterGroup<Register> group;
+
+    @Transient
+    protected JsonNode content;
 
     public Register() {
     }
@@ -49,7 +52,8 @@ public abstract class Register {
         this.transcription = transcription;
         this.summary = summary;
         this.annotations = annotations;
-        setContent(content);
+        this.content = content;
+        processContent();
     }
 
     public Register(Long id, String title, String transcription, String summary, String annotations,
@@ -106,10 +110,15 @@ public abstract class Register {
         this.group = group;
     }
 
+    public void setContent(JsonNode content) {
+        this.content = content;
+        processContent();
+    }
+
     /*
      * This method will set the subclass' specific attributes
      */
-    public abstract void setContent(JsonNode json);
+    public abstract void processContent();
 
     public abstract JsonNode getContent();
 }
