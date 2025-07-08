@@ -1,5 +1,6 @@
 package br.ufrn.EchoTyper.meeting.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -32,10 +33,13 @@ public class MeetingGroup extends RegisterGroup<Meeting> {
     }
 
     @Override
-    public void setContent(JsonNode json) {
-        Set<String> participants = JsonUtil.deserialize(json,
+    public void processContent() {
+        Set<String> participants = new HashSet<>();
+        if (this.content.has("participants")) {
+             participants = JsonUtil.deserialize(this.content.get("participants"),
                 new TypeReference<Set<String>>() {
                 });
+        }
         this.setParticipants(participants);
     }
 

@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -35,8 +36,8 @@ public class Meeting extends Register {
         this.participants = participants;
     }
 
-    protected Set<String> getParticipants() {
-        return this.participants;
+    public Set<String> getParticipants() {
+        return participants;
     }
 
     protected void setDate(Date date) {
@@ -48,17 +49,21 @@ public class Meeting extends Register {
     }
 
     @Override
-    public void setContent(JsonNode json) {
-        Set<String> participants = JsonUtil.deserialize(json.get("participants"),
+    public void processContent() {
+
+        Set<String> participants = new HashSet<>();
+        if (this.content.has("participants")) { 
+            participants = JsonUtil.deserialize(this.content.get("participants"),
                 new TypeReference<Set<String>>() {
                 });
+        }
         this.setParticipants(participants);
 
-        if (json.has("date")) {
-            Date date = JsonUtil.deserialize(json.get("date"),
+        if (this.content.has("date")) {
+            Date date = JsonUtil.deserialize(this.content.get("date"),
                     new TypeReference<Date>() {
                     });
-            this.setDate(date);
+            this.setDate(date); // the data has a default value
         }
     }
 
