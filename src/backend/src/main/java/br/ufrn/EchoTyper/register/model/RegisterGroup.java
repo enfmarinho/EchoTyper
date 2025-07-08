@@ -38,7 +38,8 @@ public abstract class RegisterGroup<RegisterImpl extends Register> {
         this.groupName = groupName;
         this.registers = registers;
         this.id = id;
-        setContent(content);
+        this.content = content;
+        processContent();
     }
 
     public Long getId() {
@@ -69,6 +70,10 @@ public abstract class RegisterGroup<RegisterImpl extends Register> {
         return content;
     }
 
-    public abstract void setContent(JsonNode json);
+    public void setContent(JsonNode content) {
+        this.content = content;
+    }
+
+    public abstract void processContent();
 
 }
