@@ -28,15 +28,8 @@ public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
 
     @Override
     protected void addRegisterToGroupHook(MeetingGroup group, Meeting register) {
-        JsonNode groupParticpantsJson = group.getContent().get("participants");
-        Set<String> groupParticipants = JsonUtil.deserialize(groupParticpantsJson, new TypeReference<Set<String>>() {
-        });
-        JsonNode meetingParticipantsJson = register.getContent().get("participants");
-        Set<String> meetingParticipants = JsonUtil.deserialize(meetingParticipantsJson,
-                new TypeReference<Set<String>>() {
-                });
-        for (String meetingParticipant : meetingParticipants) {
-            groupParticipants.add(meetingParticipant);
+        for (String meetingParticipant : register.getParticipants()) {
+            group.getParticipants().add(meetingParticipant);
         }
     }
 
@@ -47,6 +40,7 @@ public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
 
     @Override
     protected void deleteRegisterGroupHook(MeetingGroup group, Meeting register) {
+
 
     }
 }
