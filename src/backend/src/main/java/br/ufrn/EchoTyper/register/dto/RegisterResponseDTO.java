@@ -1,13 +1,15 @@
-package br.ufrn.EchoTyper.meeting.dto;
+package br.ufrn.EchoTyper.register.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public record MeetingResponseDTO(
+public record RegisterResponseDTO(
         @JsonProperty("id") Long id,
         @JsonProperty("title") String title,
         @JsonProperty("transcription") String transcription,
         @JsonProperty("summary") String summary,
         @JsonProperty("annotations") String annotations,
         @JsonProperty("groupName") String groupName,
-        @JsonProperty("groupId") Long groupId) {
+        @JsonProperty("groupId") Long groupId,
+        @JsonProperty("content") JsonNode content) {
 }

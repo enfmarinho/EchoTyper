@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies.CheckConflictStrategy;
 import br.ufrn.EchoTyper.LLM.service.SummaryStrategies.SummaryStrategy;
-
+import br.ufrn.EchoTyper.register.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +26,8 @@ public class GeminiApiService implements LLM_Interface {
   @Autowired
   @Qualifier("checkConflictDefaultStrategy")
   private CheckConflictStrategy checkConflictStrategy;
+
+  private RegisterService registerService;
 
   private final RestTemplate restTemplate = new RestTemplate();
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -84,5 +86,13 @@ public class GeminiApiService implements LLM_Interface {
 
   private String escapeJson(String input) {
     return input.replace("\"", "\\\"").replace("\n", "\\n");
+  }
+
+  private String getSummaryContext(Long id) {
+    StringBuilder builder = new StringBuilder("[");
+    registerService.getSummariesByGroup(id).stream()
+        .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
+    builder.append("]");
+    return builder.toString();
   }
 }
