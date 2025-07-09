@@ -42,9 +42,10 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         if (registerRequestDTO.groupId() == null) {
             newRegister = registerMapper.toEntity(registerRequestDTO);
         } else {
-            RegisterGroup<RegisterImpl> group = registerGroupRepository.findById(registerRequestDTO.groupId())
+            RegisterGroupImpl group = registerGroupRepository.findById(registerRequestDTO.groupId())
                     .orElseGet(() -> null);
             newRegister = registerMapper.toEntity(registerRequestDTO, group);
+            addRegisterToGroup(newRegister, group);
         }
         registerRepository.save(newRegister);
         return registerMapper.toResponseDTO(newRegister);
@@ -141,6 +142,16 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         return registerGroupMapper.toResponseDTO(registerGroup);
     }
 
+    @Transactional
+    public RegisterGroupResponseDTO addRegisterToGroup(RegisterImpl register, RegisterGroupImpl registerGroup) {
+        registerGroup.getRegisters().add(register);
+        register.setGroup(registerGroup);
+        updateRegister(register);
+        addRegisterToGroupHook(registerGroup, register);
+        registerGroupRepository.save(registerGroup);
+        return registerGroupMapper.toResponseDTO(registerGroup);
+    }
+
     // Hook that'll perform custom logic when removing a register subclass to a
     // group
     protected abstract void removeRegisterFromGroupHook(RegisterGroupImpl group, RegisterImpl register);
@@ -148,7 +159,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     @Transactional
     public RegisterGroupResponseDTO removeRegisterFromGroup(Long registerId, Long registerGroupId) {
         RegisterGroupImpl group = registerGroupRepository.findById(registerGroupId).get();
-        RegisterImpl register = getRegisterObjById(registerGroupId);
+        RegisterImpl register = getRegisterObjById(registerId);
         group.getRegisters().remove(register);
         register.setGroup(group);
         updateRegister(register);
