@@ -14,8 +14,6 @@ import br.ufrn.EchoTyper.register.model.RegisterGroup;
 
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 @Component
 public class RegisterGroupMapper<RegisterGroupImpl extends RegisterGroup<RegisterImpl>, RegisterImpl extends Register> {
 

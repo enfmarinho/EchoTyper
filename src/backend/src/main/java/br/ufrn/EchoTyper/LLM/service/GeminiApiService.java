@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.json.Json;
 
-import br.ufrn.EchoTyper.meeting.service.MeetingService;
+import br.ufrn.EchoTyper.register.service.RegisterService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ public class GeminiApiService implements LLM_Interface {
   private String apiKey;
 
   @Autowired
-  private MeetingService meetingService;
+  private RegisterService registerService;
 
   private final RestTemplate restTemplate = new RestTemplate();
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -109,7 +109,7 @@ public class GeminiApiService implements LLM_Interface {
 
   private String getSummaryContext(Long id) {
     StringBuilder builder = new StringBuilder("[");
-    meetingService.getSummariesByGroup(id).stream()
+    registerService.getSummariesByGroup(id).stream()
         .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
     builder.append("]");
     return builder.toString();
