@@ -17,7 +17,7 @@ import ws.schild.jave.EncoderException;
 @Qualifier("videoTranscriber")
 public class VideoTranscriber extends TranscriberTemplate {
     @Override
-    private Path preprocessing(Path inputPathMp4) {
+    protected Path preprocessing(Path inputPathMp4) {
         // JAVE way of setting audio specifications and attributes
         AudioAttributes audio = new AudioAttributes();
         audio.setCodec("libmp3lame");

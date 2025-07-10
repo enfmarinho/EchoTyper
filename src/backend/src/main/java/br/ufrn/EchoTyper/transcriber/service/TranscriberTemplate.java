@@ -15,7 +15,7 @@ public class TranscriberTemplate {
     @Autowired
     private GoogleCloudTranscriber transcriber;
 
-    private Path preprocessing(Path filePath) {
+    protected Path preprocessing(Path filePath) {
         return filePath;
     }
 
