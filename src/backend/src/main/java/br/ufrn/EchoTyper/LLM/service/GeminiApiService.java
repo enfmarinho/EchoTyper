@@ -90,7 +90,7 @@ public class GeminiApiService implements LLM_Interface {
 
   private String getSummaryContext(Long id) {
     StringBuilder builder = new StringBuilder("[");
-    registerService.getSummariesByGroup(id).stream()
+    registerService.getGroupContext(id).stream()
         .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
     builder.append("]");
     return builder.toString();

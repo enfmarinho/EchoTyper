@@ -189,15 +189,16 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
                 .map((registerGroup) -> registerGroupMapper.toResponseDTO(registerGroup)).orElse(null);
     }
 
-    @Transactional
-    public List<String> getSummariesByGroup(Long groupId) {
-        Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
-        List<String> summaries = new ArrayList<>();
-        for (Register register : registers) {
-            summaries.add(register.getSummary());
-        }
-        return summaries;
-    }
+    public abstract List<String> getGroupContext(Long groupId);
+    // @Transactional
+    // public List<String> getGroupContext(Long groupId) {
+    //     Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
+    //     List<String> summaries = new ArrayList<>();
+    //     for (Register register : registers) {
+    //         summaries.add(register.getSummary());
+    //     }
+    //     return summaries;
+    // }
 
     @Transactional
     public List<JsonNode> getRegisterContentByGroup(Long groupId) {

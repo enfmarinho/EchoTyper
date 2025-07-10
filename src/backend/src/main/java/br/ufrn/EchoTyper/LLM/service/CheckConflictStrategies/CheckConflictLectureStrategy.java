@@ -17,7 +17,7 @@ public class CheckConflictLectureStrategy implements CheckConflictStrategy {
         JsonNode groupIdNode = payload.path("groupId");
         StringBuilder builder = new StringBuilder("[");
 
-        meetingService.getSummariesByGroup(groupIdNode.asLong()).stream()
+        meetingService.getGroupContext(groupIdNode.asLong()).stream()
             .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
             
         builder.append("]");

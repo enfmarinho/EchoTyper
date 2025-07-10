@@ -16,7 +16,7 @@ public class SummaryInterviewStrategy implements SummaryStrategy {
     public String getContext(long id) {
         StringBuilder builder = new StringBuilder("[");
 
-        meetingService.getSummariesByGroup(id).stream()
+        meetingService.getGroupContext(id).stream()
             .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
             
         builder.append("]");
