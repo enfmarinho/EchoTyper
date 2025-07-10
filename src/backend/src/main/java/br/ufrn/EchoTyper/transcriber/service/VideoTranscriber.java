@@ -9,31 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class VideoTranscriber implements TranscriberAdapter{
-    @Autowired
-    private GoogleCloudTranscriber transcriber;
-
-    private String convert_mp4_to_mp3(String mp4_file_path) {
-        return mp4_file_path; // TODO just a STUB
-    }
-
+@Qualifier("videoTranscriber")
+public class VideoTranscriber implements TranscriberTranscriber {
     @Override
-    public String get_input_transcription(MultipartFile input_file) throws IOException, InterruptedException {
-        try {
-            // Save the uploaded file temporarily
-            Path tempFile = Files.createTempFile("uploaded_file", ".mp4");
-            input_file.transferTo(tempFile);
-            String inputFilePath = tempFile.toString();
+    public void preprocessing() {
 
-            String transcriptionResult = transcriber.transcribe_audio(inputFilePath);
-
-            // Clean up the temporary file
-            Files.delete(tempFile);
-
-            return transcriptionResult;
-        } catch (Exception e) {
-            throw e;
-        }
     }
-
 }

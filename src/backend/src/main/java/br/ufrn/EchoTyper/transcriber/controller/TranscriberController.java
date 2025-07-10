@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.ufrn.EchoTyper.transcriber.service.TranscriberAdapter;
+import br.ufrn.EchoTyper.transcriber.service.TranscriberTemplate;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -22,12 +22,12 @@ public class TranscriberController {
 
   @Autowired
   @Qualifier("mp3Transcriber")
-  private TranscriberAdapter transcriberAdapter;
+  private TranscriberTemplate transcriber;
 
   @PostMapping("/transcribe")
   public ResponseEntity<String> transcribeAudio(@RequestParam("inputFile") MultipartFile inputFile) {
     try {
-      String transcriptionResult = transcriberAdapter.get_input_transcription(inputFile);
+      String transcriptionResult = transcriber.get_input_transcription(inputFile);
 
       return ResponseEntity.ok(transcriptionResult);
 
