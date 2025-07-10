@@ -15,9 +15,9 @@ import ws.schild.jave.EncoderException;
 
 @Service
 @Qualifier("videoTranscriber")
-public class VideoTranscriber implements TranscriberTranscriber {
+public class VideoTranscriber extends TranscriberTemplate {
     @Override
-    public Path preprocessing(Path inputPathMp4) {
+    private Path preprocessing(Path inputPathMp4) {
         // JAVE way of setting audio specifications and attributes
         AudioAttributes audio = new AudioAttributes();
         audio.setCodec("libmp3lame");
@@ -28,13 +28,12 @@ public class VideoTranscriber implements TranscriberTranscriber {
         attrs.setFormat("mp3");
         attrs.setAudioAttributes(audio);
 
-
-        // Create temporary output file 
+        // Create temporary output file
         Path processedFile = Files.createTempFile("output_file", ".mp3");
         try {
             // Convert mp4 to mp3
             Encoder encoder = new Encoder();
-            encoder.encode(inputFileMp4.toFile(), processedFile.toFile(), attrs);
+            encoder.encode(inputPathMp4.toFile(), processedFile.toFile(), attrs);
         } catch (EncoderException e) {
             e.printStackTrace();
         }

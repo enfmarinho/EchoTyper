@@ -15,6 +15,10 @@ public class TranscriberTemplate {
     @Autowired
     private GoogleCloudTranscriber transcriber;
 
+    private Path preprocessing(Path filePath) {
+        return filePath;
+    }
+
     public String get_input_transcription(MultipartFile inputFile) throws IOException, InterruptedException {
         try {
             // Save the uploaded file temporarily
@@ -33,9 +37,5 @@ public class TranscriberTemplate {
         } catch (Exception e) {
             throw e;
         }
-    }
-
-    public Path preprocessing(String filePath) {
-        // Empty
     }
 }
