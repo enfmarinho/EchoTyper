@@ -15,18 +15,19 @@ public class TranscriberTemplate {
     @Autowired
     private GoogleCloudTranscriber transcriber;
 
-    public String get_input_transcription(MultipartFile input_file) throws IOException, InterruptedException {
+    public String get_input_transcription(MultipartFile inputFile) throws IOException, InterruptedException {
         try {
             // Save the uploaded file temporarily
             Path tempFile = Files.createTempFile("uploaded_file", ".mp3");
-            input_file.transferTo(tempFile);
-            String inputFilePath = tempFile.toString();
+            inputFile.transferTo(tempFile);
 
-            inputFilePath = preprocessing(inputFilePath);
-            String transcriptionResult = transcriber.transcribe_audio(inputFilePath);
+            // Pre-process and transcribe input_file
+            Path processedFile = preprocessing(tempFile);
+            String transcriptionResult = transcriber.transcribe_audio(processedFile.toString());
 
             // Clean up the temporary file
             Files.delete(tempFile);
+            Files.delete(processedFile);
 
             return transcriptionResult;
         } catch (Exception e) {
@@ -34,7 +35,7 @@ public class TranscriberTemplate {
         }
     }
 
-    public void preprocessing() {
+    public Path preprocessing(String filePath) {
         // Empty
     }
 }

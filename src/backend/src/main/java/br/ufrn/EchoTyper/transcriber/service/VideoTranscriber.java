@@ -8,11 +8,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import ws.schild.jave.*;
+
 @Service
 @Qualifier("videoTranscriber")
 public class VideoTranscriber implements TranscriberTranscriber {
     @Override
-    public void preprocessing() {
+    public Path preprocessing(Path inputPathMp4) {
+        // JAVE way of setting audio specifications and attributes
+        AudioAttributes audio = new AudioAttributes();
+        audio.setCodec("libmp3lame");
+        audio.setBitRate(128000);
+        audio.setChannels(2);
+        audio.setSamplingRate(44100);
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("mp3");
+        attrs.setAudioAttributes(audio);
 
+
+        // Create temporary output file 
+        Path processedFile = Files.createTempFile("output_file", ".mp3");
+        try {
+            // Convert mp4 to mp3
+            Encoder encoder = new Encoder();
+            encoder.encode(inputFileMp4.toFile(), processedFile.toFile(), attrs);
+        } catch (EncoderException e) {
+            e.printStackTrace();
+        }
+        return processedFile;
     }
 }
