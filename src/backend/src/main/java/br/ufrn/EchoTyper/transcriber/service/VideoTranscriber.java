@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import ws.schild.jave.*;
+import ws.schild.jave.AudioAttributes;
+import ws.schild.jave.EncodingAttributes;
+import ws.schild.jave.Encoder;
+import ws.schild.jave.EncoderException;
 
 @Service
 @Qualifier("videoTranscriber")
