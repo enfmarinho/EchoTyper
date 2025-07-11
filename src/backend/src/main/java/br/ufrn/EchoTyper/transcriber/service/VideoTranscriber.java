@@ -7,10 +7,11 @@ import java.nio.file.Path;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import ws.schild.jave.AudioAttributes;
-import ws.schild.jave.EncodingAttributes;
 import ws.schild.jave.Encoder;
 import ws.schild.jave.EncoderException;
+import ws.schild.jave.MultimediaObject;
+import ws.schild.jave.AudioAttributes;
+import ws.schild.jave.EncodingAttributes;
 
 @Service
 @Qualifier("videoTranscriber")
@@ -27,15 +28,20 @@ public class VideoTranscriber extends TranscriberTemplate {
         attrs.setFormat("mp3");
         attrs.setAudioAttributes(audio);
 
-        // Create temporary output file
-        Path processedFile = Files.createTempFile("output_file", ".mp3");
         try {
+            // Create temporary output file
+            Path processedFile = Files.createTempFile("output_file", ".mp3");
             // Convert mp4 to mp3
             Encoder encoder = new Encoder();
-            encoder.encode(inputPathMp4.toFile(), processedFile.toFile(), attrs);
+            MultimediaObject multimediaObject = new MultimediaObject(inputPathMp4.toFile());
+            encoder.encode(multimediaObject, processedFile.toFile(), attrs);
+
+            return processedFile;
         } catch (EncoderException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return processedFile;
+        return inputPathMp4;
     }
 }
