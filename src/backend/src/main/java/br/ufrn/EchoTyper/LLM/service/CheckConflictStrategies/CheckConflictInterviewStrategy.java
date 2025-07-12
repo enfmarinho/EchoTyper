@@ -5,19 +5,19 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.ufrn.EchoTyper.meeting.service.MeetingService;
+import br.ufrn.EchoTyper.interview.service.InterviewService;
 
 @Service
 public class CheckConflictInterviewStrategy implements CheckConflictStrategy {
 
     @Autowired
-    private MeetingService meetingService;
+    private InterviewService interviewService;
 
     public String getContext(JsonNode payload) {
         JsonNode groupIdNode = payload.path("groupId");
         StringBuilder builder = new StringBuilder("[");
 
-        meetingService.getGroupContext(groupIdNode.asLong()).stream()
+        interviewService.getGroupContext(groupIdNode.asLong()).stream()
             .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
             
         builder.append("]");
