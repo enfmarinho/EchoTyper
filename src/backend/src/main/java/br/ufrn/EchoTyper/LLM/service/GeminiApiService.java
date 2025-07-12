@@ -3,8 +3,7 @@ package br.ufrn.EchoTyper.LLM.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.ufrn.EchoTyper.LLM.service.CheckConflictStrategies.CheckConflictStrategy;
-import br.ufrn.EchoTyper.LLM.service.SummaryStrategies.SummaryStrategy;
+import br.ufrn.EchoTyper.LLM.service.PromptTemplates.AbstractPromptTemplate;
 import br.ufrn.EchoTyper.register.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,12 +19,12 @@ public class GeminiApiService implements LLM_Interface {
   private String apiKey;
 
   @Autowired
-  @Qualifier("summaryDefaultStrategy")
-  private SummaryStrategy summaryStrategy;
+  @Qualifier("summaryMeeting")
+  private AbstractPromptTemplate summaryTemplate;
 
   @Autowired
-  @Qualifier("checkConflictDefaultStrategy")
-  private CheckConflictStrategy checkConflictStrategy;
+  @Qualifier("checkConflictMeeting")
+  private AbstractPromptTemplate checkConflictTemplate;
 
   private RegisterService registerService;
 
@@ -39,7 +38,7 @@ public class GeminiApiService implements LLM_Interface {
     }
 
     try {
-      String prompt = checkConflictStrategy.buildConflictPrompt(payload);
+      String prompt = checkConflictTemplate.buildPrompt(payload);
       return callGeminiApi(prompt);
     } catch (Exception e) {
       throw new Exception("Error when trying to check conflicts: " + e.getMessage(), e);
@@ -52,7 +51,7 @@ public class GeminiApiService implements LLM_Interface {
     }
 
     try {
-      String prompt = summaryStrategy.buildSummaryPrompt(payload);
+      String prompt = summaryTemplate.buildPrompt(payload);
       return callGeminiApi(prompt);
 
     } catch (Exception e) {
@@ -86,13 +85,5 @@ public class GeminiApiService implements LLM_Interface {
 
   private String escapeJson(String input) {
     return input.replace("\"", "\\\"").replace("\n", "\\n");
-  }
-
-  private String getSummaryContext(Long id) {
-    StringBuilder builder = new StringBuilder("[");
-    registerService.getGroupContext(id).stream()
-        .forEach((summary) -> builder.append(String.format("\"%s\"%n", summary)));
-    builder.append("]");
-    return builder.toString();
   }
 }
