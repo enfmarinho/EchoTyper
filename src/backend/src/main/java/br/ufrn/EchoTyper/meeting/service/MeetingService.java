@@ -39,11 +39,11 @@ public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
 
     }
 
-    @Override
-    protected void deleteRegisterGroupHook(MeetingGroup group, Meeting register) {
-        return;
+    // @Override
+    // protected void deleteRegisterGroupHook(MeetingGroup group, Meeting register) {
+    //     return;
 
-    }
+    // }
 
     @Override
     @Transactional

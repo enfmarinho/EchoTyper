@@ -20,10 +20,10 @@ public class JsonUtil {
         }
     }
 
-    public static <T> T deserialize(String json, Class<T> type) {
+    public static <T> T deserialize(JsonNode json, Class<T> type) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json, type);
+            return mapper.readValue(json.traverse(), type);
         } catch (Exception e) {
             System.err.println("An exception has occurred (Class<T>): " + e.getMessage());
             return null;
