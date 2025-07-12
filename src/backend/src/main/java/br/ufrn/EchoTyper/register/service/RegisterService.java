@@ -170,7 +170,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     }
 
     // Hook to override the logic performed to a register when its group is deleted
-    protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
+    // protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
     public void deleteRegisterGroup(Long groupId) {
@@ -178,7 +178,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         for (RegisterImpl register : group.getRegisters()) {
             removeRegisterFromGroup(register.getId(), group.getId());
             // ** Delete group template method
-            deleteRegisterGroupHook(group, register);
+            // deleteRegisterGroupHook(group, register);
         }
         registerGroupRepository.delete(group);
     }
