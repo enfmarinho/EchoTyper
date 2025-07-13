@@ -1,9 +1,7 @@
 package br.ufrn.EchoTyper.interview.model;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.stereotype.Component;
@@ -29,13 +27,13 @@ public class HiringProcess extends RegisterGroup<Interview> {
     Set<String> interviewers;
 
     @Column(name = "str_evaluations")
-    Map<String, List<String>> evaluations;
+    List<String> evaluations;
 
-    @Column(nullable = false, name = "dt_date")
+    @Column(nullable = false, name = "dt_begin_date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date processBeginDate;
 
-    @Column(nullable = true, name = "dt_date")
+    @Column(nullable = true, name = "dt_end_date")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date processEndDate;
 
@@ -71,11 +69,11 @@ public class HiringProcess extends RegisterGroup<Interview> {
         this.processEndDate = processEndDate;
     }
 
-    public Map<String, List<String>> getEvaluations() {
+public List<String> getEvaluations() {
         return evaluations;
     }
 
-    public void setEvaluations(Map<String, List<String>> evaluations) {
+    public void setEvaluations(List<String> evaluations) {
         this.evaluations = evaluations;
     }
 
@@ -101,11 +99,10 @@ public class HiringProcess extends RegisterGroup<Interview> {
                 });
         setProcessEndDate(processEndDate);
 
-        Map<String,List<String>> evaluations = JsonUtil.deserialize(this.content.get("evaluations"),
-                new TypeReference<Map<String,List<String>>>() {
+        List<String> evaluations = JsonUtil.deserialize(this.content.get("evaluations"),
+                new TypeReference<List<String>>() {
                 });
         setEvaluations(evaluations);
-
     }
 
     public HiringProcess() {
