@@ -1,16 +1,17 @@
 package br.ufrn.EchoTyper.LLM.service.ContextStrategies;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.ufrn.EchoTyper.meeting.service.MeetingService;
+import br.ufrn.EchoTyper.register.service.RegisterService;
 
 @Service
 public class GroupSummaryContextProvider implements ContextProvider {
     @Autowired
-    private MeetingService meetingService;
+    private RegisterService registerService;
 
     @Override
     public String getContext(JsonNode payload) {
@@ -21,7 +22,7 @@ public class GroupSummaryContextProvider implements ContextProvider {
 
         long groupId = groupIdNode.asLong();
         StringBuilder builder = new StringBuilder("[");
-        meetingService.getGroupContext(groupId).forEach(
+        registerService.getGroupContext(groupId).forEach(
             summary -> builder.append(String.format("\"%s\"%n", summary))
         );
         builder.append("]");

@@ -8,7 +8,7 @@ public class SummaryInterview extends AbstractPromptTemplate {
 
     @Override
     protected String getIntroduction() {
-        return "A seguir está a transcrição de uma entrevista com um candidato:";
+        return "A seguir está a transcrição de uma entrevista com um candidato junto de informações sobre o processo seletivo e entrevista:";
     }
 
     @Override
@@ -22,7 +22,7 @@ public class SummaryInterview extends AbstractPromptTemplate {
             return "";
         }
         // Usa o ContextProvider herdado da classe base
-        return "A seguir, há resumos de entrevistas anteriores com outros candidatos para a mesma posição ou contexto:\n"
+        return "A seguir, há resumos e informações de entrevistas anteriores com outros candidatos para a mesma posição ou contexto:\n"
                + groupSummaryContextProvider.getContext(payload)
                + "\n\nCom base nisso, compare o desempenho, perfil e respostas deste candidato com os anteriores. Aponte semelhanças, diferenças e destaques, e indique aspectos que possam torná-lo mais ou menos adequado à vaga ou objetivo da entrevista.";
     }
