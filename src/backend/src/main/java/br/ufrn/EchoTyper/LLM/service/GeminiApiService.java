@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import br.ufrn.EchoTyper.LLM.service.PromptTemplates.AbstractPromptTemplate;
 import br.ufrn.EchoTyper.register.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,9 @@ public class GeminiApiService implements LLM_Interface {
   private String apiKey;
 
   @Autowired
-  @Qualifier("summaryMeeting")
   private AbstractPromptTemplate summaryTemplate;
 
   @Autowired
-  @Qualifier("checkConflictMeeting")
   private AbstractPromptTemplate checkConflictTemplate;
 
   private RegisterService registerService;
