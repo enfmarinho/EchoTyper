@@ -62,19 +62,19 @@ export const addFriend = async (id: number, friendId: number) => {
 
 export const fetchReunioes = async () => {
   const res = await fetch(`${API_BASE}/meetings`);
-  if (!res.ok) throw new Error('Erro ao buscar reuniões');
+  if (!res.ok) throw new Error('Erro ao buscar entrevistas');
   return res.json();
 }
 
 export const fetchReuniaoByUserId = async (id: number) => {
   const res = await fetch(`${API_BASE}/meetings/user/${id}`);
-  if (!res.ok) throw new Error('Erro ao buscar reuniões por ID de usuário');
+  if (!res.ok) throw new Error('Erro ao buscar entrevistas por ID de usuário');
   return res.json();
 };
 
 export const fetchReuniaoById = async (id: number) => {
   const res = await fetch(`${API_BASE}/meetings/${id}`);
-  if (!res.ok) throw new Error('Erro ao buscar reunião por ID');
+  if (!res.ok) throw new Error('Erro ao buscar entrevista por ID');
   return res.json();
 };
 
@@ -90,18 +90,18 @@ export const createReuniao = async (reuniao: any) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reuniao),
   });
-  if (!res.ok) throw new Error('Erro ao criar reunião');
+  if (!res.ok) throw new Error('Erro ao criar entrevista');
   return res.json();
 };
 
 export const updateReuniao = async (id: number, reuniao: any) => {
-  console.log('Reunião a ser atualizada:', reuniao);
+  console.log('Entrevista a ser atualizada:', reuniao);
   const res = await fetch(`${API_BASE}/meetings/update/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(reuniao),
   });
-  if (!res.ok) throw new Error('Erro ao atualizar reunião');
+  if (!res.ok) throw new Error('Erro ao atualizar entrevista');
   return res.json();
 };
 
@@ -109,7 +109,7 @@ export const deleteReuniao = async (id: number) => {
   const res = await fetch(`${API_BASE}/meetings/delete/${id}`, {
     method: 'DELETE',
   });
-  if (!res.ok) throw new Error('Erro ao deletar reunião');
+  if (!res.ok) throw new Error('Erro ao deletar entrevista');
   return res.ok;
 };
 
@@ -188,7 +188,7 @@ export const createGroup = async (group: any) => {
 };
 
 export const updateGroup = async (id: number, group: any) => {
-  console.log('Reunião a ser atualizada:', group);
+  console.log('Entrevista a ser atualizada:', group);
   const res = await fetch(`${API_BASE}/meetings/groups/update/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

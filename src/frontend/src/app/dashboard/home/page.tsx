@@ -34,7 +34,7 @@ export default function SelecaoReunioes() {
       const data = await fetchReunioes();
       setReunioes(data);
     } catch (err) {
-      console.error('Erro ao carregar reuniões:', err);
+      console.error('Erro ao carregar entrevistas:', err);
     }
   };
 
@@ -45,7 +45,7 @@ export default function SelecaoReunioes() {
     <Box>
       <Box sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ color: "#0D1B2A" }}>
-          Reuniões Recentes
+          Entrevistas Recentes
         </Typography>
 
         <Grid container spacing={2}>
@@ -62,7 +62,7 @@ export default function SelecaoReunioes() {
             </Grid>
           ))}
 
-          {/* Nova reunião */}
+          {/* Nova entrevista */}
           <Grid size={{ xs: 12, md: 4, sm: 6 }} component={"div"}>
             <Paper
               component={Link}
@@ -79,7 +79,7 @@ export default function SelecaoReunioes() {
               }}
             >
               <Button startIcon={<AddIcon />} variant="outlined">
-                Nova Reunião
+                Nova Entrevista
               </Button>
             </Paper>
           </Grid>
