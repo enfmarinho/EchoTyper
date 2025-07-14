@@ -21,7 +21,7 @@ const drawerWidth = 240;
 const menuItems = [
   { text: "Home", icon: <HomeIcon />,  url: `/dashboard/home` },
   { text: "Agenda", icon: <EventNoteIcon />,  url: `/dashboard/agenda` },
-  { text: "Reuniões", icon: <DescriptionIcon />,  url: `/dashboard/reunioes` },
+  { text: "Aulas", icon: <DescriptionIcon />,  url: `/dashboard/reunioes` },
   { text: "Configurações", icon: <SettingsIcon />,  url: `/dashboard/configuracoes` },
 ];
 
@@ -40,13 +40,13 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: "border-box",
-            backgroundColor: "#122232",
+            backgroundColor: "#221232",
             color: "white",
           },
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 1 }}>
-          <Image src="/logo.png" alt="Logo" width={200} height={200} />
+          <Image src="/logo-lecture.jpg" alt="Logo" width={200} height={200} />
         </Box>
         <List>
           {menuItems.map((item, index) => (
@@ -61,11 +61,11 @@ export default function DefaultLayout({ children }: DefaultLayoutProps) {
         <Box sx={{ mt: "auto", p: 2 }}>
           <ListItemButton
             sx={{
-              backgroundColor: "#1e3a5f",
+              backgroundColor: "#350952",
               color: "white",
               borderRadius: 1,
               "&:hover": {
-                backgroundColor: "#2a4d7a",
+                backgroundColor: "#3d0044",
               },
             }}
             component={Link}

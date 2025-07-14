@@ -42,13 +42,13 @@ export default function ReunioesPage() {
         searchPlaceholder="Buscar grupo..."
       />
       <ItemGrid
-        title="Reuniões"
+        title="Aulas"
         items={reunioes}
-        onItemClick={(id) => console.log(`Abrindo reunião ${id}`)}
+        onItemClick={(id) => console.log(`Abrindo aula ${id}`)}
         itemHref={(id) => `/dashboard/reunioes/${id}`}
         createHref="/dashboard/reunioes/create"
-        createLabel="Criar nova reunião"
-        searchPlaceholder="Buscar reunião..."
+        createLabel="Criar nova aula"
+        searchPlaceholder="Buscar aula..."
       />
     </div>
   );

@@ -38,7 +38,7 @@ export default function ReuniaoPage() {
                 });
                 return data.groupId;
             } catch (err) {
-                console.error('Erro ao carregar reunião:', err);
+                console.error('Erro ao carregar aula:', err);
             }
         }
     };
@@ -69,7 +69,7 @@ export default function ReuniaoPage() {
             await deleteReuniao(Number(params.id)!);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao excluir reunião:', err);
+            console.error('Erro ao excluir aula:', err);
         }
     };
 
@@ -78,7 +78,7 @@ export default function ReuniaoPage() {
             await updateReuniao(Number(params.id)!, formData);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao atualizar reunião:', err);
+            console.error('Erro ao atualizar aula:', err);
         }
     };
 
@@ -92,7 +92,7 @@ export default function ReuniaoPage() {
                 <div className="flex flex-col gap-6 w-full max-w-4xl">
                     <div className="flex flex-col gap-6 w-full max-w-4xl">
                         <TextField
-                            label="Título da Reunião"
+                            label="Título da Aula"
                             variant="outlined"
                             style={{ backgroundColor: 'white' }}
                             fullWidth
