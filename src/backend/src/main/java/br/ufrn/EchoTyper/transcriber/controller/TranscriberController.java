@@ -19,7 +19,6 @@ import br.ufrn.EchoTyper.transcriber.service.TranscriberTemplate;
 public class TranscriberController {
 
   @Autowired
-  @Qualifier("mp3Transcriber")
   private TranscriberTemplate transcriber;
 
   @PostMapping("/transcribe")
