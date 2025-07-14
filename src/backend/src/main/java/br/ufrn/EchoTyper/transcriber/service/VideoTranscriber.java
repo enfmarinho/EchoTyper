@@ -36,6 +36,7 @@ public class VideoTranscriber extends TranscriberTemplate {
             MultimediaObject multimediaObject = new MultimediaObject(inputPathMp4.toFile());
             encoder.encode(multimediaObject, processedFile.toFile(), attrs);
 
+            Files.delete(inputPathMp4);
             return processedFile;
         } catch (EncoderException e) {
             e.printStackTrace();
