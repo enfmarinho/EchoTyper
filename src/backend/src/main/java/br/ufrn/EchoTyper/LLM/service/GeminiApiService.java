@@ -19,11 +19,11 @@ public class GeminiApiService implements LLM_Interface {
   private String apiKey;
 
   @Autowired
-  @Qualifier("summaryMeeting")
+  @Qualifier("summaryLecture")
   private AbstractPromptTemplate summaryTemplate;
 
   @Autowired
-  @Qualifier("checkConflictMeeting")
+  @Qualifier("checkConflictLecture")
   private AbstractPromptTemplate checkConflictTemplate;
 
   private RegisterService registerService;
