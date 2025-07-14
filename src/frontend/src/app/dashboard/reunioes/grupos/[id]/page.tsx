@@ -1,177 +1,129 @@
-
 'use client'
-import { useState, useEffect, use } from 'react';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Card, CardContent, Button, TextField, Grid, Paper, IconButton, Typography } from '@mui/material';
-import { updateGroup, createGroup, removeMeetingFromGroup, addMeetingFromGroup, deleteGroup, fetchGroupById, fetchReuniaoByGroup, fetchReuniaoById, fetchReunioes } from '@/lib/api';
-import UploadIcon from '@mui/icons-material/Upload';
-import DescriptionIcon from "@mui/icons-material/Description";
+import { useState, useEffect } from 'react';
+import {
+    Box,
+    Typography,
+    Paper,
+    IconButton,
+    Button,
+    TextField,
+    InputAdornment,
+    Chip,
+} from "@mui/material";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { updateGroup, deleteGroup, fetchGroupById, fetchReunioes } from '@/lib/api';
 import { useRouter, useParams } from 'next/navigation';
-import ItemGrid from '@/components/ItemGrid';
 import { Item } from '@/lib/types';
+import ItemGrid from '@/components/ItemGrid';
 
-type Reuniao = {
-    id: number;
-    title: string;
-    transcription: string;
-    summary: string;
-    annotations: string;
-};
+type Groupcontent = {};
 
 type Grupo = {
     id: number;
     groupName: string;
-    meetings: Reuniao[];
+    register: string[];
+    content: Groupcontent;
 };
 
 export default function GrupoPage() {
     const router = useRouter();
-    const [outrasReunioes, setOutrasReunioes] = useState<Item[]>([]);
-    const [formData, setFormData] = useState<Partial<Grupo>>({ groupName: '', meetings: [] });
     const params = useParams();
-    const isEditing = !!params.id;
 
-    // Carrega todas as reunioes em seus respectivos estados: as que pertencem a reuniao atual e as que nao
-    const loadData = async () => {
-        if (params.id) {
-            fetchGroupById(Number(params.id)).then(data => {
-                setFormData({
-                    id: Number(data.id),
-                    groupName: data.groupName,
-                    meetings: data.meetings
-                });
-            }).catch(err => {
-                console.error('Erro ao carregar reunião:', err);
-            });
-            fetchReunioes().then(data => {
-                setOutrasReunioes(data.filter(meeting => (meeting.groupId == undefined)));
-            }).catch(err => {
-                console.error('Erro ao carregar reunião:', err);
-            });
-            formData.meetings?.filter(meeting => (meeting.id))
-        }
+    const [formData, setFormData] = useState<Partial<Grupo>>({
+        groupName: "",
+        register: [],
+        content: {},
+    });
+
+    const [allReunioes, setAllReunioes] = useState<Item[]>([]);
+
+    useEffect(() => {
+        const loadData = async () => {
+            if (params.id) {
+                try {
+                    // Carrega os dados do grupo específico
+                    const groupData = await fetchGroupById(Number(params.id));
+                    setFormData(groupData);
+
+                    // Carrega todas as reuniões para a seleção
+                    const allReunioesData = await fetchReunioes();
+                    setAllReunioes(allReunioesData);
+
+                } catch (err) {
+                    console.error('Erro ao carregar dados:', err);
+                }
+            }
+        };
+        loadData();
+    }, [params.id]);
+
+
+    const handleFormChange = (field: keyof Grupo | keyof Groupcontent, value: any, isContentField = false) => {
+        setFormData(prev => {
+            return { ...prev, [field as keyof Grupo]: value };
+        });
     };
 
-    const adicionarReuniao = async (meetingId: number) => {
-        try {
-            await addMeetingFromGroup(meetingId, params.id);
-            loadData();
-        } catch (err) {
-            console.error('Erro ao atualizar grupo:', err);
-        }
-    }
-
-    const removerReuniao = async (reuniaoId: number) => {
-        try {
-            await removeMeetingFromGroup(reuniaoId, Number(params.id)!);
-            // Provavelmente errado
-            loadData();
-        } catch (err) {
-            console.error('Erro ao remover reuniao', err);
-        }
-    }
+    const handleToggleReuniaoInRegister = (id: string) => {
+        if (!formData.register) return;
+        const updatedRegister = formData.register.includes(id)
+            ? formData.register.filter(regId => regId !== id) // Remove
+            : [...formData.register, id]; // Adiciona
+        handleFormChange('register', updatedRegister);
+    };
 
     const handleDelete = async () => {
-        try {
-            await deleteGroup(Number(params.id)!);
-            router.push('/dashboard/reunioes');
-        } catch (err) {
-            console.error('Erro ao excluir grupo:', err);
+        if (window.confirm("Tem certeza que deseja excluir este grupo?")) {
+            try {
+                await deleteGroup(Number(params.id)!);
+                router.push('/dashboard/reunioes');
+            } catch (err) {
+                console.error('Erro ao excluir grupo:', err);
+            }
         }
     };
 
     const handleUpdate = async () => {
         try {
-            const formattedUpdate = { groupName: formData.groupName, meetingIds: formData.meetings?.map(meeting => (meeting.id)) }
-            await updateGroup(Number(params.id)!, formattedUpdate);
+            await updateGroup(Number(params.id)!, formData);
             router.push('/dashboard/reunioes');
         } catch (err) {
             console.error('Erro ao atualizar grupo:', err);
         }
     };
+    
+    // Filtra as reuniões que ainda não estão no grupo para exibir na lista de adição
+    const availableReunioes = allReunioes.filter(reuniao => !formData.register?.includes(String(reuniao.id)));
 
-    const handleChange = (field: keyof Grupo, value: string) => {
-        setFormData({ ...formData, [field]: value });
-    };
-
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    const renderContent = () => {
-        if (isEditing) {
-            return (
-                <div>
-                    <div className="flex flex-col gap-6 w-full max-w-4xl">
-                        <div className="flex flex-col gap-6 w-full max-w-4xl">
-                            <TextField
-                                label="Nome do Grupo"
-                                variant="outlined"
-                                style={{ backgroundColor: 'white' }}
-                                fullWidth
-                                value={formData.groupName || ''}
-                                onChange={(e) => handleChange('groupName', e.target.value)}
-                            />
-                            <div>
-                            </div>
-                        </div>
-                        <h1>Reunioes</h1>
-                        <Grid container spacing={2}>
-                            {formData.meetings?.map((item) => (
-                                <Grid xs={6} sm={4} md={2.4} key={item.id} >
-                                    <Paper
-                                        ux={{
-                                            height: 120,
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            flexDirection: "column",
-                                            border: "1px solid #c4c4c4",
-                                            borderRadius: 2,
-                                            cursor: "pointer",
-                                            transition: "0.2s",
-                                            "&:hover": {
-                                                backgroundColor: "#f0f0f0",
-                                            },
-                                        }}
-                                    >
-                                        <IconButton>
-                                            <DescriptionIcon sx={{ fontSize: 36 }} />
-                                        </IconButton>
-                                        <Typography variant="body2" textAlign="center">
-                                            {item.title}
-                                        </Typography>
-                                    </Paper>
-                                    <Button onClick={() => removerReuniao(item.id)}>Remover</Button>
-                                </Grid>
-                            ))}
-
-                        </Grid>
-                        <div>
-                            <h1>Adicionar Reunioes</h1>
-                            <ItemGrid
-                                items={outrasReunioes}
-                                onItemClick={(id) => {
-                                    adicionarReuniao(Number(id));
-                                }}
-                                createLabel="Criar novo grupo"
-                                searchPlaceholder="Buscar grupo..."
-                            />
-                            <div className="flex gap-4">
-                                <Button variant="contained" onClick={handleUpdate}>Salvar Alterações</Button>
-                                <Button variant="outlined" color="error" onClick={handleDelete}>Excluir</Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-
-
-        }
-    }
     return (
-        <div className="flex flex-col items-center justify-start p-8 min-h-screen bg-gray-100 text-gray-900">
-            {renderContent()}
-        </div>
+        <Box className="flex flex-col items-center justify-start p-4 md:p-8 min-h-screen bg-gray-100">
+            <Box className="flex flex-col gap-6 w-full max-w-4xl">
+                <Typography variant="h4" className="font-bold text-gray-800">Editar Grupo de Processo</Typography>
+
+                <Paper elevation={2} className="p-4">
+                    <TextField label="Nome do Grupo" variant="outlined" fullWidth value={formData.groupName || ''} onChange={(e) => handleFormChange('groupName', e.target.value)} />
+                </Paper>
+                
+                <Paper elevation={2} className="p-4">
+                    <Typography variant="h6" className="mb-2">Associar Registros (Reuniões)</Typography>
+                    <Box className="mb-4">
+                        <Typography variant="subtitle1">Registros Atuais:</Typography>
+                        <Box className="flex flex-wrap gap-2 mt-2">
+                            {formData.register?.length === 0 && <Typography color="textSecondary">Nenhum registro associado.</Typography>}
+                            {allReunioes.filter(r => formData.register?.includes(String(r.id))).map(item => (
+                                <Chip key={item.id} label={item.title} onDelete={() => handleToggleReuniaoInRegister(String(item.id))} />
+                            ))}
+                        </Box>
+                    </Box>
+                    <ItemGrid title="Adicionar Registros Disponíveis" items={availableReunioes} onItemClick={(id) => handleToggleReuniaoInRegister(id)} searchPlaceholder="Buscar registro..." />
+                </Paper>
+
+                <Box className="flex justify-between items-center mt-4">
+                    <Button variant="outlined" color="error" onClick={handleDelete}>Excluir Grupo</Button>
+                    <Button onClick={() => router.back()}>Cancelar</Button>
+                    <Button variant="contained" color="primary" size="large" onClick={handleUpdate}>Salvar Alterações</Button>
+                </Box>
+            </Box>
+        </Box>
     );
 }
