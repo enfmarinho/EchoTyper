@@ -8,6 +8,12 @@ import { useRouter } from 'next/navigation';
 import { Item } from '@/lib/types';
 import ItemGrid from '@/components/ItemGrid';
 
+type ReuniaoContent = {
+    professor: string;
+    course: string;
+    grade: number;
+}
+
 type Reuniao = {
     id: string;
     title: string;
@@ -15,12 +21,23 @@ type Reuniao = {
     summary: string;
     annotations: string;
     groupId: number;
+    content: ReuniaoContent;
 };
 
 export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     const router = useRouter();
     const [audioFile, setAudioFile] = useState<File | null>(null);
-    const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
+    const [formData, setFormData] = useState<Partial<Reuniao>>({
+        title: '',
+        transcription: '',
+        summary: '',
+        annotations: '',
+        content: {
+            professor: '',
+            course: '',
+            grade: 0
+        }
+    });
     const [status, setStatus] = useState<'idle' | 'transcribing' | 'summarizing' | 'done'>('idle');
     const [groups, setGroups] = useState<Item[]>([]);
 
@@ -39,7 +56,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             setFormData({});
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao criar usuário:', err);
+            console.error('Erro ao criar entrevista:', err);
         }
     };
 
@@ -48,7 +65,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             await deleteReuniao(params.id!);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao excluir aula:', err);
+            console.error('Erro ao excluir entrevista:', err);
         }
     };
 
@@ -56,8 +73,20 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         setFormData({ ...formData, [field]: value });
     };
 
+    const handleContentChange = (field: keyof ReuniaoContent, value: string | number) => {
+        setFormData(prev => ({
+            ...prev,
+            content: {
+                professor: prev.content?.professor ?? '',
+                course: prev.content?.course ?? '',
+                grade: prev.content?.grade ?? 0,
+                [field]: value,
+            },
+        }));
+    };
+
     const startTranscription = async (file: File) => {
-        setStatus('transcribing')
+        setStatus('done')
 
         const formDataToSend = new FormData()
         formDataToSend.append('inputFile', file)
@@ -81,7 +110,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         }
     }
 
-    // Precisa implementar a lódica real
+    // Precisa implementar a lógica real
     const startSummarization = async (text: string) => {
         setStatus('summarizing')
 
@@ -113,7 +142,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     const loadGroups = async () => {
         try {
             await fetchGroups().then((data) => {
-                setGroups(data.map(group => ({ id: group.id, title: group.groupName })));
+                setGroups(data.map((group: { id: any; groupName: any; }) => ({ id: group.id, title: group.groupName })));
             });
         } catch (err) {
             console.error('Erro ao buscar grupos:', err);
@@ -139,7 +168,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                             <strong>Grupo Selecionado: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</strong>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-6">
-                            <h2 className="text-xl font-semibold">Envie o áudio da aula</h2>
+                            <h2 className="text-xl font-semibold">Envie o áudio da entrevista</h2>
 
                             {/* Label estilizado que ativa o input de upload */}
                             <label
@@ -168,36 +197,65 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                 return (
                     <div className="flex flex-col gap-6 w-full max-w-4xl">
                         <TextField
-                            label="Título da Aula"
+                            label="Título da Entrevista"
                             variant="outlined"
                             style={{ backgroundColor: 'white' }}
                             fullWidth
-                            value={formData.title}
+                            value={formData.title || ''}
                             onChange={(e) => handleChange('title', e.target.value)}
                         />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <TextField
+                                label="Professor"
+                                variant="outlined"
+                                style={{ backgroundColor: 'white' }}
+                                value={formData.content?.professor || ''}
+                                onChange={(e) => handleContentChange('professor', e.target.value)}
+                            />
+                            <TextField
+                                label="Curso"
+                                variant="outlined"
+                                style={{ backgroundColor: 'white' }}
+                                value={formData.content?.course || ''}
+                                onChange={(e) => handleContentChange('course', e.target.value)}
+                            />
+                                                        <TextField
+                                label="Nota"
+                                type="number"
+                                variant="outlined"
+                                style={{ backgroundColor: 'white' }}
+                                value={formData.content?.grade || ''}
+                                onChange={(e) => handleContentChange('grade', Number(e.target.value))}
+                                InputProps={{ inputProps: { min: 0, max: 10 } }}
+                            />
+                        </div>
+
+
                         <div>
                             <h2 className="text-2xl font-semibold">Grupo: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</h2>
-                            {/* <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
-                                { }
-                            </div> */}
                         </div>
-                        <div>
-                            <h2 className="text-2xl font-semibold">Transcrição</h2>
-                            <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
-                                {formData.transcription}
+
+                        {formData.transcription && (
+                            <div>
+                                <h2 className="text-2xl font-semibold">Transcrição</h2>
+                                <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm max-h-60 overflow-y-auto">
+                                    {formData.transcription}
+                                </div>
                             </div>
-                        </div>
+                        )}
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <Card>
                                 <CardContent className="p-4">
                                     <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
-                                    <ul className="list-disc pl-4 text-gray-700">
+                                    <div className="list-disc pl-4 text-gray-700 max-h-60 overflow-y-auto">
                                         {formData.summary?.split('\n').map((line, index) => (
                                             <div key={index} className="mb-1">
                                                 {line.trim()}
                                             </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 </CardContent>
                             </Card>
                             <Card>
@@ -207,23 +265,36 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                                         minRows={4}
                                         maxRows={6}
                                         className="w-full p-2 border rounded shadow-sm mt-2"
-                                        style={{ resize: 'none' }}
+                                        style={{ resize: 'none', backgroundColor: 'white' }}
                                         value={formData.annotations || ''}
                                         onChange={(e) => handleChange('annotations', e.target.value)}
                                         placeholder="Escreva suas anotações aqui..."
                                     />
-                                    <Button
-                                        variant="contained"
-                                        className="mt-4"
-                                        onClick={() => handleCreate()}
-                                    >
-                                        Salvar
-                                    </Button>
                                 </CardContent>
                             </Card>
                         </div>
-                        <div className="flex justify-end">
-                            <Button onClick={() => setStatus('idle')}>Nova Transcrição</Button>
+                        <div className="flex justify-between items-center mt-4">
+                            <div>
+                                {params.id && (
+                                    <Button
+                                        variant="outlined"
+                                        color="error"
+                                        onClick={handleDelete}
+                                    >
+                                        Excluir
+                                    </Button>
+                                )}
+                            </div>
+                            <div className="flex gap-4">
+                                <Button onClick={() => router.push('/dashboard/reunioes')}>Cancelar</Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleCreate}
+                                >
+                                    {/* O texto do botão muda dependendo do contexto */}
+                                    {params.id ? 'Atualizar Entrevista' : 'Salvar Entrevista'}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 );

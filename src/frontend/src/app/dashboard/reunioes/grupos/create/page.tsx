@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -8,109 +8,171 @@ import {
     Button,
     TextField,
     InputAdornment,
+    Chip,
 } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import DescriptionIcon from "@mui/icons-material/Description";
-import SearchIcon from "@mui/icons-material/Search";
-import Link from "next/link";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { createGroup } from "@/lib/api";
+import { useRouter } from 'next/navigation';
 import { Item } from "@/lib/types";
 import { loadReunioes } from "@/lib/utils";
 import ItemGrid from "@/components/ItemGrid";
-import { createGroup, fetchReunioes } from "@/lib/api";
-import { useRouter } from 'next/navigation';
 
-// Tela de criacao de grupos
-type Reuniao = {
-    id: number;
-    title: string;
-    transcription: string;
-    summary: string;
-    annotations: string;
+type Groupcontent = {
+    grades: number[];
+    score: number;
+    currentAttendance: number;
+    workload: number;
 };
 
 type Grupo = {
-    id: string;
-    title: string;
-    meetings: string[];
-};
-
-type ItemGridProps = {
-    id: string,
-    title: string;
-    items: Item[];
-    onItemClick?: (id: string) => void;
-    itemHref?: (id: string) => string;
-    createHref?: string;
-    createLabel?: string;
-    searchPlaceholder?: string;
+    groupName: string;
+    registerIds: string[];
+    content: Groupcontent;
 };
 
 export default function CreateGroup() {
-    const [busca, setBusca] = useState("");
-    const [reunioes, setReunioes] = useState<Item[]>([]);
-    const [grupos, setGrupos] = useState<Item[]>([]);
-    const [reunioesSelecionadas, setReunioesSelecionadas] = useState<number[]>([]);
-    const [status, setStatus] = useState<'select' | 'create' | 'search'>("select");
-    const [formData, setFormData] = useState<Grupo>({ id: "", title: "", meetings: [] });
     const router = useRouter();
 
+    const [formData, setFormData] = useState<Grupo>({
+        groupName: "",
+        registerIds: [], // Array para os IDs das reuniões/registros
+        content: {
+            grades: [],
+            score: 0.0,
+            currentAttendance: 0.0,
+            workload: 0,
+        },
+    });
+
+    // Estados para os campos de texto e a lista de reuniões disponíveis
+    const [reunioes, setReunioes] = useState<Item[]>([]);
+    const [currentItem, setCurrentItem] = useState({
+        grade: "",
+    });
+
+    // Carrega as reuniões disponíveis para seleção
     useEffect(() => {
         loadReunioes(setReunioes);
     }, []);
 
-    // Handles the changes made to the current Group object
-    const handleChange = (field: keyof Grupo, value: string) => {
-        setFormData({ ...formData, [field]: value });
+    // Handlers para os campos aninhados e de nível superior
+    const handleFormChange = (field: keyof Grupo | keyof Groupcontent, value: any, isContentField = false) => {
+        if (isContentField) {
+            setFormData(prev => ({
+                ...prev,
+                content: { ...prev.content, [field as keyof Groupcontent]: value },
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, [field as keyof Grupo]: value }));
+        }
+    };
+
+    const handleCurrentItemChange = (field: keyof typeof currentItem, value: string) => {
+        setCurrentItem(prev => ({ ...prev, [field]: value }));
+    };
+
+    const addToArray = (field: 'grades', itemKey: keyof typeof currentItem) => {
+        const value = currentItem[itemKey].trim();
+        if (value === '') return;
+        handleFormChange(field, [...formData.content[field], value], true);
+        setCurrentItem(prev => ({ ...prev, [itemKey]: '' }));
+    };
+
+    const removeFromArray = (field: 'grades', indexToRemove: number) => {
+        const updatedArray = formData.content[field].filter((_, index) => index !== indexToRemove);
+        handleFormChange(field, updatedArray, true);
+    };
+
+    const handleSelectReuniao = (id: string) => {
+        if (!formData.registerIds.includes(id)) {
+            handleFormChange('registerIds', [...formData.registerIds, id]);
+        }
     };
 
     const handleCreate = async () => {
         try {
-            console.log('FormData:', formData);
-            const createGroupReq = { groupName: formData.title, meetingIds: formData.meetings };
-            console.log(`handleCreate: ${createGroupReq} `)
-            await createGroup(createGroupReq);
-            setFormData({ id: '', title: '', meetings: [] });
+            const createGroupReq = {
+                groupName: formData.groupName,
+                registerIdsIds: formData.registerIds, // Correct key
+                content: formData.content
+            };
+
+            console.log('Criando grupo com os seguintes dados:', createGroupReq);
+            await createGroup(createGroupReq); // The createGroup function in api.ts will send this object
             router.push('/dashboard/reunioes');
         } catch (err) {
             console.error('Erro ao criar grupo:', err);
         }
     };
+    
+    // Função auxiliar para renderizar os campos de lista
+    const renderListInput = (
+        field: 'grades',
+        itemKey: keyof typeof currentItem,
+        label: string
+    ) => (
+        <Paper elevation={2} className="p-4">
+            <Typography variant="h6" className="mb-2">{label}</Typography>
+            <TextField
+                label={`Adicionar ${label.slice(0, -1)}`}
+                variant="outlined"
+                fullWidth
+                type="number"
+                value={currentItem[itemKey]}
+                onChange={(e) => handleCurrentItemChange(itemKey, e.target.value)}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton color="primary" onClick={() => addToArray(field, itemKey)}>
+                                <AddCircleIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    )
+                }}
+            />
+            <Box className="flex flex-wrap gap-2 mt-3">
+                {formData.content[field].map((item, index) => (
+                    <Chip key={index} label={item} onDelete={() => removeFromArray(field, index)} />
+                ))}
+            </Box>
+        </Paper>
+    );
 
     return (
-        <div className="flex flex-col gap-6 w-full max-w-4xl">
-            <div >
+        <Box className="flex flex-col gap-6 w-full max-w-4xl p-4">
+            <Typography variant="h4" className="font-bold text-gray-800">Criar Novo Grupo de Processo</Typography>
+            
+            <Paper elevation={2} className="p-4">
                 <TextField
                     label="Nome do Grupo"
                     variant="outlined"
-                    style={{ backgroundColor: 'white' }}
                     fullWidth
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    value={formData.groupName}
+                    onChange={(e) => handleFormChange('groupName', e.target.value)}
                 />
-                <strong className="text-gray-700">Reunioes adicionadas</strong>
-                <ul>
-                    {formData.meetings.map((meetingId) => (
-                        <li key={meetingId} className="list-disc pl-4 text-gray-700">
-                            {reunioes.find(meeting => meeting.id === Number(meetingId))?.title || "Aula não encontrada"}
-                        </li>
-                    ))}
-                </ul>
-                <div>
-                    <ItemGrid
-                        title="Selecione Reunioes" items={reunioes}
-                        onItemClick={(id) => {
-                            if (formData.meetings.find((meetingId) => meetingId == id) == undefined) {
-                                setFormData({ ...formData, meetings: [...formData.meetings, id] });
-                            }
-                        }}
-                        createLabel="Criar novo grupo"
-                        searchPlaceholder="Buscar grupo..."
-                        emptyMessage="Nao existem grupos."
-                    />
-                </div>
-                <Button variant="contained" onClick={handleCreate}>Criar</Button>
-            </div>
-        </div>
+            </Paper>
+            
+            {renderListInput('grades', 'grade', 'Notas')}
+            
+            <Paper elevation={2} className="p-4">
+                 <Typography variant="h6" className="mb-2">Associar Registros Existentes</Typography>
+                 <Typography variant="body2" color="textSecondary" className="mb-2">
+                    Registros selecionados: {formData.registerIds.length}
+                 </Typography>
+                 <ItemGrid
+                    title=""
+                    items={reunioes}
+                    onItemClick={handleSelectReuniao}
+                    searchPlaceholder="Buscar registro..."
+                    emptyMessage="Nenhum registro encontrado."
+                />
+            </Paper>
 
-    )
+            <Box className="flex justify-end mt-4">
+                <Button variant="contained" color="primary" size="large" onClick={handleCreate}>
+                    Criar Grupo
+                </Button>
+            </Box>
+        </Box>
+    );
 }
