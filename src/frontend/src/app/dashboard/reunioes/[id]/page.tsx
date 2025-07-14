@@ -1,12 +1,15 @@
 'use client'
-import { useState, useEffect, use } from 'react';
-import TextareaAutosize from '@mui/material/TextareaAutosize';
-import { Card, CardContent, Button, TextField } from '@mui/material';
-import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroupById } from '@/lib/api';
-import UploadIcon from '@mui/icons-material/Upload';
+import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import { Card, CardContent, Button, TextField, Chip, IconButton } from '@mui/material';
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+import CloseIcon from '@mui/icons-material/Close';
+import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroupById } from '@/lib/api';
 
-type ReuniaoContent = {};
+// 1. Tipos atualizados para incluir 'participants'
+type ReuniaoContent = {
+    participants?: string[]; // Array de strings para os participantes
+};
 
 type Reuniao = {
     id: string;
@@ -20,28 +23,31 @@ type Reuniao = {
 
 export default function ReuniaoPage() {
     const router = useRouter();
-    const [audioFile, setAudioFile] = useState<File | null>(null);
+    const params = useParams();
     const [formData, setFormData] = useState<Partial<Reuniao>>({
         title: '',
         transcription: '',
         summary: '',
         annotations: '',
         groupId: '',
-        content: {}
+        content: {
+            participants: [] // Inicializa como um array vazio
+        }
     });
     const [groupName, setGroupName] = useState<string>("");
-    const params = useParams();
-    const isEditing = !!params.id;
+    const [newParticipant, setNewParticipant] = useState<string>(""); // Estado para o input de novo participante
 
     useEffect(() => {
         const loadReuniaoAndGroup = async () => {
             if (params.id) {
                 try {
-                    // Carrega os dados da reunião
                     const reuniaoData = await fetchReuniaoById(Number(params.id));
-                    setFormData(reuniaoData); // Assume que a API já retorna o objeto com a estrutura aninhada
+                    // Garante que 'participants' seja sempre um array
+                    if (reuniaoData.content && !reuniaoData.content.participants) {
+                        reuniaoData.content.participants = [];
+                    }
+                    setFormData(reuniaoData);
 
-                    // Carrega o nome do grupo usando o groupId dos dados recebidos
                     if (reuniaoData.groupId) {
                         const groupData = await fetchGroupById(Number(reuniaoData.groupId));
                         setGroupName(groupData.groupName);
@@ -55,13 +61,12 @@ export default function ReuniaoPage() {
         loadReuniaoAndGroup();
     }, [params.id]);
 
-
     const handleDelete = async () => {
         try {
             await deleteReuniao(Number(params.id)!);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao excluir entrevista:', err);
+            console.error('Erro ao excluir reunião:', err);
         }
     };
 
@@ -70,19 +75,45 @@ export default function ReuniaoPage() {
             await updateReuniao(Number(params.id)!, formData);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao atualizar entrevista:', err);
+            console.error('Erro ao atualizar reunião:', err);
         }
     };
 
-    const handleChange = (field: keyof Reuniao, value: string) => {
+    const handleChange = (field: keyof Omit<Reuniao, 'content'>, value: string) => {
         setFormData({ ...formData, [field]: value });
     };
 
-     return (
+    // 2. Funções para gerenciar a lista de participantes
+    const handleAddParticipant = () => {
+        if (newParticipant.trim() !== "") {
+            const currentParticipants = formData.content?.participants || [];
+            setFormData({
+                ...formData,
+                content: {
+                    ...formData.content,
+                    participants: [...currentParticipants, newParticipant.trim()]
+                }
+            });
+            setNewParticipant(""); // Limpa o input
+        }
+    };
+
+    const handleRemoveParticipant = (indexToRemove: number) => {
+        const currentParticipants = formData.content?.participants || [];
+        setFormData({
+            ...formData,
+            content: {
+                ...formData.content,
+                participants: currentParticipants.filter((_, index) => index !== indexToRemove)
+            }
+        });
+    };
+
+    return (
         <div className="flex flex-col items-center justify-start p-8 min-h-screen bg-gray-100 text-gray-900">
             <div className="flex flex-col gap-6 w-full max-w-4xl">
                 <TextField
-                    label="Título da Entrevista"
+                    label="Título da Reunião"
                     variant="outlined"
                     style={{ backgroundColor: 'white' }}
                     fullWidth
@@ -91,12 +122,42 @@ export default function ReuniaoPage() {
                 />
 
                 <div>
-                    <h2 className="text-2xl font-semibold">Grupo: {groupName}</h2>
+                    <h2 className="text-xl font-semibold">Grupo: {groupName}</h2>
                 </div>
+
+                {/* 3. Nova seção para gerenciar participantes */}
+                <Card>
+                    <CardContent>
+                        <h3 className="font-semibold text-lg mb-2">Participantes</h3>
+                        <div className="flex items-center gap-2 mb-4">
+                            <TextField
+                                label="Adicionar participante"
+                                variant="outlined"
+                                size="small"
+                                style={{ backgroundColor: 'white' }}
+                                value={newParticipant}
+                                onChange={(e) => setNewParticipant(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && handleAddParticipant()}
+                                fullWidth
+                            />
+                            <Button variant="contained" onClick={handleAddParticipant}>Adicionar</Button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {formData.content?.participants?.map((participant, index) => (
+                                <Chip
+                                    key={index}
+                                    label={participant}
+                                    onDelete={() => handleRemoveParticipant(index)}
+                                    deleteIcon={<CloseIcon />}
+                                />
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {formData.transcription && (
                      <div>
-                        <h2 className="text-2xl font-semibold">Transcrição</h2>
+                        <h2 className="text-xl font-semibold">Transcrição</h2>
                         <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm max-h-60 overflow-y-auto">
                             {formData.transcription}
                         </div>
@@ -109,9 +170,7 @@ export default function ReuniaoPage() {
                             <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
                             <div className="list-disc pl-4 text-gray-700 max-h-60 overflow-y-auto">
                                 {formData.summary?.split('\n').map((line, index) => (
-                                    <div key={index} className="mb-1">
-                                        {line.trim()}
-                                    </div>
+                                    <div key={index} className="mb-1">{line.trim()}</div>
                                 ))}
                             </div>
                         </CardContent>

@@ -3,12 +3,22 @@ import { useState, useEffect, use } from 'react';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 import { Card, CardContent, Button, TextField } from '@mui/material';
 import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGroups } from '@/lib/api';
-import UploadIcon from '@mui/icons-material/Upload';
 import { useRouter } from 'next/navigation';
 import { Item } from '@/lib/types';
 import ItemGrid from '@/components/ItemGrid';
+import {
+    Box,
+    Typography,
+    Paper,
+    IconButton,
+    InputAdornment,
+    Chip,
+} from "@mui/material";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-type ReuniaoContent = {}
+type ReuniaoContent = {
+    participants: string[];    
+}
 
 type Reuniao = {
     id: string;
@@ -28,10 +38,15 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
         transcription: '',
         summary: '',
         annotations: '',
-        content: {}
+        content: {
+            participants: []
+        }
     });
     const [status, setStatus] = useState<'idle' | 'transcribing' | 'summarizing' | 'done'>('idle');
     const [groups, setGroups] = useState<Item[]>([]);
+    const [currentItem, setCurrentItem] = useState({
+        participant: "",
+    });
 
     const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -118,16 +133,79 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             // setStatus('error')
         }
     }
+    
+    const handleCurrentItemChange = (field: keyof typeof currentItem, value: string) => {
+        setCurrentItem(prev => ({ ...prev, [field]: value }));
+    };
 
     const loadGroups = async () => {
         try {
             await fetchGroups().then((data) => {
-                setGroups(data.map(group => ({ id: group.id, title: group.groupName })));
+                setGroups(data.map((group: { id: any; groupName: any; }) => ({ id: group.id, title: group.groupName })));
             });
         } catch (err) {
             console.error('Erro ao buscar grupos:', err);
         }
     }
+
+    const handleFormChange = (field: keyof Reuniao | keyof ReuniaoContent, value: any, isContentField = false) => {
+        if (isContentField) {
+            setFormData(prev => ({
+                ...prev,
+                content: { ...prev.content, [field as keyof ReuniaoContent]: value },
+            }));
+        } else {
+            setFormData(prev => ({ ...prev, [field as keyof Reuniao]: value }));
+        }
+    };
+
+    const addToArray = (field: 'participants', itemKey: keyof typeof currentItem) => {
+        const value = currentItem[itemKey].trim();
+        if (value === '') return;
+        handleFormChange(
+            field,
+            [...(formData.content?.[field] ?? []), value],
+            true
+        );
+        setCurrentItem(prev => ({ ...prev, [itemKey]: '' }));
+    };
+
+    const removeFromArray = (field: 'participants', indexToRemove: number) => {
+        const updatedArray = (formData.content?.[field] ?? []).filter((_, index) => index !== indexToRemove);
+        handleFormChange(field, updatedArray, true);
+    };
+
+    // Função auxiliar para renderizar os campos de lista
+    const renderListInput = (
+        field: 'participants',
+        itemKey: keyof typeof currentItem,
+        label: string
+    ) => (
+        <Paper elevation={2} className="p-4">
+            <Typography variant="h6" className="mb-2">{label}</Typography>
+            <TextField
+                label={`Adicionar ${label.slice(0, -1)}`}
+                variant="outlined"
+                fullWidth
+                value={currentItem[itemKey]}
+                onChange={(e) => handleCurrentItemChange(itemKey, e.target.value)}
+                InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                            <IconButton color="primary" onClick={() => addToArray(field, itemKey)}>
+                                <AddCircleIcon />
+                            </IconButton>
+                        </InputAdornment>
+                    )
+                }}
+            />
+            <Box className="flex flex-wrap gap-2 mt-3">
+                {(formData.content?.[field] ?? []).map((item, index) => (
+                    <Chip key={index} label={item} onDelete={() => removeFromArray(field, index)} />
+                ))}
+            </Box>
+        </Paper>
+    );
 
     useEffect(() => {
         loadGroups();
@@ -212,6 +290,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                                     </div>
                                 </CardContent>
                             </Card>
+                            
                             <Card>
                                 <CardContent className="p-4">
                                     <h3 className="font-semibold text-lg mb-2">Anotações</h3>
@@ -226,6 +305,8 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                                     />
                                 </CardContent>
                             </Card>
+
+                            {renderListInput('participants', 'participant', 'Participantes')}
                         </div>
                         <div className="flex justify-between items-center mt-4">
                             <div>
