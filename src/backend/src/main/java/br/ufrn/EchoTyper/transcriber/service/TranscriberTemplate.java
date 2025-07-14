@@ -30,11 +30,11 @@ public class TranscriberTemplate {
             String transcriptionResult = transcriber.transcribe_audio(processedFile.toString());
 
             // Clean up the temporary file
-            Files.delete(tempFile);
             Files.delete(processedFile);
 
             return transcriptionResult;
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
