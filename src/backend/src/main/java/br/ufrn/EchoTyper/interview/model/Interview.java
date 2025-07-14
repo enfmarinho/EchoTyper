@@ -98,6 +98,8 @@ public class Interview extends Register {
         return contentNode;
     }
 
+    public Interview(){};
+    
     public Interview(Long id, String title, String transcription, String summary, String annotations,
             RegisterGroup<Register> group, JsonNode content) {
         super(id, title, transcription, summary, annotations,

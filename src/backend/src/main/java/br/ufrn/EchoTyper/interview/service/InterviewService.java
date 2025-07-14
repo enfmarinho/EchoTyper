@@ -1,8 +1,6 @@
 package br.ufrn.EchoTyper.interview.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 import br.ufrn.EchoTyper.interview.model.HiringProcess;
 import br.ufrn.EchoTyper.interview.model.Interview;
@@ -12,6 +10,7 @@ import br.ufrn.EchoTyper.register.repository.RegisterGroupRepository;
 import br.ufrn.EchoTyper.register.repository.RegisterRepository;
 import br.ufrn.EchoTyper.register.service.RegisterService;
 
+@Service
 public class InterviewService extends RegisterService<Interview, HiringProcess> {
 
     public InterviewService(RegisterRepository<Interview> registerRepository,
@@ -27,7 +26,7 @@ public class InterviewService extends RegisterService<Interview, HiringProcess> 
         group.getCandidates().add(register.getCandidate());
         // Adds the evaluation
         String evaluation = register.getEvaluation();
-        group.getEvaluations().get(register.getCandidate()).add(evaluation);
+        group.getEvaluations().add(evaluation);
     }
 
     @Override

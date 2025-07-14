@@ -1,6 +1,7 @@
 package br.ufrn.EchoTyper.LLM.service.ContextStrategies;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
