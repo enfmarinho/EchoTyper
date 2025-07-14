@@ -24,7 +24,7 @@ export async function loadReunioes(setReunioes: (reunioes: Item[]) => void) {
     }));
     setReunioes(items);
   } catch (err) {
-    console.error("Erro ao carregar reuniões:", err);
+    console.error("Erro ao carregar aulas:", err);
   }
 }
 
@@ -37,6 +37,6 @@ export async function loadReunioesByGroup(groupId: number, setReunioes: (reunioe
     }));
     setReunioes(items);
   } catch (err) {
-    console.error("Erro ao carregar reuniões:", err);
+    console.error("Erro ao carregar aulas:", err);
   }
 }

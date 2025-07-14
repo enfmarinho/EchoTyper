@@ -91,7 +91,7 @@ export default function CreateGroup() {
                 <ul>
                     {formData.meetings.map((meetingId) => (
                         <li key={meetingId} className="list-disc pl-4 text-gray-700">
-                            {reunioes.find(meeting => meeting.id === Number(meetingId))?.title || "Reunião não encontrada"}
+                            {reunioes.find(meeting => meeting.id === Number(meetingId))?.title || "Aula não encontrada"}
                         </li>
                     ))}
                 </ul>

@@ -48,7 +48,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             await deleteReuniao(params.id!);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao excluir reunião:', err);
+            console.error('Erro ao excluir aula:', err);
         }
     };
 
@@ -139,7 +139,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                             <strong>Grupo Selecionado: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</strong>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-6">
-                            <h2 className="text-xl font-semibold">Envie o áudio da reunião</h2>
+                            <h2 className="text-xl font-semibold">Envie o áudio da aula</h2>
 
                             {/* Label estilizado que ativa o input de upload */}
                             <label
@@ -168,7 +168,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                 return (
                     <div className="flex flex-col gap-6 w-full max-w-4xl">
                         <TextField
-                            label="Título da Reunião"
+                            label="Título da Aula"
                             variant="outlined"
                             style={{ backgroundColor: 'white' }}
                             fullWidth
