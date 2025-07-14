@@ -29,7 +29,7 @@ export default function ConflictChecker() {
           const data = await fetchReunioes();
           setMeetings(data);
         } catch (err) {
-          console.error('Erro ao carregar reuniões:', err);
+          console.error('Erro ao carregar entrevistas:', err);
         }
     };
 
@@ -76,12 +76,12 @@ export default function ConflictChecker() {
           setShowMeetings(!showMeetings);
         }}
       >
-        Escolher Reunião
+        Escolher Entrevista
       </Button>
 
       {showMeetings && (
         <div className="mb-4 border p-4 rounded">
-          <h2 className="font-semibold mb-2">Selecione uma Reunião</h2>
+          <h2 className="font-semibold mb-2">Selecione uma Entrevista</h2>
           <ul>
             {meetings.map((meeting) => (
               <li
@@ -96,7 +96,7 @@ export default function ConflictChecker() {
         </div>
       )}
 
-      <label className="block mb-2 font-medium">Transcrição da Reunião</label>
+      <label className="block mb-2 font-medium">Transcrição da Entrevista</label>
       <textarea
         value={transcription}
         onChange={(e) => setTranscription(e.target.value)}

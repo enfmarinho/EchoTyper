@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "EchoTyper",
-  description: "Aplicativo para gerenciamento de reuniões",
+  description: "Aplicativo para gerenciamento de entrevistas",
 };
 
 export default function RootLayout({

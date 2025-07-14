@@ -21,10 +21,10 @@ export default function CadastroPage() {
             alignItems: "center",
             justifyContent: "flex-start",
             height: "100vh",
-            backgroundColor: "#122232"
+            backgroundColor: "#223212"
           }}
         >
-        <Image src="/logo.png" alt="Logo" width={450} height={450} />
+        <Image src="/logo-interview.jpg" alt="Logo" width={450} height={450} />
         <Box
             sx={{
             display: "flex",

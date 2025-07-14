@@ -41,12 +41,12 @@ export default function GrupoPage() {
                     meetings: data.meetings
                 });
             }).catch(err => {
-                console.error('Erro ao carregar reunião:', err);
+                console.error('Erro ao carregar entrevista:', err);
             });
             fetchReunioes().then(data => {
                 setOutrasReunioes(data.filter(meeting => (meeting.groupId == undefined)));
             }).catch(err => {
-                console.error('Erro ao carregar reunião:', err);
+                console.error('Erro ao carregar entrevista:', err);
             });
             formData.meetings?.filter(meeting => (meeting.id))
         }
