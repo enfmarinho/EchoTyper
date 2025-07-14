@@ -18,9 +18,6 @@ public class CheckConflictMeeting extends AbstractPromptTemplate {
 
     @Override
     protected String getContext(JsonNode payload) {
-        if (payload.path("groupId").isMissingNode()) {
-            return "";
-        }
         // Usa o ContextProvider herdado da classe base
         return "A seguir, está a lista de eventos já agendados (JSON)::\n"
                + calendarContextProvider.getContext(payload)
