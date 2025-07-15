@@ -38,13 +38,7 @@ public class MeetingService extends RegisterService<Meeting, MeetingGroup> {
         return;
 
     }
-
-    @Override
-    protected void deleteRegisterGroupHook(MeetingGroup group, Meeting register) {
-        return;
-
-    }
-
+    
     @Override
     @Transactional
     public List<String> getGroupContext(Long groupId) {

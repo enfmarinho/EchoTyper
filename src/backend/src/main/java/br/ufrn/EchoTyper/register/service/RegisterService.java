@@ -170,7 +170,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     }
 
     // Hook to override the logic performed to a register when its group is deleted
-    protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
+    // protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
 
     @Transactional
     public void deleteRegisterGroup(Long groupId) {
@@ -178,7 +178,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         for (RegisterImpl register : group.getRegisters()) {
             removeRegisterFromGroup(register.getId(), group.getId());
             // ** Delete group template method
-            deleteRegisterGroupHook(group, register);
+            // deleteRegisterGroupHook(group, register);
         }
         registerGroupRepository.delete(group);
     }
@@ -189,25 +189,15 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
                 .map((registerGroup) -> registerGroupMapper.toResponseDTO(registerGroup)).orElse(null);
     }
 
-    public abstract List<String> getGroupContext(Long groupId);
-    // @Transactional
-    // public List<String> getGroupContext(Long groupId) {
-    //     Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
-    //     List<String> summaries = new ArrayList<>();
-    //     for (Register register : registers) {
-    //         summaries.add(register.getSummary());
-    //     }
-    //     return summaries;
-    // }
-
     @Transactional
-    public List<JsonNode> getRegisterContentByGroup(Long groupId) {
+    public List<String> getGroupContext(Long groupId) {
         Collection<RegisterImpl> registers = getGroupsRegistersObjs(groupId);
-        List<JsonNode> contentList = new ArrayList<>();
+        List<String> contextList = new ArrayList<>();
         for (Register register : registers) {
-            contentList.add(register.getContent());
+            String context = register.getContent().asText();
+            contextList.add(context);
         }
-        return contentList;
+        return contextList;
     }
 
     @Transactional
