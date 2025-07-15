@@ -145,7 +145,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     const loadGroups = async () => {
         try {
             await fetchGroups().then((data) => {
-                setGroups(data.map(group => ({ id: group.id, title: group.groupName })));
+                setGroups(data.map((group: { id: any; groupName: any; }) => ({ id: group.id, title: group.groupName })));
             });
         } catch (err) {
             console.error('Erro ao buscar grupos:', err);
