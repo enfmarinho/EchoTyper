@@ -16,7 +16,6 @@ import ws.schild.jave.EncodingAttributes;
 @Service
 @Qualifier("videoTranscriber")
 public class VideoTranscriber extends TranscriberTemplate {
-    @Override
     protected Path preprocessing(Path inputPathMp4) {
         // JAVE way of setting audio specifications and attributes
         AudioAttributes audio = new AudioAttributes();
