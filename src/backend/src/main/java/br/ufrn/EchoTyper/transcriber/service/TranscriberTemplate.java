@@ -11,13 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Qualifier("transcriberTemplate")
-public class TranscriberTemplate {
+public abstract class TranscriberTemplate {
     @Autowired
     private GoogleCloudTranscriber transcriber;
 
-    protected Path preprocessing(Path filePath) {
-        return filePath;
-    }
+    abstract protected Path preprocessing(Path filePath);
 
     public String get_input_transcription(MultipartFile inputFile) throws IOException, InterruptedException {
         try {
