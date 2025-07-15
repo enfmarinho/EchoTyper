@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Qualifier("transcriberTemplate")
-abstract class TranscriberTemplate {
+public abstract class TranscriberTemplate {
     @Autowired
     private AudioTranscriberInterface transcriber;
 
