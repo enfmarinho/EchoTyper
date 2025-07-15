@@ -11,11 +11,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Qualifier("transcriberTemplate")
-public abstract class TranscriberTemplate {
+abstract public class TranscriberTemplate {
     @Autowired
     private AudioTranscriberInterface transcriber;
 
-    protected abstract Path preprocessing(Path filePath);
+    abstract protected Path preprocessing(Path filePath);
 
     public String get_input_transcription(MultipartFile inputFile) throws IOException, InterruptedException {
         try {
