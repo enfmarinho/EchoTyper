@@ -24,12 +24,11 @@ public abstract class TranscriberTemplate {
             inputFile.transferTo(tempFile);
 
             // Pre-process and transcribe input_file
-            Path processedFile = preprocessing(tempFile);
-            String transcriptionResult = transcriber.transcribe_audio(processedFile.toString());
+            tempFile = preprocessing(tempFile);
+            String transcriptionResult = transcriber.transcribe_audio(tempFile.toString());
 
             // Clean up the temporary file
             Files.delete(tempFile);
-            Files.delete(processedFile);
 
             return transcriptionResult;
         } catch (Exception e) {
