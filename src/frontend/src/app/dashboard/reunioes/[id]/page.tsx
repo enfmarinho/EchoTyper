@@ -6,6 +6,12 @@ import { createReuniao, updateReuniao, deleteReuniao, fetchReuniaoById, fetchGro
 import UploadIcon from '@mui/icons-material/Upload';
 import { useRouter, useParams } from 'next/navigation';
 
+type ReuniaoContent = {
+    candidate: string;
+    interviewer: string;
+    role: string;
+    evaluation: string;
+};
 
 type Reuniao = {
     id: string;
@@ -14,54 +20,50 @@ type Reuniao = {
     summary: string;
     annotations: string;
     groupId: string;
+    content: ReuniaoContent;
 };
 
 export default function ReuniaoPage() {
     const router = useRouter();
     const [audioFile, setAudioFile] = useState<File | null>(null);
-    const [formData, setFormData] = useState<Partial<Reuniao>>({ title: '', transcription: '', summary: '', annotations: '' });
+    const [formData, setFormData] = useState<Partial<Reuniao>>({
+        title: '',
+        transcription: '',
+        summary: '',
+        annotations: '',
+        groupId: '',
+        content: {
+            candidate: '',
+            interviewer: '',
+            role: '',
+            evaluation: '',
+        }
+    });
     const [groupName, setGroupName] = useState<string>("");
     const params = useParams();
     const isEditing = !!params.id;
 
-    const loadReuniao = async (): Promise<string | undefined> => {
-        if (isEditing && params.id) {
-            try {
-                const data = await fetchReuniaoById(Number(params.id));
-                setFormData({
-                    id: Number(params.id).toString(),
-                    title: data.title,
-                    transcription: data.transcription,
-                    summary: data.summary,
-                    annotations: data.annotations,
-                    groupId: data.groupId
-                });
-                return data.groupId;
-            } catch (err) {
-                console.error('Erro ao carregar entrevista:', err);
-            }
-        }
-    };
-
-    const loadGroupName = async (groupId?: string) => {
-        if (groupId) {
-            try {
-                const data = await fetchGroupById(Number(groupId));
-                setGroupName(data.groupName);
-            } catch (err) {
-                console.error('Erro ao carregar grupo:// ', err);
-            }
-        }
-    };
-
     useEffect(() => {
-        const fetchData = async () => {
-            const groupId = await loadReuniao();
-            await loadGroupName(groupId);
+        const loadReuniaoAndGroup = async () => {
+            if (params.id) {
+                try {
+                    // Carrega os dados da reunião
+                    const reuniaoData = await fetchReuniaoById(Number(params.id));
+                    setFormData(reuniaoData); // Assume que a API já retorna o objeto com a estrutura aninhada
+
+                    // Carrega o nome do grupo usando o groupId dos dados recebidos
+                    if (reuniaoData.groupId) {
+                        const groupData = await fetchGroupById(Number(reuniaoData.groupId));
+                        setGroupName(groupData.groupName);
+                    }
+                } catch (err) {
+                    console.error('Erro ao carregar dados:', err);
+                }
+            }
         };
 
-        fetchData();
-    }, []);
+        loadReuniaoAndGroup();
+    }, [params.id]);
 
 
     const handleDelete = async () => {
@@ -86,69 +88,118 @@ export default function ReuniaoPage() {
         setFormData({ ...formData, [field]: value });
     };
 
-    const renderContent = () => {
-        if (isEditing) {
-            return (
-                <div className="flex flex-col gap-6 w-full max-w-4xl">
-                    <div className="flex flex-col gap-6 w-full max-w-4xl">
-                        <TextField
-                            label="Título da Entrevista"
-                            variant="outlined"
-                            style={{ backgroundColor: 'white' }}
-                            fullWidth
-                            value={formData.title || ''}
-                            onChange={(e) => handleChange('title', e.target.value)}
-                        />
-                        <div>
-                            <h2 className="text-2xl font-semibold">Grupo: {groupName} </h2>
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-semibold">Transcrição</h2>
-                            <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm">
-                                {formData.transcription}
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <Card>
-                                <CardContent className="p-4">
-                                    <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
-                                    <ul className="list-disc pl-4 text-gray-700">
-                                        {formData.summary?.split('\n').map((line, index) => (
-                                            <div key={index} className="mb-1">
-                                                {line.trim()}
-                                            </div>
-                                        ))}
-                                    </ul>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardContent className="p-4">
-                                    <h3 className="font-semibold text-lg mb-2">Anotações</h3>
-                                    <TextareaAutosize
-                                        minRows={4}
-                                        maxRows={6}
-                                        className="w-full p-2 border rounded shadow-sm mt-2"
-                                        style={{ resize: 'none' }}
-                                        value={formData.annotations || ''}
-                                        onChange={(e) => handleChange('annotations', e.target.value)}
-                                        placeholder="Escreva suas anotações aqui..."
-                                    />
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </div>
-                    <div className="flex gap-4">
-                        <Button variant="contained" onClick={handleUpdate}>Salvar Alterações</Button>
-                        <Button variant="outlined" color="error" onClick={handleDelete}>Excluir</Button>
-                    </div>
-                </div>
-            );
-        }
+    const handleContentChange = (field: keyof ReuniaoContent, value: string) => {
+        setFormData(prev => ({
+            ...prev,
+            content: {
+                candidate: prev.content?.candidate ?? '',
+                interviewer: prev.content?.interviewer ?? '',
+                role: prev.content?.role ?? '',
+                evaluation: prev.content?.evaluation ?? '',
+                [field]: value,
+            },
+        }));
     };
 
-    return (
+     return (
         <div className="flex flex-col items-center justify-start p-8 min-h-screen bg-gray-100 text-gray-900">
-            {renderContent()}
+            <div className="flex flex-col gap-6 w-full max-w-4xl">
+                <TextField
+                    label="Título da Entrevista"
+                    variant="outlined"
+                    style={{ backgroundColor: 'white' }}
+                    fullWidth
+                    value={formData.title || ''}
+                    onChange={(e) => handleChange('title', e.target.value)}
+                />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <TextField
+                        label="Candidato"
+                        variant="outlined"
+                        style={{ backgroundColor: 'white' }}
+                        value={formData.content?.candidate || ''}
+                        onChange={(e) => handleContentChange('candidate', e.target.value)}
+                    />
+                    <TextField
+                        label="Entrevistador"
+                        variant="outlined"
+                        style={{ backgroundColor: 'white' }}
+                        value={formData.content?.interviewer || ''}
+                        onChange={(e) => handleContentChange('interviewer', e.target.value)}
+                    />
+                    <TextField
+                        label="Vaga"
+                        variant="outlined"
+                        style={{ backgroundColor: 'white' }}
+                        value={formData.content?.role || ''}
+                        onChange={(e) => handleContentChange('role', e.target.value)}
+                    />
+                    <TextField
+                        label="Avaliação Inicial"
+                        variant="outlined"
+                        style={{ backgroundColor: 'white' }}
+                        value={formData.content?.evaluation || ''}
+                        onChange={(e) => handleContentChange('evaluation', e.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <h2 className="text-2xl font-semibold">Grupo: {groupName}</h2>
+                </div>
+
+                {formData.transcription && (
+                     <div>
+                        <h2 className="text-2xl font-semibold">Transcrição</h2>
+                        <div className="mt-2 border rounded p-4 whitespace-pre-line bg-white text-gray-800 shadow-sm max-h-60 overflow-y-auto">
+                            {formData.transcription}
+                        </div>
+                    </div>
+                )}
+               
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Card>
+                        <CardContent className="p-4">
+                            <h3 className="font-semibold text-lg mb-2">Resumo (LLM)</h3>
+                            <div className="list-disc pl-4 text-gray-700 max-h-60 overflow-y-auto">
+                                {formData.summary?.split('\n').map((line, index) => (
+                                    <div key={index} className="mb-1">
+                                        {line.trim()}
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <CardContent className="p-4">
+                            <h3 className="font-semibold text-lg mb-2">Anotações</h3>
+                            <TextareaAutosize
+                                minRows={4}
+                                className="w-full p-2 border rounded shadow-sm mt-2"
+                                style={{ resize: 'none', backgroundColor: 'white' }}
+                                value={formData.annotations || ''}
+                                onChange={(e) => handleChange('annotations', e.target.value)}
+                                placeholder="Escreva suas anotações aqui..."
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="flex justify-between items-center mt-4">
+                    <Button 
+                        variant="outlined" 
+                        color="error" 
+                        onClick={handleDelete}
+                    >
+                        Excluir
+                    </Button>
+                    <div className='flex gap-4'>
+                        <Button onClick={() => router.back()}>Cancelar</Button>
+                        <Button variant="contained" onClick={handleUpdate}>
+                            Salvar Alterações
+                        </Button>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

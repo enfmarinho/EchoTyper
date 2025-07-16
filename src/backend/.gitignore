@@ -24,3 +24,5 @@ build/
 !**/src/test/**/build/
 
 .env
+
+src/main/resources/assets/*
