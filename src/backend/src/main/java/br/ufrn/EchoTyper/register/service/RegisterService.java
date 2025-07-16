@@ -36,7 +36,7 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         this.registerMapper = registerMapper;
         this.registerGroupMapper = registerGroupMapper;
     }
-
+    @Transactional
     public RegisterResponseDTO createRegister(RegisterRequestDTO registerRequestDTO) {
         RegisterImpl newRegister;
         if (registerRequestDTO.groupId() == null) {
