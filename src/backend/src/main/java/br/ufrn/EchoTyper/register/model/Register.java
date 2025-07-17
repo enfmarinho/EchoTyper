@@ -9,10 +9,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "tb_register")
-public abstract class Register {
-
-    @Transient
-    protected final String SUBCLASS_ATTR_NAME_FORMAT = "compute%s";
+public abstract class Register extends FrameworkEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +35,6 @@ public abstract class Register {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true)
     protected RegisterGroup<Register> group;
-
-    @Transient
-    protected JsonNode content;
 
     public Register() {
     }
@@ -110,15 +104,15 @@ public abstract class Register {
         this.group = group;
     }
 
-    public void setContent(JsonNode content) {
-        this.content = content;
-        processContent();
-    }
+    // public void setContent(JsonNode content) {
+    //     this.content = content;
+    //     processContent();
+    // }
 
     /*
      * This method will set the subclass' specific attributes
      */
-    public abstract void processContent();
+    // public abstract void processContent();
 
-    public abstract JsonNode getContent();
+    // public abstract JsonNode getContent();
 }

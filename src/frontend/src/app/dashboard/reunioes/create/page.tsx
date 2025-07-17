@@ -86,7 +86,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
     };
 
     const startTranscription = async (file: File) => {
-        setStatus('done')
+        setStatus('transcribing');
 
         const formDataToSend = new FormData()
         formDataToSend.append('inputFile', file)
