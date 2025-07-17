@@ -1,10 +1,18 @@
 package br.ufrn.EchoTyper.LLM.service.PromptTemplates;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import br.ufrn.EchoTyper.LLM.service.ContextStrategies.ContextProvider;
+
 @Service
 public class CheckConflictInterview extends AbstractPromptTemplate {
+
+    @Autowired
+    @Qualifier("groupSummaryContextProvider")
+    protected ContextProvider groupSummaryContextProvider;
 
     @Override
     protected String getIntroduction() {
