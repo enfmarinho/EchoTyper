@@ -36,7 +36,6 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         this.registerMapper = registerMapper;
         this.registerGroupMapper = registerGroupMapper;
     }
-
     @Transactional
     public RegisterResponseDTO createRegister(RegisterRequestDTO registerRequestDTO) {
         RegisterImpl newRegister;
@@ -58,16 +57,18 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
         if (register == null) {
             throw new RuntimeException("Register not found");
         }
-        
+
         register.setTitle(registerRequestDTO.title());
         register.setTranscription(registerRequestDTO.transcription());
         register.setSummary(registerRequestDTO.summary());
         register.setAnnotations(registerRequestDTO.annotations());
         register.setContent(registerRequestDTO.content());
-        Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
-        RegisterGroup<RegisterImpl> group = groupOpt
-                .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
-        register.setGroup(group);
+        if (registerRequestDTO.groupId() != null) {
+            Optional<RegisterGroupImpl> groupOpt = getGroupObjById(id);
+            RegisterGroup<RegisterImpl> group = groupOpt
+                    .orElseThrow(() -> new IllegalArgumentException("Group does not exist"));
+            register.setGroup(group);
+        }
         return registerMapper.toResponseDTO(register);
     }
 
@@ -171,7 +172,8 @@ public abstract class RegisterService<RegisterImpl extends Register, RegisterGro
     }
 
     // Hook to override the logic performed to a register when its group is deleted
-    // protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group, RegisterImpl register);
+    // protected abstract void deleteRegisterGroupHook(RegisterGroupImpl group,
+    // RegisterImpl register);
 
     @Transactional
     public void deleteRegisterGroup(Long groupId) {
