@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Qualifier("transcriberTemplate")
 abstract public class TranscriberTemplate {
     @Autowired
-    private AudioTranscriberInterface transcriber;
+    private AudioToTextInterface transcriber;
 
     abstract protected Path preprocessing(Path filePath);
 
