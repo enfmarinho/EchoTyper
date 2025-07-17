@@ -1,10 +1,16 @@
 package br.ufrn.EchoTyper.LLM.service.PromptTemplates;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import br.ufrn.EchoTyper.LLM.service.ContextStrategies.ContextProvider;
+
 @Service
 public class CheckConflictInterview extends AbstractPromptTemplate {
+
+    @Autowired
+    protected ContextProvider groupSummaryContextProvider;
 
     @Override
     protected String getIntroduction() {
@@ -25,6 +31,7 @@ public class CheckConflictInterview extends AbstractPromptTemplate {
         if (payload.path("groupId").isMissingNode()) {
             return "";
         }
+        System.out.println(groupSummaryContextProvider.getContext(payload));
         // Usa o ContextProvider herdado da classe base
         return "Abaixo estão os resumos ou transcrições de entrevistas anteriores com o mesmo candidato ou outros candidatos para a mesma posição:\n"
                + groupSummaryContextProvider.getContext(payload);

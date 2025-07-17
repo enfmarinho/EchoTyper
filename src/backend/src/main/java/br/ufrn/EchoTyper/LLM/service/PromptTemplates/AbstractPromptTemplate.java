@@ -1,14 +1,7 @@
 package br.ufrn.EchoTyper.LLM.service.PromptTemplates;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import br.ufrn.EchoTyper.LLM.service.ContextStrategies.ContextProvider;
-
 public abstract class AbstractPromptTemplate {
-
-    @Autowired
-    protected ContextProvider groupSummaryContextProvider;
 
     public final String buildPrompt(JsonNode payload) {
 
