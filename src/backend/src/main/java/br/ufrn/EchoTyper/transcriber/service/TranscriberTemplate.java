@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Qualifier("transcriberTemplate")
 abstract public class TranscriberTemplate {
     @Autowired
-    private GoogleCloudTranscriber transcriber;
+    private AudioToTextInterface transcriber;
 
     abstract protected Path preprocessing(Path filePath);
 
@@ -32,6 +32,7 @@ abstract public class TranscriberTemplate {
 
             return transcriptionResult;
         } catch (Exception e) {
+            e.printStackTrace();
             throw e;
         }
     }
