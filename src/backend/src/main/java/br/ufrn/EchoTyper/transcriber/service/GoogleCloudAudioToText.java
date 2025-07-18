@@ -22,7 +22,7 @@ import com.google.cloud.speech.v1.WordInfo;
 import com.google.protobuf.ByteString;
 
 @Service
-public class GoogleCloudTranscriber implements AudioTranscriberInterface {
+public class GoogleCloudAudioToText implements AudioToTextInterface {
 
   private final String credentialsPath = "/assets/arboreal-parser-460306-q7-52e795ee28d5.json";
 
