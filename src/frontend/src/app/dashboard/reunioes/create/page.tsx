@@ -63,7 +63,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             setFormData({});
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao criar entrevista:', err);
+            console.error('Erro ao criar reunião:', err);
         }
     };
 
@@ -72,7 +72,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
             await deleteReuniao(params.id!);
             router.push('/dashboard/reunioes');
         } catch (err) {
-            console.error('Erro ao excluir entrevista:', err);
+            console.error('Erro ao excluir reunião:', err);
         }
     };
 
@@ -226,7 +226,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                             <strong>Grupo Selecionado: {groups.find(meeting => (meeting.id == formData.groupId))?.title}</strong>
                         </div>
                         <div className="flex flex-col items-center justify-center gap-6">
-                            <h2 className="text-xl font-semibold">Envie o áudio da entrevista</h2>
+                            <h2 className="text-xl font-semibold">Envie o áudio da reunião</h2>
 
                             {/* Label estilizado que ativa o input de upload */}
                             <label
@@ -255,7 +255,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                 return (
                     <div className="flex flex-col gap-6 w-full max-w-4xl">
                         <TextField
-                            label="Título da Entrevista"
+                            label="Título da Reunião"
                             variant="outlined"
                             style={{ backgroundColor: 'white' }}
                             fullWidth
@@ -327,7 +327,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                                     onClick={handleCreate}
                                 >
                                     {/* O texto do botão muda dependendo do contexto */}
-                                    {params.id ? 'Atualizar Entrevista' : 'Salvar Entrevista'}
+                                    {params.id ? 'Atualizar Reunião' : 'Salvar Reunião'}
                                 </Button>
                             </div>
                         </div>
