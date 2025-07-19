@@ -93,7 +93,7 @@ export default function CreateGroup() {
         try {
             const createGroupReq = {
                 groupName: formData.groupName,
-                registerIdsIds: formData.registerIds, // Correct key
+                registerIds: formData.registerIds, // Correct key
                 content: formData.content
             };
 

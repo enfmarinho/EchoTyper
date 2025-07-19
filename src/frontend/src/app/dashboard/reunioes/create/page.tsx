@@ -182,7 +182,7 @@ export default function ReuniaoPage({ params }: { params: { id?: number } }) {
                             <input
                                 type="file"
                                 id="audio-upload"
-                                accept="audio/*"
+                                accept="video/*"
                                 className="hidden"
                                 onChange={handleAudioUpload}
                             />

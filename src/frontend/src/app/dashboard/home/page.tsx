@@ -23,8 +23,9 @@ type Reuniao = {
 
 
 const proximosEventos: Evento[] = [
-  { titulo: "Daily Standup", descricao: "04/04 - Alinhamento rápido da equipe" },
-  { titulo: "Planejamento da Sprint", descricao: "05/04 - Definir backlog da semana" },
+  { titulo: "Prova de Calculo 2", descricao: "18/06" },
+  { titulo: "Prova de Organização de computadores", descricao: "21/06" },
+  { titulo: "Entrega do trabalho final de Engenharia de Software", descricao: "18/06" },
 ];
 
 export default function SelecaoReunioes() {
